@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MexAdl
+Bundle-SymbolicName: mx.itesm.mexadl
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: ITESM
+Bundle-ClassPath: lib/xalan.jar,lib/jdom.jar,lib/jaxen.jar,lib/velocity-1.6.4-dep.jar,.
+Export-Package: mx.itesm.mexadl

@@ -1,0 +1,30 @@
+package mx.itesm.mexadl.architecture;
+
+/**
+ * System architecture aspect
+*/
+public aspect Architecture_$architectureName {
+
+    #macro (groupPointcut $groups)
+        #foreach ($group in $groups)
+        
+            // $group.name
+            pointcut call_$group.name () :  
+            #foreach ($element in $group.elements)
+                call (* $element.* (..))
+                #if ($velocityHasNext) || #end
+            #end
+                ;
+            
+            pointcut in_$group.name () :  
+            #foreach ($element in $group.elements)
+                within ($element)
+                #if ($velocityHasNext) || #end
+            #end
+                ;
+        #end
+    #end
+    
+    #groupPointcut ($groupsList)
+    
+}

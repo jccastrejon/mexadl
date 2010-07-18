@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+    xmlns="http://mx.itesm/mexadl.xsd"
+    xmlns:tns="http://mx.itesm/mexadl.xsd"
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:archinstance="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd" 
+    xmlns:archtypes="http://www.ics.uci.edu/pub/arch/xArch/types.xsd"
+    targetNamespace="http://mx.itesm/mexadl.xsd" elementFormDefault="qualified" attributeFormDefault="qualified">
+
+  <xsd:import namespace="http://www.ics.uci.edu/pub/arch/xArch/types.xsd"
+              schemaLocation="http://www.isr.uci.edu/projects/xarchuci/ext/types.xsd"/>
+              
+  <xsd:import namespace="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd"
+              schemaLocation="http://www.isr.uci.edu/projects/xarchuci/ext/instance.xsd"/>
+
+    <xsd:complexType name="MexComponent">
+        <xsd:complexContent>
+            <xsd:extension base="archtypes:Component">
+                <xsd:choice minOccurs="1" maxOccurs="1">
+                    <xsd:element name="maintainabilityMetrics" type="MaintainabilityMetrics"/>
+                    <xsd:element name="maintainabilityMetricsRef" type="archinstance:XMLLink"/>
+                </xsd:choice>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MexGroup">
+        <xsd:complexContent>
+            <xsd:extension base="archinstance:Group">
+                <xsd:choice minOccurs="1" maxOccurs="1">
+                    <xsd:element name="maintainabilityMetrics" type="MaintainabilityMetrics"/>
+                    <xsd:element name="maintainabilityMetricsRef" type="archinstance:XMLLink"/>
+                </xsd:choice>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MaintainabilityMetrics">
+        <xsd:attribute name="id" type="archinstance:Identifier"/>
+        <xsd:sequence>
+            <xsd:element name="modularityMetrics" type="ModularityMetrics" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="reusabilityMetrics" type="ReusabilityMetrics" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="analyzabilityMetrics" type="AnalyzabilityMetrics" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="modifiabilityMetrics" type="ModifiabilityMetrics" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="testabilityMetrics" type="TestabilityMetrics" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>    
+    
+    <xsd:complexType name="ModularityMetrics">
+        <xsd:attribute name="depthInInheritanceTree" type="IntValue"/>
+        <xsd:attribute name="numberOfChildren" type="IntValue"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ReusabilityMetrics">
+        <xsd:attribute name="lackOfCohesionOfMethods" type="IntValue"/>
+        <xsd:attribute name="afferentCoupling" type="IntValue"/>
+    </xsd:complexType>
+    
+    <xsd:complexType name="AnalyzabilityMetrics">
+        <xsd:attribute name="linesOfCode" type="IntValue"/>
+        <xsd:attribute name="cyclomaticComplexityPerUnit" type="IntValue"/>
+        <xsd:attribute name="responseForClass" type="IntValue"/>
+        <xsd:attribute name="weightedMethodComplexity" type="IntValue"/>
+        <xsd:attribute name="numberOfPublicMethods" type="IntValue"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ModifiabilityMetrics">
+        <xsd:attribute name="duplicatedBlocks" type="IntValue"/>
+        <xsd:attribute name="couplingBetweenObjects" type="IntValue"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="TestabilityMetrics">
+        <xsd:attribute name="completenessOfBuiltInFunction" type="IntValue"/>
+        <xsd:attribute name="autonomyOfTestability" type="IntValue"/>
+        <xsd:attribute name="unitTestCoverage" type="IntValue"/>
+    </xsd:complexType>
+    
+    <xsd:complexType name="IntValue">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:int"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    
+</xsd:schema>
