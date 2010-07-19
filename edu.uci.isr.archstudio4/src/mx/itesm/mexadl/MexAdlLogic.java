@@ -20,13 +20,14 @@ import edu.uci.isr.xarchflat.ObjRef;
  * 
  */
 public class MexAdlLogic extends AbstractThingLogic implements IBNAMenuListener {
+
     /**
-     * 
+     * xADL document.
      */
     private ObjRef xArchRef;
 
     /**
-     * 
+     * Archipelago services.
      */
     private ArchipelagoServices archipelagoServices;
 
@@ -47,8 +48,7 @@ public class MexAdlLogic extends AbstractThingLogic implements IBNAMenuListener 
     public void fillMenu(IBNAView view, IMenuManager menuManager, int localX, int localY, IThing thing, int worldX,
             int worldY) {
 
-        // This option applies to the whole xADL definition, not to individual
-        // objects
+        // This menu is only valid at a global level
         if (thing == null) {
             // adds a menu item
             menuManager.add(new Action("Generate MexADL artifacts") {
