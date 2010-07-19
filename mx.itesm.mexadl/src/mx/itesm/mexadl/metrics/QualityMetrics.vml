@@ -10,10 +10,10 @@ public aspect Metrics_$architectureName {
             
             // $definition.type
             declare @type :
-                $definition.type : @MaintainabilityMetrics ( 
+                $definition.type : @$metricsClass ( 
                  #foreach ($metricSet in $definition.metricSets)
                  
-                     $metricSet.name = @ $metricSet.type (
+                     $metricSet.name = @$metricsClass.$metricSet.type (
                      #foreach ($metric in $metricSet.metrics)
                          $metric.name = $metric.value #if ($velocityHasNext) , #end
                      #end 

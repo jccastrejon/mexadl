@@ -77,7 +77,8 @@ public class MetricsProcessor implements MexAdlProcessor {
 
                     metrics = new ArrayList<Map<String, Object>>();
                     metricSet.put("name", metricSetDefinition.getType());
-                    metricSet.put("type", metricSetDefinition.getType()); // FIXME
+                    metricSet.put("type", metricSetDefinition.getType().substring(0, 1).toUpperCase()
+                            + metricSetDefinition.getType().substring(1));
                     metricSet.put("metrics", metrics);
                     for (String metricName : metricSetDefinition.getData().keySet()) {
                         metric = new HashMap<String, Object>();
@@ -93,6 +94,7 @@ public class MetricsProcessor implements MexAdlProcessor {
             // Create the interactions aspect
             properties = new HashMap<String, Object>();
             properties.put("definitionsList", definitionsList);
+            properties.put("metricsClass", MaintainabilityMetrics.class.getName());
             Util.createAspectFile(document, xArchFilePath, MetricsProcessor.metricsAspectTemplate, properties,
                     "metrics");
         }
@@ -122,7 +124,7 @@ public class MetricsProcessor implements MexAdlProcessor {
                     metricSet = new MetricsData();
                     metricSets.add(metricSet);
 
-                    metricSet.setType(Util.getXsiType(child));
+                    metricSet.setType(child.getName());
                     metricSet.setData(new HashMap<String, String>());
                     for (Attribute attribute : (List<Attribute>) child.getAttributes()) {
                         if (attribute.getNamespace() == Util.MEXADL_NAMESPACE) {
