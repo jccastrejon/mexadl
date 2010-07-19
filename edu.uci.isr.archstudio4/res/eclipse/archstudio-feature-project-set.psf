@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+	<provider id="org.tigris.subversion.subclipse.core.svnnature">
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/xarchlibs4/stable/edu.uci.isr.xadlcore-feature,edu.uci.isr.xadlcore-feature"/>
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/utils/stable/edu.uci.isr.sysutils-feature,edu.uci.isr.sysutils-feature"/>
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/utils/stable/edu.uci.isr.swtutils-feature,edu.uci.isr.swtutils-feature"/>
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/myxfw/stable/edu.uci.isr.myx-feature,edu.uci.isr.myx-feature"/>
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/bna4/stable/edu.uci.isr.bna4-feature,edu.uci.isr.bna4-feature"/>
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/archstudio4/stable/edu.uci.isr.archstudio4-updatesite,edu.uci.isr.archstudio4-updatesite"/>
+		<project reference="0.9.3,http://tps.ics.uci.edu/svn/projects/archstudio4/stable/edu.uci.isr.archstudio4-feature,edu.uci.isr.archstudio4-feature"/>
+	</provider>
+</psf>
