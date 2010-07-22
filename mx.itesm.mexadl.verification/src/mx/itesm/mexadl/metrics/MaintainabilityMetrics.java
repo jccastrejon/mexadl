@@ -12,15 +12,15 @@ import java.lang.annotation.Target;
  */
 @Target(value = ElementType.TYPE)
 public @interface MaintainabilityMetrics {
-    ModularityMetrics modularityMetrics();
+    ModularityMetrics modularityMetrics() default @ModularityMetrics;
 
-    ReusabilityMetrics reusabilityMetrics();
+    ReusabilityMetrics reusabilityMetrics() default @ReusabilityMetrics;
 
-    AnalyzabilityMetrics analyzabilityMetrics();
+    AnalyzabilityMetrics analyzabilityMetrics() default @AnalyzabilityMetrics;
 
-    ModifiabilityMetrics modifiabilityMetrics();
+    ModifiabilityMetrics modifiabilityMetrics() default @ModifiabilityMetrics;
 
-    TestabilityMetrics testabilityMetrics();
+    TestabilityMetrics testabilityMetrics() default @TestabilityMetrics;
 
     /**
      * Metrics associated to the Modularity sub-characteristic of the
