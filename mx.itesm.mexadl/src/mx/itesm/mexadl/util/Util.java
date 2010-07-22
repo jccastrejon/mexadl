@@ -1,7 +1,9 @@
 package mx.itesm.mexadl.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -12,6 +14,14 @@ import java.util.ResourceBundle;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -160,7 +170,7 @@ public class Util {
     }
 
     /**
-     * Create an aspect file from a Velocity template.
+     * Create a Java file from a velocity template.
      * 
      * @param document
      * @param xArchFilePath
@@ -170,22 +180,25 @@ public class Util {
      * @param suffix
      * @throws IOException
      * @throws JDOMException
+     * @throws BadLocationException
+     * @throws MalformedTreeException
      */
     public static void createJavaFile(final Document document, final String xArchFilePath,
             final Template aspectTemplate, final Map<String, Object> properties, final String prefix,
-            final String suffix) throws IOException, JDOMException {
+            final String suffix) throws IOException, JDOMException, MalformedTreeException, BadLocationException {
         Writer writer;
         File outputDir;
         File outputFile;
+        File contentFile;
         VelocityContext context;
 
-        // Create the java file in the mexadl package
-        outputDir = new File(new File(xArchFilePath).getParent() + "/mx/itesm/mexadl/");
+        // Create a temporary file to hold the java content and then save the
+        // formatted content in a file next to the xArchFilePath
+        outputDir = new File(new File(xArchFilePath).getParent() + "/src_mexadl/mx/itesm/mexadl/");
         outputDir.mkdirs();
         outputFile = new File(outputDir, prefix + "_" + suffix + ".java");
-        outputFile.delete();
-        outputFile.createNewFile();
-        writer = new BufferedWriter(new FileWriter(outputFile));
+        contentFile = File.createTempFile(prefix, suffix + System.currentTimeMillis());
+        writer = new BufferedWriter(new FileWriter(contentFile));
 
         // Use the velocity template to generate the aspect content
         context = new VelocityContext();
@@ -194,8 +207,79 @@ public class Util {
             context.put(key, properties.get(key));
         }
 
+        // Create and format the file contents
         aspectTemplate.merge(context, writer);
         writer.close();
+        Util.formatJavaFile(outputFile, contentFile);
+    }
+
+    /**
+     * Format the contents of a Java file using Eclipse's built-in code
+     * formatter.
+     * 
+     * @param outputFile
+     * @param contentFile
+     * @throws IOException
+     * @throws MalformedTreeException
+     * @throws BadLocationException
+     */
+    @SuppressWarnings("unchecked")
+    public static void formatJavaFile(final File outputFile, final File contentFile) throws IOException,
+            MalformedTreeException, BadLocationException {
+        Map options;
+        String source;
+        TextEdit edit;
+        Writer writer;
+        IDocument document;
+        CodeFormatter codeFormatter;
+
+        // use Eclipse's default formatting options
+        writer = new BufferedWriter(new FileWriter(outputFile));
+        options = DefaultCodeFormatterConstants.getEclipseDefaultSettings();
+
+        // Compiler settings to be able to format 1.6 code
+        options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_6);
+        options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_6);
+        options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
+
+        // Instantiate the default code formatter with the given options
+        codeFormatter = ToolFactory.createCodeFormatter(options);
+        source = Util.getFileContents(contentFile);
+        document = new org.eclipse.jface.text.Document(source);
+
+        // Format code
+        edit = codeFormatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length(), 0, System
+                .getProperty("line.separator"));
+        edit.apply(document);
+
+        // Save to output file
+        writer.write(document.get());
+        writer.close();
+    }
+
+    /**
+     * Read the contents of the specified file.
+     * 
+     * @param file
+     * @return
+     * @throws java.io.IOException
+     */
+    private static String getFileContents(final File file) throws java.io.IOException {
+        byte[] buffer;
+        BufferedInputStream inputStream;
+
+        inputStream = null;
+        try {
+            inputStream = new BufferedInputStream(new FileInputStream(file));
+            buffer = new byte[(int) file.length()];
+            inputStream.read(buffer);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+
+        return new String(buffer);
     }
 
     /**

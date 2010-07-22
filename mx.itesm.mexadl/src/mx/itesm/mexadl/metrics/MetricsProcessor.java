@@ -1,6 +1,5 @@
 package mx.itesm.mexadl.metrics;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +55,7 @@ public class MetricsProcessor implements MexAdlProcessor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void processDocument(Document document, String xArchFilePath) throws JDOMException, IOException {
+    public void processDocument(Document document, String xArchFilePath) throws Exception {
         MetricsData metricsData;
         Map<String, Object> metric;
         Map<String, Object> metricSet;

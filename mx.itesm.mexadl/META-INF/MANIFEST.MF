@@ -12,3 +12,5 @@ Bundle-ClassPath: lib/xalan.jar,
  .,
  lib/mx.itesm.mexadl.verification.jar
 Export-Package: mx.itesm.mexadl
+Require-Bundle: org.eclipse.jdt.core;bundle-version="3.5.2",
+ org.eclipse.text;bundle-version="3.5.0"

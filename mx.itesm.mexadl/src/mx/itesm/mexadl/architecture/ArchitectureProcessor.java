@@ -1,6 +1,5 @@
 package mx.itesm.mexadl.architecture;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import mx.itesm.mexadl.util.Util;
 import org.apache.velocity.Template;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
 
 /**
@@ -50,7 +48,7 @@ public class ArchitectureProcessor implements MexAdlProcessor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void processDocument(final Document document, final String xArchFilePath) throws JDOMException, IOException {
+    public void processDocument(final Document document, final String xArchFilePath) throws Exception {
         String member;
         Element element;
         List<Element> groups;

@@ -1,6 +1,5 @@
 package mx.itesm.mexadl.interaction;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,7 +48,7 @@ public class InteractionProcessor implements MexAdlProcessor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void processDocument(final Document document, final String xArchFilePath) throws JDOMException, IOException {
+    public void processDocument(final Document document, final String xArchFilePath) throws Exception {
         String component;
         String endpointId;
         List<Element> links;

@@ -14,7 +14,7 @@ public class MetricsAspect_$suffix {
             
             // $definition.type
             @DeclareMixin("$definition.type")
-            public MetricsInterface_$definition.typeName mixin_$definition.typeName () {
+            public Metrics_$definition.typeName mixin_$definition.typeName () {
                 return null;
             }
         #end
