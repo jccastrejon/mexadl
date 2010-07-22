@@ -103,7 +103,7 @@ public class MetricsProcessor implements MexAdlProcessor {
 
                     // Create the metrics interface
                     Util.createJavaFile(document, xArchFilePath, MetricsProcessor.interfaceTemplate, definition,
-                            "MetricsInterface", definition.get("typeName").toString());
+                            "Metrics", definition.get("typeName").toString());
                 }
             }
 
