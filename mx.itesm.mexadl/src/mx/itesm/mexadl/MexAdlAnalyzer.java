@@ -69,7 +69,11 @@ public class MexAdlAnalyzer {
             if ((MexAdlAnalyzer.processors != null) && (!MexAdlAnalyzer.processors.isEmpty())) {
                 document = MexAdlAnalyzer.saxBuilder.build(new ByteArrayInputStream(xArch.getBytes()));
                 for (MexAdlProcessor processor : processors) {
-                    processor.processDocument(document, xArchFilePath);
+                    try {
+                        processor.processDocument(document, xArchFilePath);
+                    } catch (Exception e) {
+                        System.out.println("An error ocurred while executing " + processor + " : " + e.getMessage());
+                    }
                 }
             } else {
                 System.out.println("No MexAdlProcessors found to analyze the xADL architecture");

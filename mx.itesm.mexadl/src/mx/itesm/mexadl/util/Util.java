@@ -58,7 +58,7 @@ public class Util {
     /**
      * MexADL properties.
      */
-    private static ResourceBundle properties = ResourceBundle.getBundle("mx.itesm.mexadl.util.Configuration");
+    private static ResourceBundle properties = ResourceBundle.getBundle("mx.itesm.mexadl.configuration");
 
     /**
      * MexADL namespace.
@@ -167,33 +167,33 @@ public class Util {
      * @param aspectTemplate
      * @param properties
      * @param prefix
+     * @param suffix
      * @throws IOException
      * @throws JDOMException
      */
-    public static void createAspectFile(final Document document, final String xArchFilePath,
-            final Template aspectTemplate, final Map<String, Object> properties, final String prefix)
-            throws IOException, JDOMException {
+    public static void createJavaFile(final Document document, final String xArchFilePath,
+            final Template aspectTemplate, final Map<String, Object> properties, final String prefix,
+            final String suffix) throws IOException, JDOMException {
         Writer writer;
-        File xArchFile;
+        File outputDir;
         File outputFile;
-        String architectureName;
         VelocityContext context;
 
-        // Create the aspect where the group data will be saved
-        xArchFile = new File(xArchFilePath);
-        architectureName = Util.getValidName(((Element) Util.xArchDescriptionPath.selectSingleNode(document))
-                .getValue());
-        outputFile = new File(xArchFile.getParentFile(), prefix + "_" + architectureName + ".aj");
+        // Create the java file in the mexadl package
+        outputDir = new File(new File(xArchFilePath).getParent() + "/mx/itesm/mexadl/");
+        outputDir.mkdirs();
+        outputFile = new File(outputDir, prefix + "_" + suffix + ".java");
         outputFile.delete();
         outputFile.createNewFile();
         writer = new BufferedWriter(new FileWriter(outputFile));
 
         // Use the velocity template to generate the aspect content
         context = new VelocityContext();
-        context.put("architectureName", architectureName);
+        context.put("suffix", suffix);
         for (String key : properties.keySet()) {
             context.put(key, properties.get(key));
         }
+
         aspectTemplate.merge(context, writer);
         writer.close();
     }
@@ -201,11 +201,12 @@ public class Util {
     /**
      * Get a velocity template from the classpath.
      * 
+     * @param clazz
      * @param name
      * @return
      * @throws Exception
      */
-    public static Template getVelocityTemplate(final Class<?> clazz) throws Exception {
+    public static Template getVelocityTemplate(final Class<?> clazz, final String name) throws Exception {
         Template returnValue;
         Properties velocityProperties;
 
@@ -218,7 +219,7 @@ public class Util {
             Util.velocityInit = true;
         }
 
-        returnValue = Velocity.getTemplate(Util.getConfigurationProperty(clazz, "template"));
+        returnValue = Velocity.getTemplate(Util.getConfigurationProperty(clazz, "template." + name));
         return returnValue;
     }
 
@@ -299,6 +300,16 @@ public class Util {
         }
 
         return returnValue;
+    }
+
+    /**
+     * 
+     * @param document
+     * @return
+     * @throws JDOMException
+     */
+    public static String getDocumentName(final Document document) throws JDOMException {
+        return Util.getValidName(((Element) Util.xArchDescriptionPath.selectSingleNode(document)).getValue());
     }
 
     /**

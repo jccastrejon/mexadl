@@ -35,11 +35,11 @@ public class InteractionProcessor implements MexAdlProcessor {
      * AspectJ template that defines the valid interactions within types of a
      * sytem's architecture.
      */
-    private static Template interactionsAspectTemplate;
+    private static Template aspectTemplate;
 
     static {
         try {
-            InteractionProcessor.interactionsAspectTemplate = Util.getVelocityTemplate(InteractionProcessor.class);
+            InteractionProcessor.aspectTemplate = Util.getVelocityTemplate(InteractionProcessor.class, "aspect");
             InteractionProcessor.linkPath = XPath.newInstance("//types:link");
         } catch (Exception e) {
             System.out.println("Error loading InteractionProcessor");
@@ -135,16 +135,20 @@ public class InteractionProcessor implements MexAdlProcessor {
                 properties = new HashMap<String, Object>();
 
                 properties.put("type", key);
+                properties.put("typeName", Util.getValidName(key));
                 properties.put("interactions", validInteractions.get(key));
                 interactionsList.add(properties);
             }
 
-            // Create the interactions aspect
-            properties = new HashMap<String, Object>();
-            properties.put("typesList", validInteractions.keySet());
-            properties.put("warningsList", interactionsList);
-            Util.createAspectFile(document, xArchFilePath, InteractionProcessor.interactionsAspectTemplate, properties,
-                    "interactions");
+            // Create the interactions aspect only if valid associations were
+            // found
+            if (!validInteractions.isEmpty()) {
+                properties = new HashMap<String, Object>();
+                properties.put("typesList", validInteractions.keySet());
+                properties.put("warningsList", interactionsList);
+                Util.createJavaFile(document, xArchFilePath, InteractionProcessor.aspectTemplate, properties,
+                        "InteractionsAspect", Util.getDocumentName(document));
+            }
         }
     }
 
@@ -196,7 +200,7 @@ public class InteractionProcessor implements MexAdlProcessor {
                 currentInteractions = new HashSet<String>();
                 dependencies.put(firstType, currentInteractions);
             }
-            currentInteractions.add(secondType);
+            currentInteractions.add(Util.getValidName(secondType));
 
             // If interfaces have no direction, add the dependencies to both
             // of them
@@ -206,7 +210,7 @@ public class InteractionProcessor implements MexAdlProcessor {
                     currentInteractions = new HashSet<String>();
                     dependencies.put(secondType, currentInteractions);
                 }
-                currentInteractions.add(firstType);
+                currentInteractions.add(Util.getValidName(firstType));
             }
         }
     }

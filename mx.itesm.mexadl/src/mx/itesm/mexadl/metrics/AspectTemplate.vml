@@ -1,0 +1,24 @@
+package mx.itesm.mexadl.metrics;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.DeclareMixin;
+
+/**
+ * Quality metrics aspect
+ */
+ @Aspect
+public class MetricsAspect_$suffix {
+
+    #macro (generateTypeMetrics $definitions)
+        #foreach ($definition in $definitions)
+            
+            // $definition.type
+            @DeclareMixin("$definition.type")
+            public MetricsInterface_$definition.typeName mixin_$definition.typeName () {
+                return null;
+            }
+        #end
+    #end
+    
+    #generateTypeMetrics($definitionsList)
+}

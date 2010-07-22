@@ -33,14 +33,14 @@ public class ArchitectureProcessor implements MexAdlProcessor {
     /**
      * AspectJ template that defines a system's architecture.
      */
-    private static Template architectureAspectTemplate;
+    private static Template aspectTemplate;
 
     /**
      * Initialize velocity and JDOM properties.
      */
     static {
         try {
-            ArchitectureProcessor.architectureAspectTemplate = Util.getVelocityTemplate(ArchitectureProcessor.class);
+            ArchitectureProcessor.aspectTemplate = Util.getVelocityTemplate(ArchitectureProcessor.class, "aspect");
             ArchitectureProcessor.groupPath = XPath.newInstance("//types:group");
         } catch (Exception e) {
             System.out.println("Error loading ArchitectureProcessor");
@@ -83,11 +83,14 @@ public class ArchitectureProcessor implements MexAdlProcessor {
                 groupsList.add(properties);
             }
 
-            // Create the architecture aspect
-            properties = new HashMap<String, Object>();
-            properties.put("groupsList", groupsList);
-            Util.createAspectFile(document, xArchFilePath, ArchitectureProcessor.architectureAspectTemplate,
-                    properties, "architecture");
+            // Create the architecture aspect only if valid associations were
+            // found
+            if (!groupsList.isEmpty()) {
+                properties = new HashMap<String, Object>();
+                properties.put("groupsList", groupsList);
+                Util.createJavaFile(document, xArchFilePath, ArchitectureProcessor.aspectTemplate, properties,
+                        "ArchitectureAspect", Util.getDocumentName(document));
+            }
         }
     }
 }

@@ -1,0 +1,43 @@
+package mx.itesm.mexadl.interaction;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.DeclareWarning;
+
+/**
+ * Components interactions aspect
+ */
+@Aspect
+public class InteractionsAspect_$suffix {
+
+    #macro (generatePointcuts $types)
+        #foreach ($type in $types)
+        
+            // $type
+            @Pointcut("call (* $type.* (..))")
+            public void call_$type.replace('.', '_') () {}
+            
+            @Pointcut("within ($type)")
+            public void within_$type.replace('.', '_') () {}
+        #end
+    #end
+
+    #macro (generateWarnings $warnings)
+        #foreach ($warning in $warnings)
+        
+            // $warning.type
+            @DeclareWarning(" call_$warning.typeName () "
+                #foreach ($interaction in $warning.interactions) 
+                    + "&& !within_$interaction ()" 
+                #end
+            )
+            static final String warning_$warning.typeName = "An invalid interaction was detected for type $warning.type"; 
+        #end
+    #end
+    
+    // Pointcuts
+    #generatePointcuts($typesList)
+    
+    // Warnings
+    #generateWarnings($warningsList)
+}

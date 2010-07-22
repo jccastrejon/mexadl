@@ -35,11 +35,18 @@ public class MetricsProcessor implements MexAdlProcessor {
      * AspectJ template that defines the quality metrics to be measured in the
      * components of a system's architecture.
      */
-    private static Template metricsAspectTemplate;
+    private static Template aspectTemplate;
+
+    /**
+     * Interface that will hold the quality metrics to be measured in a
+     * component of a system's architecture.
+     */
+    private static Template interfaceTemplate;
 
     static {
         try {
-            MetricsProcessor.metricsAspectTemplate = Util.getVelocityTemplate(MetricsProcessor.class);
+            MetricsProcessor.aspectTemplate = Util.getVelocityTemplate(MetricsProcessor.class, "aspect");
+            MetricsProcessor.interfaceTemplate = Util.getVelocityTemplate(MetricsProcessor.class, "interface");
             MetricsProcessor.metricsPath = XPath.newInstance("//mexadl:maintainabilityMetrics");
         } catch (Exception e) {
             System.out.println("Error loading MetricsProcessor");
@@ -64,39 +71,50 @@ public class MetricsProcessor implements MexAdlProcessor {
         if ((metricDefinitions != null) && (!metricDefinitions.isEmpty())) {
             definitionsList = new ArrayList<Map<String, Object>>();
             for (Element metricDefinition : metricDefinitions) {
-                metricsData = this.getMetricsData(document, metricDefinition);
                 definition = new HashMap<String, Object>();
-                definitionsList.add(definition);
-
                 metricSets = new ArrayList<Map<String, Object>>();
-                definition.put("type", metricsData.getType());
-                definition.put("metricSets", metricSets);
-                for (MetricsData metricSetDefinition : metricsData.getMetrics()) {
-                    metricSet = new HashMap<String, Object>();
-                    metricSets.add(metricSet);
+                metricsData = this.getMetricsData(document, metricDefinition);
 
-                    metrics = new ArrayList<Map<String, Object>>();
-                    metricSet.put("name", metricSetDefinition.getType());
-                    metricSet.put("type", metricSetDefinition.getType().substring(0, 1).toUpperCase()
-                            + metricSetDefinition.getType().substring(1));
-                    metricSet.put("metrics", metrics);
-                    for (String metricName : metricSetDefinition.getData().keySet()) {
-                        metric = new HashMap<String, Object>();
-                        metrics.add(metric);
+                // Process the file only if a valid xADL type is associated to
+                // the metrics definition
+                if (metricsData.getType() != null) {
+                    definitionsList.add(definition);
+                    definition.put("metricSets", metricSets);
+                    definition.put("type", metricsData.getType());
+                    definition.put("typeName", Util.getValidName(metricsData.getType()));
+                    definition.put("metricsClass", MaintainabilityMetrics.class.getName());
 
-                        metric.put("name", metricName);
-                        metric.put("value", metricSetDefinition.getData().get(metricName));
+                    for (MetricsData metricSetDefinition : metricsData.getMetrics()) {
+                        metricSet = new HashMap<String, Object>();
+                        metricSets.add(metricSet);
+
+                        metrics = new ArrayList<Map<String, Object>>();
+                        metricSet.put("name", metricSetDefinition.getType());
+                        metricSet.put("type", metricSetDefinition.getType().substring(0, 1).toUpperCase()
+                                + metricSetDefinition.getType().substring(1));
+                        metricSet.put("metrics", metrics);
+                        for (String metricName : metricSetDefinition.getData().keySet()) {
+                            metric = new HashMap<String, Object>();
+                            metrics.add(metric);
+
+                            metric.put("name", metricName);
+                            metric.put("value", metricSetDefinition.getData().get(metricName));
+                        }
                     }
-                }
 
+                    // Create the metrics interface
+                    Util.createJavaFile(document, xArchFilePath, MetricsProcessor.interfaceTemplate, definition,
+                            "MetricsInterface", definition.get("typeName").toString());
+                }
             }
 
-            // Create the interactions aspect
-            properties = new HashMap<String, Object>();
-            properties.put("definitionsList", definitionsList);
-            properties.put("metricsClass", MaintainabilityMetrics.class.getName());
-            Util.createAspectFile(document, xArchFilePath, MetricsProcessor.metricsAspectTemplate, properties,
-                    "metrics");
+            // Create the metrics aspect only if valid associations were found
+            if (!definitionsList.isEmpty()) {
+                properties = new HashMap<String, Object>();
+                properties.put("definitionsList", definitionsList);
+                Util.createJavaFile(document, xArchFilePath, MetricsProcessor.aspectTemplate, properties,
+                        "MetricsAspect", Util.getDocumentName(document));
+            }
         }
     }
 
