@@ -1,11 +1,12 @@
 package mx.itesm.mexadl.metrics;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
 /**
- * Groups quality metrics that will be used to verify the maintainability
- * quality characteristic of a type defined in an architecture definition.
+ * The MaintainabilityMetrics annotation groups quality metrics that will be
+ * used to verify the maintainability quality characteristic of a type defined
+ * in an architecture definition.
  * 
  * @author jccastrejon
  * 
