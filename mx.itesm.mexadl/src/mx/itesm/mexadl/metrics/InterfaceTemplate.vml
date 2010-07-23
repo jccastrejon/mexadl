@@ -1,6 +1,7 @@
 package mx.itesm.mexadl.metrics;
 
-@$metricsClass ( 
+@$metricsClass (
+    type = "$type",
     #foreach ($metricSet in $metricSets)
         $metricSet.name = @$metricsClass.$metricSet.type (
             #foreach ($metric in $metricSet.metrics)
