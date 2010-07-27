@@ -2,9 +2,8 @@ package mx.itesm.mexadl.metrics.checkers;
 
 import java.util.Map;
 
-import javax.tools.Diagnostic.Kind;
-
 import mx.itesm.mexadl.metrics.EnvironmentProperty;
+import mx.itesm.mexadl.metrics.tools.EmmaMetrics;
 
 /**
  * The TestabilityChecker class is responsible for the verification of the
@@ -20,31 +19,8 @@ public class TestabilityChecker extends BaseChecker {
     /**
      * @param context
      */
-    public void completenessOfBuiltInFunction(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking completenessOfBuiltInFunction, expected value: " + expectedValue);
-    }
-
-    /**
-     * @param context
-     */
-    public void autonomyOfTestability(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking autonomyOfTestability, expected value: " + expectedValue);
-    }
-
-    /**
-     * @param context
-     */
     public void unitTestCoverage(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking unitTestCoverage, expected value: " + expectedValue);
+        this.checkMetric(context, EmmaMetrics.class, "unitTestCoverage");
     }
 
     @Override

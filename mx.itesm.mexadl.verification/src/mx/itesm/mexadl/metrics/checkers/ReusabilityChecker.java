@@ -2,9 +2,8 @@ package mx.itesm.mexadl.metrics.checkers;
 
 import java.util.Map;
 
-import javax.tools.Diagnostic.Kind;
-
 import mx.itesm.mexadl.metrics.EnvironmentProperty;
+import mx.itesm.mexadl.metrics.tools.CkjmMetrics;
 
 /**
  * The ReusabilityChecker class is responsible for the verification of the
@@ -21,20 +20,14 @@ public class ReusabilityChecker extends BaseChecker {
      * @param context
      */
     public void lackOfCohesionOfMethods(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking lackOfCohesionOfMethods, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "lackOfCohesionOfMethods");
     }
 
     /**
      * @param context
      */
     public void afferentCoupling(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking afferentCoupling, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "afferentCoupling");
     }
 
     @Override

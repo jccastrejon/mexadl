@@ -165,20 +165,6 @@ public @interface MaintainabilityMetrics {
     @interface TestabilityMetrics {
 
         /**
-         * How complete is the built-in test capability.
-         * 
-         * @return
-         */
-        int completenessOfBuiltInFunction() default -1;
-
-        /**
-         * How independently can the software be tested?
-         * 
-         * @return
-         */
-        int autonomyOfTestability() default -1;
-
-        /**
          * Unit test coverage.
          * 
          * @return

@@ -2,9 +2,9 @@ package mx.itesm.mexadl.metrics.checkers;
 
 import java.util.Map;
 
-import javax.tools.Diagnostic.Kind;
-
 import mx.itesm.mexadl.metrics.EnvironmentProperty;
+import mx.itesm.mexadl.metrics.tools.CkjmMetrics;
+import mx.itesm.mexadl.metrics.tools.PmdMetrics;
 
 /**
  * The ModifiabilityChecker class is responsible for the verification of the
@@ -22,20 +22,14 @@ public class ModifiabilityChecker extends BaseChecker {
      * @param context
      */
     public void duplicatedBlocks(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking duplicatedBlocks, expected value: " + expectedValue);
+        this.checkMetric(context, PmdMetrics.class, "duplicatedBlocks");
     }
 
     /**
      * @param context
      */
     public void couplingBetweenObjects(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking couplingBetweenObjects, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "couplingBetweenObjects");
     }
 
     @Override

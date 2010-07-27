@@ -47,6 +47,7 @@ public class VerificationProcessor extends AbstractProcessor {
                 maintainabilityMetrics = typeElement.getAnnotation(MaintainabilityMetrics.class);
 
                 context.put(EnvironmentProperty.METRICS_DATA, maintainabilityMetrics);
+                context.put(EnvironmentProperty.TYPE, maintainabilityMetrics.type());
                 messager.printMessage(Kind.NOTE, "Checking metrics for: " + maintainabilityMetrics.type());
                 for (Method method : maintainabilityMetrics.getClass().getDeclaredMethods()) {
                     try {
@@ -58,7 +59,7 @@ public class VerificationProcessor extends AbstractProcessor {
                             metricsChecker.check(context);
                         }
                     } catch (Exception e) {
-                        messager.printMessage(Kind.ERROR, "Invalid checker found for " + method.getName() + " : "
+                        messager.printMessage(Kind.ERROR, "Error in Metrics checker: " + method.getName() + " : "
                                 + e.getMessage());
                         e.printStackTrace();
                     }
@@ -85,9 +86,8 @@ public class VerificationProcessor extends AbstractProcessor {
         String checkerClass;
         MetricsChecker returnValue;
 
-        checkerClass = Util.getConfigurationProperty(subcharacteristic.getReturnType(), "checker");
-
         returnValue = null;
+        checkerClass = Util.getConfigurationProperty(subcharacteristic.getReturnType(), "checker");
         if (checkerClass != null) {
             returnValue = (MetricsChecker) Class.forName(checkerClass).newInstance();
         }

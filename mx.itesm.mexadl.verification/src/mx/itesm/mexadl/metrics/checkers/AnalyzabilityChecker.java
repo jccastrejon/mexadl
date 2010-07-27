@@ -2,9 +2,9 @@ package mx.itesm.mexadl.metrics.checkers;
 
 import java.util.Map;
 
-import javax.tools.Diagnostic.Kind;
-
 import mx.itesm.mexadl.metrics.EnvironmentProperty;
+import mx.itesm.mexadl.metrics.tools.CkjmMetrics;
+import mx.itesm.mexadl.metrics.tools.JavaNcssMetrics;
 
 /**
  * The AnalyzabilityChecker class is responsible for the verification of the
@@ -22,50 +22,35 @@ public class AnalyzabilityChecker extends BaseChecker {
      * @param context
      */
     public void linesOfCode(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking linesOfCode, expected value: " + expectedValue);
+        this.checkMetric(context, JavaNcssMetrics.class, "linesOfCode");
     }
 
     /**
      * @param context
      */
     public void cyclomaticComplexityPerUnit(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking cyclomaticComplexityPerUnit, expected value: " + expectedValue);
+        this.checkMetric(context, JavaNcssMetrics.class, "cyclomaticComplexityPerUnit");
     }
 
     /**
      * @param context
      */
     public void responseForClass(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking responseForClass, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "responseForClass");
     }
 
     /**
      * @param context
      */
     public void weightedMethodComplexity(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking weightedMethodComplexity, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "weightedMethodComplexity");
     }
 
     /**
      * @param context
      */
     public void numberOfPublicMethods(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking numberOfPublicMethods, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "numberOfPublicMethods");
     }
 
     @Override

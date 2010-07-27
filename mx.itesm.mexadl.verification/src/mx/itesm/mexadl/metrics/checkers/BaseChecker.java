@@ -12,6 +12,7 @@ import javax.tools.Diagnostic.Kind;
 import mx.itesm.mexadl.metrics.EnvironmentProperty;
 import mx.itesm.mexadl.metrics.MaintainabilityMetrics;
 import mx.itesm.mexadl.metrics.MetricsChecker;
+import mx.itesm.mexadl.metrics.util.Util;
 
 /**
  * The BaseChecker class contains the basic behavior expected from a metrics
@@ -118,6 +119,27 @@ public abstract class BaseChecker implements MetricsChecker {
         }
 
         return returnValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void checkMetric(final Map<EnvironmentProperty, Object> context, final Class<?> tool,
+            final String metricName) {
+        int realValue;
+        int expectedValue;
+        String metricCode;
+        Map<String, Map<String, Integer>> results;
+
+        metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metricName);
+        results = (Map<String, Map<String, Integer>>) context.get(tool.getName());
+        expectedValue = (Integer) context.get(EnvironmentProperty.EXPECTED_VALUE);
+        realValue = results.get(context.get(EnvironmentProperty.TYPE)).get(metricCode);
+
+        if (expectedValue != realValue) {
+            messager.printMessage(Kind.WARNING, metricName + " has a real value of: " + realValue
+                    + ", when expected was: " + expectedValue);
+        } else {
+            messager.printMessage(Kind.NOTE, metricName + " met its expected value (" + expectedValue + ").");
+        }
     }
 
     /**

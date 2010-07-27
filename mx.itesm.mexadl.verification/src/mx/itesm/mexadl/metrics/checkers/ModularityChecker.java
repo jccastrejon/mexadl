@@ -2,9 +2,8 @@ package mx.itesm.mexadl.metrics.checkers;
 
 import java.util.Map;
 
-import javax.tools.Diagnostic.Kind;
-
 import mx.itesm.mexadl.metrics.EnvironmentProperty;
+import mx.itesm.mexadl.metrics.tools.CkjmMetrics;
 
 /**
  * The ModularityChecker class is responsible for the verification of the
@@ -21,20 +20,14 @@ public class ModularityChecker extends BaseChecker {
      * @param context
      */
     public void depthInInheritanceTree(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking depthInInheritanceTree, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "depthInInheritanceTree");
     }
 
     /**
      * @param context
      */
     public void numberOfChildren(final Map<EnvironmentProperty, Object> context) {
-        int expectedValue;
-
-        expectedValue = this.getExpectedValue(context);
-        messager.printMessage(Kind.NOTE, "Checking numberOfChildren, expected value: " + expectedValue);
+        this.checkMetric(context, CkjmMetrics.class, "numberOfChildren");
     }
 
     @Override

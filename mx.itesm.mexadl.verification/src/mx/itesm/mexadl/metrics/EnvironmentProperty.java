@@ -8,5 +8,5 @@ package mx.itesm.mexadl.metrics;
  * 
  */
 public enum EnvironmentProperty {
-    METRICS_DATA, METRICS_SET, MESSAGER, EXPECTED_VALUE
+    TYPE, METRICS_DATA, METRICS_SET, MESSAGER, EXPECTED_VALUE
 }
