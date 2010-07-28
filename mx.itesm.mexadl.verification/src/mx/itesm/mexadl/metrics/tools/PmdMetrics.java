@@ -14,7 +14,7 @@ import org.jdom.Element;
  * @author jccastrejon
  * 
  */
-public class PmdMetrics extends XradarMetrics {
+public class PmdMetrics extends XmlFileMetrics {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -47,7 +47,7 @@ public class PmdMetrics extends XradarMetrics {
 
     @Override
     protected File getReportPath(final File resultsDir) {
-        return new File(resultsDir, "/xml/cpd_report.xml");
+        return new File(resultsDir, "/cpd.xml");
     }
 
     @Override

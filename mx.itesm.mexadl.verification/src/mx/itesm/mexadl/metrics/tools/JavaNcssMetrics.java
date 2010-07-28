@@ -16,7 +16,7 @@ import org.jdom.xpath.XPath;
  * @author jccastrejon
  * 
  */
-public class JavaNcssMetrics extends XradarMetrics {
+public class JavaNcssMetrics extends XmlFileMetrics {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -38,7 +38,7 @@ public class JavaNcssMetrics extends XradarMetrics {
 
             returnValue.put(clazz.getChildText("name"), classMetrics);
             for (Element child : (List<Element>) clazz.getChildren()) {
-                if (!child.getText().equals("name")) {
+                if (!child.getName().equals("name")) {
                     classMetrics.put(child.getName(), Integer.parseInt(child.getText()));
                 }
             }
@@ -66,7 +66,7 @@ public class JavaNcssMetrics extends XradarMetrics {
 
     @Override
     protected File getReportPath(final File resultsDir) {
-        return new File(resultsDir, "/xml/javancss_report.xml");
+        return new File(resultsDir, "/javancss_report.xml");
     }
 
     @Override

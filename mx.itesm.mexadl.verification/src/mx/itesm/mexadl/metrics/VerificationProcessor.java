@@ -1,5 +1,6 @@
 package mx.itesm.mexadl.metrics;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -24,6 +26,7 @@ import mx.itesm.mexadl.metrics.util.Util;
  * @author jccastrejon
  * 
  */
+@SupportedOptions("mexadl.reports.dir")
 @SupportedAnnotationTypes("mx.itesm.mexadl.*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class VerificationProcessor extends AbstractProcessor {
@@ -46,28 +49,86 @@ public class VerificationProcessor extends AbstractProcessor {
                 typeElement = ((TypeElement) element);
                 maintainabilityMetrics = typeElement.getAnnotation(MaintainabilityMetrics.class);
 
-                context.put(EnvironmentProperty.METRICS_DATA, maintainabilityMetrics);
-                context.put(EnvironmentProperty.TYPE, maintainabilityMetrics.type());
-                messager.printMessage(Kind.NOTE, "Checking metrics for: " + maintainabilityMetrics.type());
-                for (Method method : maintainabilityMetrics.getClass().getDeclaredMethods()) {
-                    try {
-                        metricsSet = method;
-                        context.put(EnvironmentProperty.METRICS_SET, metricsSet);
-                        metricsChecker = VerificationProcessor.getMetricsChecker(metricsSet);
+                // Check metrics only if real data can be collected
+                if (this.collectMetrics(context)) {
+                    context.put(EnvironmentProperty.EXPECTED_METRICS_DATA, maintainabilityMetrics);
+                    context.put(EnvironmentProperty.TYPE, maintainabilityMetrics.type());
+                    messager.printMessage(Kind.NOTE, "Checking metrics for: " + maintainabilityMetrics.type());
+                    for (Method method : maintainabilityMetrics.getClass().getDeclaredMethods()) {
+                        try {
+                            metricsSet = method;
+                            context.put(EnvironmentProperty.METRICS_SET_NAME, metricsSet);
+                            metricsChecker = VerificationProcessor.getMetricsChecker(metricsSet);
 
-                        if (metricsChecker != null) {
-                            metricsChecker.check(context);
+                            if (metricsChecker != null) {
+                                metricsChecker.check(context);
+                            }
+                        } catch (Exception e) {
+                            messager.printMessage(Kind.ERROR, "Error in Metrics checker: " + method.getName() + " : "
+                                    + e.getMessage());
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        messager.printMessage(Kind.ERROR, "Error in Metrics checker: " + method.getName() + " : "
-                                + e.getMessage());
-                        e.printStackTrace();
                     }
                 }
             }
         }
 
+        // Claim the MexADL annotations
         return true;
+    }
+
+    /**
+     * Collect metrics from the tools registered in the configuration properties
+     * file.
+     * 
+     * @param context
+     * @throws Exception
+     */
+    private boolean collectMetrics(final Map<EnvironmentProperty, Object> context) {
+        String[] tools;
+        boolean returnValue;
+        File reportsDirectory;
+        MetricsTool metricsTool;
+        Map<String, Map<String, Integer>> metrics;
+        Map<String, Map<String, Map<String, Integer>>> realMetrics;
+
+        try {
+            returnValue = true;
+            reportsDirectory = this.getReportsDirectory();
+            tools = Util.getConfigurationProperty(this.getClass(), "tools").split(",");
+            realMetrics = new HashMap<String, Map<String, Map<String, Integer>>>(tools.length);
+            context.put(EnvironmentProperty.REAL_METRICS_DATA, realMetrics);
+            for (String tool : tools) {
+                metricsTool = (MetricsTool) Class.forName(tool.trim()).newInstance();
+                metrics = metricsTool.getMetrics(reportsDirectory);
+                realMetrics.put(tool.trim(), metrics);
+            }
+        } catch (Exception e) {
+            returnValue = false;
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Get the directory where the metrics reports are stored.
+     * 
+     * @return
+     */
+    private File getReportsDirectory() {
+        String path;
+        File returnValue;
+
+        returnValue = null;
+        path = processingEnv.getOptions().get("mexadl.reports.dir");
+        if (path != null) {
+            returnValue = new File(path);
+            if (!returnValue.exists()) {
+                returnValue = null;
+            }
+        }
+
+        return returnValue;
     }
 
     /**

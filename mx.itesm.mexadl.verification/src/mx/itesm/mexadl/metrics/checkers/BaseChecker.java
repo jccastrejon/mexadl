@@ -44,8 +44,8 @@ public abstract class BaseChecker implements MetricsChecker {
         List<String> validMetrics;
 
         // Recover environment properties
-        maintainabilityMetrics = (MaintainabilityMetrics) context.get(EnvironmentProperty.METRICS_DATA);
-        metricsSetMethod = (Method) context.get(EnvironmentProperty.METRICS_SET);
+        maintainabilityMetrics = (MaintainabilityMetrics) context.get(EnvironmentProperty.EXPECTED_METRICS_DATA);
+        metricsSetMethod = (Method) context.get(EnvironmentProperty.METRICS_SET_NAME);
         messager = (Messager) context.get(EnvironmentProperty.MESSAGER);
 
         // Check the valid metrics associated to the current metric set
@@ -112,7 +112,7 @@ public abstract class BaseChecker implements MetricsChecker {
                 metricsSetRef = metricsSetMethod.invoke(maintainabilityMetrics, (Object[]) null);
                 expectedValue = (Integer) method.invoke(metricsSetRef, (Object[]) null);
                 if (expectedValue >= 0) {
-                    context.put(EnvironmentProperty.EXPECTED_VALUE, expectedValue);
+                    context.put(EnvironmentProperty.EXPECTED_METRIC_VALUE, expectedValue);
                     returnValue.add(method.getName());
                 }
             }
@@ -127,18 +127,38 @@ public abstract class BaseChecker implements MetricsChecker {
         int realValue;
         int expectedValue;
         String metricCode;
+        Map<String, Integer> resultsType;
         Map<String, Map<String, Integer>> results;
+        Map<String, Map<String, Map<String, Integer>>> realMetrics;
 
-        metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metricName);
-        results = (Map<String, Map<String, Integer>>) context.get(tool.getName());
-        expectedValue = (Integer) context.get(EnvironmentProperty.EXPECTED_VALUE);
-        realValue = results.get(context.get(EnvironmentProperty.TYPE)).get(metricCode);
+        metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metricName + ".code");
+        if (metricCode != null) {
+            realMetrics = (Map<String, Map<String, Map<String, Integer>>>) context
+                    .get(EnvironmentProperty.REAL_METRICS_DATA);
+            results = (Map<String, Map<String, Integer>>) realMetrics.get(tool.getName());
 
-        if (expectedValue != realValue) {
-            messager.printMessage(Kind.WARNING, metricName + " has a real value of: " + realValue
-                    + ", when expected was: " + expectedValue);
+            if (results != null) {
+                expectedValue = (Integer) context.get(EnvironmentProperty.EXPECTED_METRIC_VALUE);
+                resultsType = results.get(context.get(EnvironmentProperty.TYPE));
+
+                if (resultsType != null) {
+                    realValue = resultsType.get(metricCode);
+                    if (expectedValue != realValue) {
+                        messager.printMessage(Kind.WARNING, metricName + " has a real value of: " + realValue
+                                + ", when expected was: " + expectedValue);
+                    } else {
+                        messager.printMessage(Kind.NOTE, metricName + " met its expected value (" + expectedValue
+                                + ").");
+                    }
+                } else {
+                    messager.printMessage(Kind.WARNING, "No metrics found for type: "
+                            + context.get(EnvironmentProperty.TYPE));
+                }
+            } else {
+                messager.printMessage(Kind.WARNING, "No metrics result found for tool: " + tool);
+            }
         } else {
-            messager.printMessage(Kind.NOTE, metricName + " met its expected value (" + expectedValue + ").");
+            messager.printMessage(Kind.WARNING, "No code found for metric: " + metricName);
         }
     }
 
@@ -149,7 +169,7 @@ public abstract class BaseChecker implements MetricsChecker {
      * @return
      */
     protected int getExpectedValue(final Map<EnvironmentProperty, Object> context) {
-        return (Integer) context.get(EnvironmentProperty.EXPECTED_VALUE);
+        return (Integer) context.get(EnvironmentProperty.EXPECTED_METRIC_VALUE);
     }
 
     /**

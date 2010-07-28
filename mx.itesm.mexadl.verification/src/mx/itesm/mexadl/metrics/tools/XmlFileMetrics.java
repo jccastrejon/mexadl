@@ -14,17 +14,16 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 /**
- * The XradarMetrics class contains the basic behavior expected from metrics
- * tools depending on the result files from <a
- * href="http://xradar.sourceforge.net/">XRadar</a>.
+ * The FileMetrics class contains the basic behavior expected from metrics tools
+ * depending on the result of XML files.
  * 
  * @author jccastrejon
  * 
  */
-public abstract class XradarMetrics implements MetricsTool {
+public abstract class XmlFileMetrics implements MetricsTool {
 
     @Override
-    public Map<String, Map<String, Integer>> getMetrics(File resultsDir) throws Exception {
+    public Map<String, Map<String, Integer>> getMetrics(final File resultsDir) throws Exception {
         List<Element> elements;
         Map<String, Map<String, Integer>> returnValue;
 
@@ -52,10 +51,16 @@ public abstract class XradarMetrics implements MetricsTool {
             IOException {
         XPath classPath;
         Document report;
+        List<Element> returnValue;
 
-        classPath = XPath.newInstance(xPathExpression);
-        report = this.getMetricsReport(reportPath);
-        return classPath.selectNodes(report);
+        returnValue = null;
+        if (reportPath.exists()) {
+            classPath = XPath.newInstance(xPathExpression);
+            report = this.getMetricsReport(reportPath);
+            returnValue = classPath.selectNodes(report);
+        }
+
+        return returnValue;
     }
 
     /**

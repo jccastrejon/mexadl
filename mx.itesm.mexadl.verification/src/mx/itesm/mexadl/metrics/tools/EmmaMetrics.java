@@ -14,7 +14,7 @@ import org.jdom.Element;
  * @author jccastrejon
  * 
  */
-public class EmmaMetrics extends XradarMetrics {
+public class EmmaMetrics extends XmlFileMetrics {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -46,7 +46,7 @@ public class EmmaMetrics extends XradarMetrics {
 
     @Override
     protected File getReportPath(final File resultsDir) {
-        return new File(resultsDir, "/xml/emma.xml");
+        return new File(resultsDir, "/emma.xml");
     }
 
     @Override

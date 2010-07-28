@@ -14,7 +14,7 @@ import org.jdom.Element;
  * @author jccastrejon
  * 
  */
-public class CkjmMetrics extends XradarMetrics {
+public class CkjmMetrics extends XmlFileMetrics {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -28,7 +28,7 @@ public class CkjmMetrics extends XradarMetrics {
             classMetrics = new HashMap<String, Integer>();
             returnValue.put(clazz.getChildText("name"), classMetrics);
             for (Element child : (List<Element>) clazz.getChildren()) {
-                if (!child.getText().equals("name")) {
+                if (!child.getName().equals("name")) {
                     classMetrics.put(child.getName(), Integer.parseInt(child.getText()));
                 }
             }
@@ -39,7 +39,7 @@ public class CkjmMetrics extends XradarMetrics {
 
     @Override
     protected File getReportPath(final File resultsDir) {
-        return new File(resultsDir, "/xml/ckjm_report.xml");
+        return new File(resultsDir, "/ckjm.xml");
     }
 
     @Override
