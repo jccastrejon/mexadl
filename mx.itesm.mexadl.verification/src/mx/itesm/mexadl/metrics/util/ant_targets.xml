@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="mexadl">
-	<property name="lib.dir" value="${basedir}/mexadl.verification/lib" />
+	<property name="mexadl.verification.dir" value="/Users/jccastrejon/java/workspace_archstudio_4.0.21/mx.itesm.mexadl.verification"/>
+	<property name="lib.dir" value="${mexadl.verification.dir}/lib" />
 	<property name="reports.dir" value="${basedir}/mexadl_reports" />
 
 	<!-- Beginning MexADL -->
@@ -58,7 +59,7 @@
 		</iajc>
 	</target>
 	<!-- Ending MexADL -->
-	
+
 
 	<!-- Beginning CKJM -->
 	<target if="classes.dir" name="mexadl.ckjm">
@@ -77,10 +78,10 @@
 
 	<!-- Beginning EMMA -->
 	<target if="classes.dir" name="mexadl.emma">
-		<taskdef classpathref="emma.lib" resource="emma_ant.properties" />
 		<path id="emma.lib">
-			<fileset dir="${ib.dir}/emma" includes="**/*.jar" />
+			<fileset dir="${lib.dir}/emma" includes="**/*.jar" />
 		</path>
+		<taskdef classpathref="emma.lib" resource="emma_ant.properties" />
 		<path id="build.classpath">
 			<pathelement path="${classes.dir}" />
 		</path>
@@ -116,7 +117,7 @@
 	</target>
 	<!-- Ending EMMA -->
 
-		
+
 	<!-- Beginning JavaNCSS -->
 	<target if="src.dir" name="mexadl.javancss">
 		<taskdef classname="javancss.JavancssAntTask" name="javancss">
@@ -128,7 +129,7 @@
 	</target>
 	<!-- Ending JavaNCSS -->
 
-		
+
 	<!-- Beginning PMD -->
 	<target if="src.dir" name="mexadl.pmd">
 		<property name="minimumTokenCount" value="20" />

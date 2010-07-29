@@ -5,5 +5,20 @@
 	<classpathentry kind="lib" path="lib/mexadl/jaxen.jar"/>
 	<classpathentry kind="lib" path="lib/mexadl/jdom.jar"/>
 	<classpathentry kind="lib" path="lib/mexadl/xalan.jar"/>
+	<classpathentry kind="lib" path="lib/aspectj/aspectjrt.jar"/>
+	<classpathentry kind="lib" path="lib/aspectj/aspectjtools.jar"/>
+	<classpathentry kind="lib" path="lib/ckjm/ckjm-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/emma/emma_ant.jar"/>
+	<classpathentry kind="lib" path="lib/emma/emma.jar"/>
+	<classpathentry kind="lib" path="lib/emma/junit-dep-4.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/javancss/ccl.jar"/>
+	<classpathentry kind="lib" path="lib/javancss/javacc.jar"/>
+	<classpathentry kind="lib" path="lib/javancss/javancss.jar"/>
+	<classpathentry kind="lib" path="lib/javancss/javancssanttask.jar"/>
+	<classpathentry kind="lib" path="lib/javancss/jhbasic.jar"/>
+	<classpathentry kind="lib" path="lib/pmd/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/pmd/jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/pmd/junit-4.4.jar"/>
+	<classpathentry kind="lib" path="lib/pmd/pmd-4.2.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
