@@ -34,7 +34,7 @@
 			<pathelement path="${compile.path}" />
 		</path>
 		<!-- Execution of verification annotation procesor -->
-		<javac classpathref="mexadl.lib" destdir="${classes.dir}" verbose="no">
+		<javac classpathref="mexadl.lib" destdir="${classes.dir}" includeantruntime="true">
 			<src path="${src.dir}" />
 			<src path="${src.mexadl.dir}" />
 			<compilerarg value="-Amexadl.reports.dir=${reports.dir}" />
@@ -50,7 +50,7 @@
 		</path>
 		<taskdef classpathref="aspectj.lib" resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" />
 		<!-- Execution of interaction warnings aspect -->
-		<iajc classpathref="aspectj.lib" source="1.6" sourceRoots="${src.dir}">
+		<iajc classpathref="aspectj.lib" source="1.6" destdir="${classes.dir}">
 			<sourceroots>
 				<pathelement path="${src.dir}" />
 				<pathelement path="${src.mexadl.dir}" />
@@ -76,7 +76,7 @@
 
 
 	<!-- Beginning EMMA -->
-	<target if="classes.dir, test.dir, test.path" name="mexadl.emma">
+	<target if="classes.dir" name="mexadl.emma">
 		<taskdef classpathref="emma.lib" resource="emma_ant.properties" />
 		<path id="emma.lib">
 			<fileset dir="${ib.dir}/emma" includes="**/*.jar" />
