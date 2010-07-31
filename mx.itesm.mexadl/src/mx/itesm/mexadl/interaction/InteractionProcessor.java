@@ -145,8 +145,8 @@ public class InteractionProcessor implements MexAdlProcessor {
                 properties = new HashMap<String, Object>();
                 properties.put("typesList", validInteractions.keySet());
                 properties.put("warningsList", interactionsList);
-                Util.createJavaFile(document, xArchFilePath, InteractionProcessor.aspectTemplate, properties,
-                        "InteractionsAspect", Util.getDocumentName(document));
+                Util.createFile(document, xArchFilePath, InteractionProcessor.aspectTemplate, properties,
+                        "InteractionsAspect", Util.getDocumentName(document), Util.JAVA_EXTENSION);
             }
         }
     }

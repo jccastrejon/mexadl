@@ -36,16 +36,9 @@ public class MetricsProcessor implements MexAdlProcessor {
      */
     private static Template aspectTemplate;
 
-    /**
-     * Interface that will hold the quality metrics to be measured in a
-     * component of a system's architecture.
-     */
-    private static Template interfaceTemplate;
-
     static {
         try {
             MetricsProcessor.aspectTemplate = Util.getVelocityTemplate(MetricsProcessor.class, "aspect");
-            MetricsProcessor.interfaceTemplate = Util.getVelocityTemplate(MetricsProcessor.class, "interface");
             MetricsProcessor.metricsPath = XPath.newInstance("//mexadl:maintainabilityMetrics");
         } catch (Exception e) {
             System.out.println("Error loading MetricsProcessor");
@@ -100,10 +93,6 @@ public class MetricsProcessor implements MexAdlProcessor {
                             metric.put("value", metricSetDefinition.getData().get(metricName));
                         }
                     }
-
-                    // Create the metrics interface
-                    Util.createJavaFile(document, xArchFilePath, MetricsProcessor.interfaceTemplate, definition,
-                            "Metrics", definition.get("typeName").toString());
                 }
             }
 
@@ -111,8 +100,8 @@ public class MetricsProcessor implements MexAdlProcessor {
             if (!definitionsList.isEmpty()) {
                 properties = new HashMap<String, Object>();
                 properties.put("definitionsList", definitionsList);
-                Util.createJavaFile(document, xArchFilePath, MetricsProcessor.aspectTemplate, properties,
-                        "MetricsAspect", Util.getDocumentName(document));
+                Util.createFile(document, xArchFilePath, MetricsProcessor.aspectTemplate, properties, "MetricsAspect",
+                        Util.getDocumentName(document), Util.ASPECTJ_EXTENSION);
             }
         }
     }

@@ -86,8 +86,8 @@ public class ArchitectureProcessor implements MexAdlProcessor {
             if (!groupsList.isEmpty()) {
                 properties = new HashMap<String, Object>();
                 properties.put("groupsList", groupsList);
-                Util.createJavaFile(document, xArchFilePath, ArchitectureProcessor.aspectTemplate, properties,
-                        "ArchitectureAspect", Util.getDocumentName(document));
+                Util.createFile(document, xArchFilePath, ArchitectureProcessor.aspectTemplate, properties,
+                        "ArchitectureAspect", Util.getDocumentName(document), Util.JAVA_EXTENSION);
             }
         }
     }

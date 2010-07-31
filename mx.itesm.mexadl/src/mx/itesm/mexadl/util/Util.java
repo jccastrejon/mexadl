@@ -48,6 +48,16 @@ public class Util {
     private static boolean velocityInit = false;
 
     /**
+     * 
+     */
+    public static final String JAVA_EXTENSION = ".java";
+
+    /**
+     * 
+     */
+    public static final String ASPECTJ_EXTENSION = ".aj";
+
+    /**
      * XML Schema-instance namespace.
      */
     public static final Namespace XSI_NAMESPACE = Namespace.getNamespace("xsi",
@@ -183,9 +193,9 @@ public class Util {
      * @throws BadLocationException
      * @throws MalformedTreeException
      */
-    public static void createJavaFile(final Document document, final String xArchFilePath,
-            final Template aspectTemplate, final Map<String, Object> properties, final String prefix,
-            final String suffix) throws IOException, JDOMException, MalformedTreeException, BadLocationException {
+    public static void createFile(final Document document, final String xArchFilePath, final Template aspectTemplate,
+            final Map<String, Object> properties, final String prefix, final String suffix, final String extension)
+            throws IOException, JDOMException, MalformedTreeException, BadLocationException {
         Writer writer;
         File outputDir;
         File outputFile;
@@ -196,7 +206,7 @@ public class Util {
         // formatted content in a file next to the xArchFilePath
         outputDir = new File(new File(xArchFilePath).getParent() + "/src_mexadl/mx/itesm/mexadl/");
         outputDir.mkdirs();
-        outputFile = new File(outputDir, prefix + "_" + suffix + ".java");
+        outputFile = new File(outputDir, prefix + "_" + suffix + extension);
         contentFile = File.createTempFile(prefix, suffix + System.currentTimeMillis());
         writer = new BufferedWriter(new FileWriter(contentFile));
 
@@ -210,7 +220,7 @@ public class Util {
         // Create and format the file contents
         aspectTemplate.merge(context, writer);
         writer.close();
-        Util.formatJavaFile(outputFile, contentFile);
+        Util.formatFileContent(outputFile, contentFile);
     }
 
     /**
@@ -224,12 +234,13 @@ public class Util {
      * @throws BadLocationException
      */
     @SuppressWarnings("unchecked")
-    public static void formatJavaFile(final File outputFile, final File contentFile) throws IOException,
+    public static void formatFileContent(final File outputFile, final File contentFile) throws IOException,
             MalformedTreeException, BadLocationException {
         Map options;
         String source;
         TextEdit edit;
         Writer writer;
+        int contentKind;
         IDocument document;
         CodeFormatter codeFormatter;
 
@@ -247,10 +258,15 @@ public class Util {
         source = Util.getFileContents(contentFile);
         document = new org.eclipse.jface.text.Document(source);
 
-        // Format code
-        edit = codeFormatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length(), 0, System
-                .getProperty("line.separator"));
-        edit.apply(document);
+        // Decide code kind and try to apply format
+        contentKind = CodeFormatter.K_UNKNOWN;
+        if (outputFile.toString().endsWith(Util.JAVA_EXTENSION)) {
+            contentKind = CodeFormatter.K_COMPILATION_UNIT;
+        }
+        edit = codeFormatter.format(contentKind, source, 0, source.length(), 0, System.getProperty("line.separator"));
+        if (edit != null) {
+            edit.apply(document);
+        }
 
         // Save to output file
         writer.write(document.get());

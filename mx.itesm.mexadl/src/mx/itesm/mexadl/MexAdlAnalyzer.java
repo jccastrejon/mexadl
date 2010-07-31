@@ -73,6 +73,7 @@ public class MexAdlAnalyzer {
                         processor.processDocument(document, xArchFilePath);
                     } catch (Exception e) {
                         System.out.println("An error ocurred while executing " + processor + " : " + e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             } else {
