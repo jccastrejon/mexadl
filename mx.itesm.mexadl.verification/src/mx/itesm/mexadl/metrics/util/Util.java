@@ -1,6 +1,9 @@
 package mx.itesm.mexadl.metrics.util;
 
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import mx.itesm.mexadl.metrics.MaintainabilityMetrics;
 
 /**
  * The Util class provides helper methods for the MexADL verification process.
@@ -33,5 +36,15 @@ public class Util {
         }
 
         return returnValue;
+    }
+
+    /**
+     * Get the type associated to the specified quality metrics.
+     * 
+     * @param expectedMetrics
+     * @return
+     */
+    public static String getExpectedMetricsType(Map<String, Map<String, Object>> expectedMetrics) {
+        return expectedMetrics.get(MaintainabilityMetrics.class.getName()).get("type").toString();
     }
 }

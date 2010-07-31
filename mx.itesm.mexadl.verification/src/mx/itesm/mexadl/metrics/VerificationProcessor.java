@@ -1,156 +1,134 @@
 package mx.itesm.mexadl.metrics;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
 
 import mx.itesm.mexadl.metrics.util.Util;
 
+import org.objectweb.asm.ClassReader;
+
 /**
- * The VerificationProcessor class is responsible for the processing of the
- * Annotations associated to the MexADL verification constructs.
+ * The VerificationProcessor class is responsible of collection, analysis and
+ * verification of quality metrics associated to java classes.
  * 
  * @author jccastrejon
  * 
  */
-@SupportedOptions("mexadl.reports.dir")
-@SupportedAnnotationTypes("mx.itesm.mexadl.*")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class VerificationProcessor extends AbstractProcessor {
+public class VerificationProcessor {
 
-    @Override
-    public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment environment) {
-        Method metricsSet;
-        Messager messager;
-        TypeElement typeElement;
+    /**
+     * Sets of metrics that should be analyzed.
+     */
+    private static final String[] METRICS_SETS = Util.getConfigurationProperty(MaintainabilityMetrics.class,
+            "metricsSets").split(",");
+
+    /**
+     * Process the quality metrics of the classes found in the
+     * <em>classesDir</em> parameter, according to the metrics reports found in
+     * the <em>reportsDir</em> parameter.
+     * 
+     * @param classesDir
+     * @param reportsDir
+     * @throws Exception
+     */
+    public static void processMetrics(final File classesDir, final File reportsDir) throws Exception {
+        String currentType;
+        List<String> classes;
+        InputStream inputStream;
+        MetricsVisitor metricsVisitor;
         MetricsChecker metricsChecker;
-        Map<EnvironmentProperty, Object> context;
-        MaintainabilityMetrics maintainabilityMetrics;
+        Map<String, Map<String, Object>> expectedMetrics;
 
-        context = new HashMap<EnvironmentProperty, Object>();
-        messager = processingEnv.getMessager();
-        context.put(EnvironmentProperty.MESSAGER, messager);
+        classes = VerificationProcessor.getClassesInDirectory(classesDir);
+        if (classes != null) {
+            metricsChecker = new MetricsChecker();
 
-        for (TypeElement annotation : annotations) {
-            for (Element element : environment.getElementsAnnotatedWith(annotation)) {
-                typeElement = ((TypeElement) element);
-                maintainabilityMetrics = typeElement.getAnnotation(MaintainabilityMetrics.class);
+            for (String clazz : classes) {
+                metricsVisitor = new MetricsVisitor();
+                inputStream = new FileInputStream(clazz);
+                new ClassReader(inputStream).accept(metricsVisitor, ClassReader.SKIP_DEBUG);
+                expectedMetrics = metricsVisitor.getMetrics();
+                currentType = metricsVisitor.getType();
 
-                // Check metrics only if real data can be collected
-                if (this.collectMetrics(context)) {
-                    context.put(EnvironmentProperty.EXPECTED_METRICS_DATA, maintainabilityMetrics);
-                    context.put(EnvironmentProperty.TYPE, maintainabilityMetrics.type());
-                    messager.printMessage(Kind.NOTE, "Checking metrics for: " + maintainabilityMetrics.type());
-                    for (Method method : maintainabilityMetrics.getClass().getDeclaredMethods()) {
-                        try {
-                            metricsSet = method;
-                            context.put(EnvironmentProperty.METRICS_SET_NAME, metricsSet);
-                            metricsChecker = VerificationProcessor.getMetricsChecker(metricsSet);
-
-                            if (metricsChecker != null) {
-                                metricsChecker.check(context);
-                            }
-                        } catch (Exception e) {
-                            messager.printMessage(Kind.ERROR, "Error in Metrics checker: " + method.getName() + " : "
-                                    + e.getMessage());
-                            e.printStackTrace();
-                        }
+                if ((!expectedMetrics.isEmpty()) && (Util.getExpectedMetricsType(expectedMetrics).equals(currentType))) {
+                    System.out.println("**Beginning analysis for: " + currentType + "**");
+                    for (String metricsSet : VerificationProcessor.METRICS_SETS) {
+                        metricsChecker.check(metricsSet, expectedMetrics, VerificationProcessor
+                                .collectMetrics(reportsDir));
                     }
+                    System.out.println("**Ending analysis for: " + currentType + "*****");
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the Java classes in the given directory, including those in
+     * sub-directories.
+     * 
+     * @param directory
+     * @return
+     */
+    private static List<String> getClassesInDirectory(final File directory) {
+        File currentFile;
+        File[] directoryFiles;
+        List<String> innerFiles;
+        List<String> returnValue;
+
+        returnValue = null;
+        directoryFiles = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
+                return (pathname.isDirectory() || pathname.toString().endsWith(".class"));
+            }
+        });
+
+        if ((directoryFiles != null) && (directoryFiles.length > 0)) {
+            returnValue = new ArrayList<String>();
+            for (int i = 0; i < directoryFiles.length; i++) {
+                currentFile = directoryFiles[i];
+
+                if (currentFile.isDirectory()) {
+                    innerFiles = VerificationProcessor.getClassesInDirectory(currentFile);
+                    returnValue.addAll(innerFiles);
+                } else {
+                    returnValue.add(currentFile.getAbsolutePath());
                 }
             }
         }
 
-        // Claim the MexADL annotations
-        return true;
+        return returnValue;
     }
 
     /**
-     * Collect metrics from the tools registered in the configuration properties
-     * file.
+     * Collect quality metrics reports from registered metrics tools.
      * 
-     * @param context
-     * @throws Exception
+     * @param directory
+     * @return
      */
-    private boolean collectMetrics(final Map<EnvironmentProperty, Object> context) {
+    private static Map<String, Map<String, Map<String, Integer>>> collectMetrics(final File directory) {
         String[] tools;
-        boolean returnValue;
-        File reportsDirectory;
         MetricsTool metricsTool;
         Map<String, Map<String, Integer>> metrics;
-        Map<String, Map<String, Map<String, Integer>>> realMetrics;
+        Map<String, Map<String, Map<String, Integer>>> returnValue;
 
         try {
-            returnValue = true;
-            reportsDirectory = this.getReportsDirectory();
-            tools = Util.getConfigurationProperty(this.getClass(), "tools").split(",");
-            realMetrics = new HashMap<String, Map<String, Map<String, Integer>>>(tools.length);
-            context.put(EnvironmentProperty.REAL_METRICS_DATA, realMetrics);
+            tools = Util.getConfigurationProperty(MaintainabilityMetrics.class, "tools").split(",");
+            returnValue = new HashMap<String, Map<String, Map<String, Integer>>>(tools.length);
             for (String tool : tools) {
                 metricsTool = (MetricsTool) Class.forName(tool.trim()).newInstance();
-                metrics = metricsTool.getMetrics(reportsDirectory);
-                realMetrics.put(tool.trim(), metrics);
+                metrics = metricsTool.getMetrics(directory);
+                returnValue.put(tool.trim(), metrics);
             }
         } catch (Exception e) {
-            returnValue = false;
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Get the directory where the metrics reports are stored.
-     * 
-     * @return
-     */
-    private File getReportsDirectory() {
-        String path;
-        File returnValue;
-
-        returnValue = null;
-        path = processingEnv.getOptions().get("mexadl.reports.dir");
-        if (path != null) {
-            returnValue = new File(path);
-            if (!returnValue.exists()) {
-                returnValue = null;
-            }
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Get the checker class for the metrics that correspond to the specified
-     * quality sub-characteristic.
-     * 
-     * @param characteristic
-     * @param subcharacteristic
-     * @return
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     */
-    private static MetricsChecker getMetricsChecker(final Method subcharacteristic) throws InstantiationException,
-            IllegalAccessException, ClassNotFoundException {
-        String checkerClass;
-        MetricsChecker returnValue;
-
-        returnValue = null;
-        checkerClass = Util.getConfigurationProperty(subcharacteristic.getReturnType(), "checker");
-        if (checkerClass != null) {
-            returnValue = (MetricsChecker) Class.forName(checkerClass).newInstance();
+            e.printStackTrace();
+            returnValue = null;
         }
 
         return returnValue;

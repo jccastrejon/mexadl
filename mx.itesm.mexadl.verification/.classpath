@@ -20,5 +20,8 @@
 	<classpathentry kind="lib" path="lib/pmd/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/pmd/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="lib/pmd/pmd-4.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/mexadl/asm-3.3.jar"/>
+	<classpathentry kind="lib" path="lib/mexadl/ant.jar"/>
+	<classpathentry kind="lib" path="lib/mexadl/asm-commons-3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

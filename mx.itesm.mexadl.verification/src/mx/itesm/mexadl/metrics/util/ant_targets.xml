@@ -8,8 +8,8 @@
 	<target name="mexadl.verify">
 		<antcall target="mexadl.init" />
 		<antcall target="mexadl.collectMetrics" />
-		<antcall target="mexadl.verifyMetrics" />
 		<antcall target="mexadl.verifyAspects" />
+		<antcall target="mexadl.verifyMetrics" />
 		<antcall target="mexadl.clean" />
 	</target>
 
@@ -29,17 +29,12 @@
 	</target>
 
 	<target name="mexadl.verifyMetrics">
-		<property name="src.mexadl.dir" value="${basedir}/src_mexadl" />
 		<path id="mexadl.lib">
 			<fileset dir="${lib.dir}/mexadl" includes="**/*.jar" />
 			<pathelement path="${compile.path}" />
 		</path>
-		<!-- Execution of verification annotation procesor -->
-		<javac classpathref="mexadl.lib" destdir="${classes.dir}" includeantruntime="true">
-			<src path="${src.dir}" />
-			<src path="${src.mexadl.dir}" />
-			<compilerarg value="-Amexadl.reports.dir=${reports.dir}" />
-		</javac>
+		<taskdef name="verifymetrics" classname="mx.itesm.mexadl.metrics.util.MexAdlTask" classpath="mexadl.lib"/>
+		<verifymetrics classes="${classes.dir}" reports="${reports.dir}"/>
 	</target>
 
 	<target if="compile.path" name="mexadl.verifyAspects">
