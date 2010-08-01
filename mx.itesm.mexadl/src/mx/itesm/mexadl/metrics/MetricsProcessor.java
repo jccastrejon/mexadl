@@ -48,7 +48,7 @@ public class MetricsProcessor implements MexAdlProcessor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void processDocument(Document document, String xArchFilePath) throws Exception {
+    public void processDocument(final Document document, final String xArchFilePath) throws Exception {
         MetricsData metricsData;
         Map<String, Object> metric;
         Map<String, Object> metricSet;

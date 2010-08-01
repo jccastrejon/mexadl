@@ -57,12 +57,12 @@ public class VerificationProcessor {
                 currentType = metricsVisitor.getType();
 
                 if ((!expectedMetrics.isEmpty()) && (Util.getExpectedMetricsType(expectedMetrics).equals(currentType))) {
-                    System.out.println("**Beginning analysis for: " + currentType + "**");
+                    System.out.println("** Beginning analysis for: " + currentType + " **");
                     for (String metricsSet : VerificationProcessor.METRICS_SETS) {
                         metricsChecker.check(metricsSet, expectedMetrics, VerificationProcessor
                                 .collectMetrics(reportsDir));
                     }
-                    System.out.println("**Ending analysis for: " + currentType + "*****");
+                    System.out.println("** Ending analysis for: " + currentType + " *****");
                 }
             }
         }
