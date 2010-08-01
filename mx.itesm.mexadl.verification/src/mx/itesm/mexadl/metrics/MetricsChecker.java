@@ -28,6 +28,7 @@ public class MetricsChecker {
         Integer realValue;
         String metricCode;
         Integer expectedValue;
+        ComparissonOperator operator;
         Map<String, Integer> resultsType;
         Map<String, Object> currentMetrics;
         Map<String, Map<String, Integer>> results;
@@ -37,7 +38,8 @@ public class MetricsChecker {
             type = expectedMetricsData.get(MaintainabilityMetrics.class.getName()).get("type").toString();
             System.out.println("---- Beginning " + metricsSet + " check ----");
             for (String metric : currentMetrics.keySet()) {
-
+                operator = ComparissonOperator.valueOf(Util.getConfigurationProperty(MaintainabilityMetrics.class,
+                        metric + ".operator"));
                 tool = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".tool");
                 metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".code");
                 if (metricCode != null) {
@@ -49,11 +51,12 @@ public class MetricsChecker {
                             realValue = resultsType.get(metricCode);
                             expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
 
-                            if (expectedValue != realValue) {
-                                System.out.println(metric + " has a real value of: " + realValue
-                                        + ", when expected was: " + expectedValue);
+                            if (operator.isValid(expectedValue, realValue)) {
+                                System.out.println("Valid value for " + metric + ". (expected: " + expectedValue
+                                        + ", real: " + realValue + ")");
                             } else {
-                                System.out.println(metric + " met its expected value (" + expectedValue + ").");
+                                System.out.println("Invalid value for " + metric + ". (expected: " + expectedValue
+                                        + ", real: " + realValue + ")");
                             }
                         } else {
                             System.out.println("No metrics found for type: " + type);
