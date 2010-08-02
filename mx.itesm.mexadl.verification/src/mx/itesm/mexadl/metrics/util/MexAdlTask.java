@@ -1,6 +1,9 @@
 package mx.itesm.mexadl.metrics.util;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import mx.itesm.mexadl.metrics.VerificationProcessor;
 
@@ -17,6 +20,11 @@ import org.apache.tools.ant.Task;
 public class MexAdlTask extends Task {
 
     /**
+     * Class logger.
+     */
+    Logger logger = Logger.getLogger(MexAdlTask.class.getName());
+
+    /**
      * Directory where the Java classes to be analyzed are stored.
      */
     private String classes;
@@ -26,6 +34,18 @@ public class MexAdlTask extends Task {
      */
     private String reports;
 
+    static {
+        // Logging configuration
+        try {
+            LogManager.getLogManager()
+                    .readConfiguration(
+                            MexAdlTask.class.getClassLoader().getResourceAsStream(
+                                    "mx/itesm/mexadl/metrics/logging.properties"));
+        } catch (Exception e) {
+            System.out.println("Unable to register logging configuration: " + e);
+        }
+    }
+
     /**
      * Task execution.
      */
@@ -33,7 +53,7 @@ public class MexAdlTask extends Task {
         try {
             VerificationProcessor.processMetrics(new File(this.classes), new File(this.reports));
         } catch (Exception e) {
-            System.out.println("An error ocurred while executing verification process: " + e);
+            logger.log(Level.WARNING, "An error ocurred while executing verification process: " + e);
         }
     }
 

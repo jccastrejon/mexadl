@@ -3,6 +3,9 @@ package mx.itesm.mexadl;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import mx.itesm.mexadl.util.Util;
 
@@ -17,6 +20,11 @@ import org.jdom.input.SAXBuilder;
  * 
  */
 public class MexAdlAnalyzer {
+
+    /**
+     * Class logger.
+     */
+    private static Logger logger = Logger.getLogger(MexAdlAnalyzer.class.getName());
 
     /**
      * JDOM builder to parse an architecture definition document.
@@ -41,9 +49,17 @@ public class MexAdlAnalyzer {
                 try {
                     MexAdlAnalyzer.processors.add((MexAdlProcessor) Class.forName(processor.trim()).newInstance());
                 } catch (Exception e) {
-                    System.out.println("Unable to register " + processor + " as MexAdlProcessor");
+                    MexAdlAnalyzer.logger.log(Level.WARNING, "Unable to register " + processor + " as MexAdlProcessor");
                 }
             }
+        }
+
+        // Logging configuration
+        try {
+            LogManager.getLogManager().readConfiguration(
+                    MexAdlAnalyzer.class.getClassLoader().getResourceAsStream("mx/itesm/mexadl/logging.properties"));
+        } catch (Exception e) {
+            System.out.println("Unable to register logging configuration: " + e);
         }
     }
 
@@ -72,16 +88,15 @@ public class MexAdlAnalyzer {
                     try {
                         processor.processDocument(document, xArchFilePath);
                     } catch (Exception e) {
-                        System.out.println("An error ocurred while executing " + processor + " : " + e.getMessage());
-                        e.printStackTrace();
+                        MexAdlAnalyzer.logger.log(Level.WARNING, "An error ocurred while executing " + processor
+                                + " : " + e.getMessage());
                     }
                 }
             } else {
-                System.out.println("No MexAdlProcessors found to analyze the xADL architecture");
+                MexAdlAnalyzer.logger.log(Level.WARNING, "No MexAdlProcessors found to analyze the xADL architecture");
             }
         } catch (Exception e) {
-            System.out.println("Error analyzing xArch: " + e);
-            e.printStackTrace();
+            MexAdlAnalyzer.logger.log(Level.WARNING, "Error analyzing xArch: " + e);
         }
     }
 }

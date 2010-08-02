@@ -10,6 +10,8 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -36,6 +38,11 @@ import org.jdom.xpath.XPath;
  * 
  */
 public class Util {
+
+    /**
+     * Class logger.
+     */
+    private static Logger logger = Logger.getLogger(Util.class.getName());
 
     /**
      * XPath expression to identify the description of an xADL architecture.
@@ -94,8 +101,7 @@ public class Util {
         try {
             Util.xArchDescriptionPath = XPath.newInstance("/instance:xArch/types:archStructure/types:description");
         } catch (Exception e) {
-            System.out.println("Error while loading Util: " + e);
-            e.printStackTrace();
+            Util.logger.log(Level.WARNING, "Error while loading Util: " + e);
         }
     }
 

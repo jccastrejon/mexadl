@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mx.itesm.mexadl.MexAdlProcessor;
 import mx.itesm.mexadl.util.Util;
@@ -26,6 +28,11 @@ import org.jdom.xpath.XPath;
 public class MetricsProcessor implements MexAdlProcessor {
 
     /**
+     * Class logger.
+     */
+    private static Logger logger = Logger.getLogger(MetricsProcessor.class.getName());
+
+    /**
      * XPath expression to identify the MexADL quality metrics.
      */
     private static XPath metricsPath;
@@ -41,8 +48,7 @@ public class MetricsProcessor implements MexAdlProcessor {
             MetricsProcessor.aspectTemplate = Util.getVelocityTemplate(MetricsProcessor.class, "aspect");
             MetricsProcessor.metricsPath = XPath.newInstance("//mexadl:maintainabilityMetrics");
         } catch (Exception e) {
-            System.out.println("Error loading MetricsProcessor");
-            e.printStackTrace();
+            MetricsProcessor.logger.log(Level.WARNING, "Error loading MetricsProcessor:" + e);
         }
     }
 

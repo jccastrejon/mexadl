@@ -1,6 +1,8 @@
 package mx.itesm.mexadl.metrics;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mx.itesm.mexadl.metrics.util.Util;
 
@@ -12,6 +14,11 @@ import mx.itesm.mexadl.metrics.util.Util;
  * 
  */
 public class MetricsChecker {
+
+    /**
+     * Class logger.
+     */
+    private Logger logger = Logger.getLogger(MetricsChecker.class.getName());
 
     /**
      * Check quality metrics for a Java class.
@@ -36,7 +43,7 @@ public class MetricsChecker {
         currentMetrics = expectedMetricsData.get(metricsSet);
         if (currentMetrics != null) {
             type = expectedMetricsData.get(MaintainabilityMetrics.class.getName()).get("type").toString();
-            System.out.println("---- Beginning " + metricsSet + " check ----");
+            logger.log(Level.INFO, "---- Beginning " + metricsSet + " check ----");
             for (String metric : currentMetrics.keySet()) {
                 operator = ComparissonOperator.valueOf(Util.getConfigurationProperty(MaintainabilityMetrics.class,
                         metric + ".operator"));
@@ -52,23 +59,23 @@ public class MetricsChecker {
                             expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
 
                             if (operator.isValid(expectedValue, realValue)) {
-                                System.out.println("Valid value for " + metric + ". (expected: " + expectedValue
+                                logger.log(Level.INFO, "Valid value for " + metric + ". (expected: " + expectedValue
                                         + ", real: " + realValue + ")");
                             } else {
-                                System.out.println("Invalid value for " + metric + ". (expected: " + expectedValue
+                                logger.log(Level.INFO, "Invalid value for " + metric + ". (expected: " + expectedValue
                                         + ", real: " + realValue + ")");
                             }
                         } else {
-                            System.out.println("No metrics found for type: " + type);
+                            logger.log(Level.WARNING, "No metrics found for type: " + type);
                         }
                     } else {
-                        System.out.println("No metrics result found for tool: " + tool);
+                        logger.log(Level.WARNING, "No metrics result found for tool: " + tool);
                     }
                 } else {
-                    System.out.println("No code found for metric: " + metric);
+                    logger.log(Level.WARNING, "No code found for metric: " + metric);
                 }
             }
-            System.out.println("---- Ending " + metricsSet + " check -------");
+            logger.log(Level.INFO, "---- Ending " + metricsSet + " check -------");
         }
     }
 }

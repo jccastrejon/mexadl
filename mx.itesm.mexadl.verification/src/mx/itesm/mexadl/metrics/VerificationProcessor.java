@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mx.itesm.mexadl.metrics.util.Util;
 
@@ -21,6 +23,11 @@ import org.objectweb.asm.ClassReader;
  * 
  */
 public class VerificationProcessor {
+
+    /**
+     * 
+     */
+    private static Logger logger = Logger.getLogger(VerificationProcessor.class.getName());
 
     /**
      * Sets of metrics that should be analyzed.
@@ -57,12 +64,12 @@ public class VerificationProcessor {
                 currentType = metricsVisitor.getType();
 
                 if ((!expectedMetrics.isEmpty()) && (Util.getExpectedMetricsType(expectedMetrics).equals(currentType))) {
-                    System.out.println("** Beginning analysis for: " + currentType + " **");
+                    VerificationProcessor.logger.log(Level.INFO, "** Beginning analysis for: " + currentType + " **");
                     for (String metricsSet : VerificationProcessor.METRICS_SETS) {
                         metricsChecker.check(metricsSet, expectedMetrics, VerificationProcessor
                                 .collectMetrics(reportsDir));
                     }
-                    System.out.println("** Ending analysis for: " + currentType + " *****");
+                    VerificationProcessor.logger.log(Level.INFO, "** Ending analysis for: " + currentType + " *****");
                 }
             }
         }

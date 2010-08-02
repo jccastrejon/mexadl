@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mx.itesm.mexadl.MexAdlProcessor;
 import mx.itesm.mexadl.util.Util;
@@ -26,6 +28,11 @@ import org.jdom.xpath.XPath;
 public class InteractionProcessor implements MexAdlProcessor {
 
     /**
+     * Class logger.
+     */
+    private static Logger logger = Logger.getLogger(InteractionProcessor.class.getName());
+
+    /**
      * XPath expression to identify the links defined in an xADL document.
      */
     private static XPath linkPath;
@@ -41,8 +48,7 @@ public class InteractionProcessor implements MexAdlProcessor {
             InteractionProcessor.aspectTemplate = Util.getVelocityTemplate(InteractionProcessor.class, "aspect");
             InteractionProcessor.linkPath = XPath.newInstance("//types:link");
         } catch (Exception e) {
-            System.out.println("Error loading InteractionProcessor");
-            e.printStackTrace();
+            InteractionProcessor.logger.log(Level.WARNING, "Error loading InteractionProcessor: " + e);
         }
     }
 
