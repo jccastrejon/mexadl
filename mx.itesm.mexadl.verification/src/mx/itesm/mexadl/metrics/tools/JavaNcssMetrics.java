@@ -66,7 +66,7 @@ public class JavaNcssMetrics extends XmlFileMetrics {
 
     @Override
     protected File getReportPath(final File resultsDir) {
-        return new File(resultsDir, "/javancss_report.xml");
+        return new File(resultsDir, "/javancss.xml");
     }
 
     @Override
