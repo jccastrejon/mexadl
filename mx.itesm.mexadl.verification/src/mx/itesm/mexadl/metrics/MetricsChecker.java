@@ -28,8 +28,8 @@ public class MetricsChecker {
      * @param realMetrics
      * @throws Exception
      */
-    public void check(final String metricsSet, Map<String, Map<String, Object>> expectedMetricsData,
-            Map<String, Map<String, Map<String, Integer>>> realMetrics) throws Exception {
+    public void check(final String metricsSet, final Map<String, Map<String, Object>> expectedMetricsData,
+            final Map<String, Map<String, Map<String, Integer>>> realMetrics) throws Exception {
         String type;
         String tool;
         Integer realValue;
@@ -66,10 +66,11 @@ public class MetricsChecker {
                                         + ", real: " + realValue + ")");
                             }
                         } else {
-                            logger.log(Level.WARNING, "No metrics found for type: " + type);
+                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool
+                                    + ", for type: " + type);
                         }
                     } else {
-                        logger.log(Level.WARNING, "No metrics result found for tool: " + tool);
+                        logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool);
                     }
                 } else {
                     logger.log(Level.WARNING, "No code found for metric: " + metric);
