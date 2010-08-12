@@ -49,7 +49,8 @@ public class MexAdlAnalyzer {
                 try {
                     MexAdlAnalyzer.processors.add((MexAdlProcessor) Class.forName(processor.trim()).newInstance());
                 } catch (Exception e) {
-                    MexAdlAnalyzer.logger.log(Level.WARNING, "Unable to register " + processor + " as MexAdlProcessor");
+                    MexAdlAnalyzer.logger.log(Level.WARNING, "Unable to register " + processor + " as MexAdlProcessor",
+                            e);
                 }
             }
         }
@@ -88,15 +89,14 @@ public class MexAdlAnalyzer {
                     try {
                         processor.processDocument(document, xArchFilePath);
                     } catch (Exception e) {
-                        MexAdlAnalyzer.logger.log(Level.WARNING, "An error ocurred while executing " + processor
-                                + " : " + e.getMessage());
+                        MexAdlAnalyzer.logger.log(Level.WARNING, "An error ocurred while executing " + processor, e);
                     }
                 }
             } else {
                 MexAdlAnalyzer.logger.log(Level.WARNING, "No MexAdlProcessors found to analyze the xADL architecture");
             }
         } catch (Exception e) {
-            MexAdlAnalyzer.logger.log(Level.WARNING, "Error analyzing xArch: " + e);
+            MexAdlAnalyzer.logger.log(Level.WARNING, "Error analyzing xArch: ", e);
         }
     }
 }

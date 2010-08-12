@@ -48,7 +48,7 @@ public class MetricsProcessor implements MexAdlProcessor {
             MetricsProcessor.aspectTemplate = Util.getVelocityTemplate(MetricsProcessor.class, "aspect");
             MetricsProcessor.metricsPath = XPath.newInstance("//mexadl:maintainabilityMetrics");
         } catch (Exception e) {
-            MetricsProcessor.logger.log(Level.WARNING, "Error loading MetricsProcessor:" + e);
+            MetricsProcessor.logger.log(Level.WARNING, "Error loading MetricsProcessor:", e);
         }
     }
 

@@ -101,7 +101,7 @@ public class Util {
         try {
             Util.xArchDescriptionPath = XPath.newInstance("/instance:xArch/types:archStructure/types:description");
         } catch (Exception e) {
-            Util.logger.log(Level.WARNING, "Error while loading Util: " + e);
+            Util.logger.log(Level.WARNING, "Error while loading Util: ", e);
         }
     }
 

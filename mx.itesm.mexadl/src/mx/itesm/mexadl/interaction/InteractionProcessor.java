@@ -48,7 +48,7 @@ public class InteractionProcessor implements MexAdlProcessor {
             InteractionProcessor.aspectTemplate = Util.getVelocityTemplate(InteractionProcessor.class, "aspect");
             InteractionProcessor.linkPath = XPath.newInstance("//types:link");
         } catch (Exception e) {
-            InteractionProcessor.logger.log(Level.WARNING, "Error loading InteractionProcessor: " + e);
+            InteractionProcessor.logger.log(Level.WARNING, "Error loading InteractionProcessor: ", e);
         }
     }
 

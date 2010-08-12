@@ -48,7 +48,7 @@ public class ArchitectureProcessor implements MexAdlProcessor {
             ArchitectureProcessor.aspectTemplate = Util.getVelocityTemplate(ArchitectureProcessor.class, "aspect");
             ArchitectureProcessor.groupPath = XPath.newInstance("//types:group");
         } catch (Exception e) {
-            ArchitectureProcessor.logger.log(Level.WARNING, "Error loading ArchitectureProcessor: " + e);
+            ArchitectureProcessor.logger.log(Level.WARNING, "Error loading ArchitectureProcessor: ", e);
         }
     }
 

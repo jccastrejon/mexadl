@@ -53,7 +53,7 @@ public class MexAdlTask extends Task {
         try {
             VerificationProcessor.processMetrics(new File(this.classes), new File(this.reports));
         } catch (Exception e) {
-            logger.log(Level.WARNING, "An error ocurred while executing verification process: " + e);
+            logger.log(Level.WARNING, "An error ocurred while executing verification process: ", e);
         }
     }
 
