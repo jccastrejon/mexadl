@@ -55,6 +55,8 @@ public class MetricsProcessor implements MexAdlProcessor {
     @Override
     @SuppressWarnings("unchecked")
     public void processDocument(final Document document, final String xArchFilePath) throws Exception {
+        String referenceId;
+        XPath metricsRefPath;
         MetricsData metricsData;
         Map<String, Object> metric;
         Map<String, Object> metricSet;
@@ -62,6 +64,7 @@ public class MetricsProcessor implements MexAdlProcessor {
         Map<String, Object> properties;
         List<Element> metricDefinitions;
         List<Map<String, Object>> metrics;
+        List<Element> metricRefDefinitions;
         List<Map<String, Object>> metricSets;
         List<Map<String, Object>> definitionsList;
 
@@ -76,6 +79,8 @@ public class MetricsProcessor implements MexAdlProcessor {
                 // Process the file only if a valid xADL type is associated to
                 // the metrics definition
                 if (metricsData.getType() != null) {
+                    // Add the metrics data to the type with the
+                    // MaintainabilityMetrics reference
                     definitionsList.add(definition);
                     definition.put("metricSets", metricSets);
                     definition.put("type", metricsData.getType());
@@ -97,6 +102,25 @@ public class MetricsProcessor implements MexAdlProcessor {
 
                             metric.put("name", metricName);
                             metric.put("value", metricSetDefinition.getData().get(metricName));
+                        }
+                    }
+
+                    // Add the same metrics data for types associated by means
+                    // of a MaintainabilityMetricsRef XLink reference
+                    metricsRefPath = XPath.newInstance("//mexadl:maintainabilityMetricsRef[@xlink:href=\"#"
+                            + metricDefinition.getAttributeValue("id", Util.MEXADL_NAMESPACE) + "\"]");
+                    metricRefDefinitions = metricsRefPath.selectNodes(document);
+                    if ((metricRefDefinitions != null) && (!metricRefDefinitions.isEmpty())) {
+                        for (Element metricRefDefinition : metricRefDefinitions) {
+                            definition = (HashMap) ((HashMap) definition).clone();
+                            referenceId = Util.getLinkImplementationClass(document, Util.getIdValue(metricRefDefinition
+                                    .getParentElement()));
+
+                            if (referenceId != null) {
+                                definition.put("type", referenceId);
+                                definition.put("typeName", Util.getValidName(referenceId));
+                                definitionsList.add(definition);
+                            }
                         }
                     }
                 }
