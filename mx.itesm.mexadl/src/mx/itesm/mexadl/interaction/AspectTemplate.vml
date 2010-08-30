@@ -15,10 +15,10 @@ public class InteractionsAspect_$suffix {
         
             // $type
             @Pointcut("call (* $type.* (..))")
-            public void call_$type.replace('.', '_') () {}
+            public void call_$Util.getValidName($type) () {}
             
             @Pointcut("within ($type)")
-            public void within_$type.replace('.', '_') () {}
+            public void within_$Util.getValidName($type) () {}
         #end
     #end
 
