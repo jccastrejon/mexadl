@@ -6,6 +6,7 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
     xmlns:archinstance="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd" 
     xmlns:archtypes="http://www.ics.uci.edu/pub/arch/xArch/types.xsd"
+    xmlns:javaimplementation="http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd"
     targetNamespace="http://mx.itesm/mexadl.xsd" elementFormDefault="qualified" attributeFormDefault="qualified">
 
     <xsd:import namespace="http://www.ics.uci.edu/pub/arch/xArch/types.xsd"
@@ -13,6 +14,9 @@
               
     <xsd:import namespace="http://www.ics.uci.edu/pub/arch/xArch/instance.xsd"
               schemaLocation="http://www.isr.uci.edu/projects/xarchuci/ext/instance.xsd"/>
+              
+	<xsd:import namespace="http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd"
+              schemaLocation="http://www.isr.uci.edu/projects/xarchuci/ext/javaimplementation.xsd"/>
 
 	<xsd:annotation>
 		<xsd:documentation>
@@ -23,6 +27,20 @@
 					Initial Development
 		</xsd:documentation>
 	</xsd:annotation>
+	
+	<!--
+		TYPE: MexJavaClassFile
+		
+		The MexJavaClassFile type allows the identification of a Java class
+		as an Annotation type.
+	-->
+	<xsd:complexType name="MexJavaClassFile">
+		<xsd:complexContent>
+			<xsd:extension base="javaimplementation:JavaClassFile">
+				<xsd:element name="isAnnotation" type="BooleanValue"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 	<!--
 		TYPE: MexComponent
@@ -126,5 +144,15 @@
             <xsd:extension base="xsd:int"/>
         </xsd:simpleContent>
     </xsd:complexType>
-    
+
+    <!--
+    	TYPE: BooleanValue
+    	
+    	This type is intended to hold boolean values.
+    -->
+    <xsd:complexType name="BooleanValue">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:boolean"/>
+        </xsd:simpleContent>
+    </xsd:complexType>    
 </xsd:schema>
