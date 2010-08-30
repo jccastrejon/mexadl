@@ -106,6 +106,30 @@ public class Util {
     }
 
     /**
+     * Verify if an implementing class represents a Java annotation.
+     * 
+     * @param implementationClass
+     * @return
+     * @throws JDOMException
+     */
+    public static boolean isAnnotation(final Document document, final String implementationClass) throws JDOMException {
+        XPath typePath;
+        Element element;
+        boolean returnValue;
+
+        typePath = XPath.newInstance("//javaimplementation:mainClass[javaimplementation:javaClassName='"
+                + implementationClass + "' and mexadl:isAnnotation='true']");
+        element = (Element) typePath.selectSingleNode(document);
+
+        returnValue = false;
+        if (element != null) {
+            returnValue = true;
+        }
+
+        return returnValue;
+    }
+
+    /**
      * Get the Java implementation class associated to the specified link.
      * 
      * @param document
@@ -186,7 +210,9 @@ public class Util {
     }
 
     /**
-     * Create a Java file from a velocity template.
+     * Create a Java file from a velocity template. This methods adds two
+     * implied objects, the suffix of the file to be generated, and a reference
+     * to this Utility class.
      * 
      * @param document
      * @param xArchFilePath
@@ -219,6 +245,7 @@ public class Util {
         // Use the velocity template to generate the aspect content
         context = new VelocityContext();
         context.put("suffix", suffix);
+        properties.put("Util", Util.class);
         for (String key : properties.keySet()) {
             context.put(key, properties.get(key));
         }

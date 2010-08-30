@@ -52,11 +52,54 @@ public class InteractionProcessor implements MexAdlProcessor {
         }
     }
 
+    /**
+     * Valid interface directions.
+     * 
+     * @author jccastrejon
+     * 
+     */
+    enum EndpointDirection {
+        NONE {
+            @Override
+            public boolean isValidInteraction(final EndpointDirection other) {
+                return ((other == NONE) || (other == IN));
+            }
+        },
+        IN {
+            @Override
+            public boolean isValidInteraction(final EndpointDirection other) {
+                return false;
+            }
+        },
+        OUT {
+            @Override
+            public boolean isValidInteraction(final EndpointDirection other) {
+                return (other == IN);
+            }
+        },
+        INOUT {
+            @Override
+            public boolean isValidInteraction(final EndpointDirection other) {
+                return ((other == IN) || (other == INOUT));
+            }
+        };
+
+        /**
+         * Determine if a valid link can be formed by considering this direction
+         * as starting point, and the specified EndpointDirection.
+         * 
+         * @param other
+         * @return
+         */
+        public abstract boolean isValidInteraction(final EndpointDirection other);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public void processDocument(final Document document, final String xArchFilePath) throws Exception {
         String component;
         String endpointId;
+        boolean isReverse;
         List<Element> links;
         List<Element> points;
         Element currentEndpoint;
@@ -68,12 +111,14 @@ public class InteractionProcessor implements MexAdlProcessor {
         Map<String, String> endpointComponents;
         Map<String, Set<String>> validInteractions;
         List<Map<String, Object>> interactionsList;
+        Map<String, EndpointDirection> endpointsDirections;
 
         // Resolve link end-points
         links = InteractionProcessor.linkPath.selectNodes(document);
         if ((links != null) && (!links.isEmpty())) {
             linksList = new ArrayList<List<String>>();
             endpointComponents = new HashMap<String, String>(links.size() * 2);
+            endpointsDirections = new HashMap<String, EndpointDirection>(links.size() * 2);
             for (Element link : links) {
                 points = this.getPoints(link);
 
@@ -89,46 +134,61 @@ public class InteractionProcessor implements MexAdlProcessor {
                     // is associated
                     component = Util.getIdValue(currentEndpoint.getParentElement());
                     endpointComponents.put(endpointId, component);
+
+                    // End-point direction
+                    endpointsDirections.put(endpointId, this.getEndpointDirection(currentEndpoint));
                 }
             }
 
             // Associate valid interactions to each Type
             validInteractions = new HashMap<String, Set<String>>();
             for (List<String> link : linksList) {
-                firstImplementation = Util.getLinkImplementationClass(document, endpointComponents.get(link.get(0)));
-                secondImplementation = Util.getLinkImplementationClass(document, endpointComponents.get(link.get(1)));
+                link = this.getOrderedEndpoints(endpointsDirections, link);
+                isReverse = this.isReverseConnection(endpointsDirections, link.get(0), link.get(1));
+                if (link != null) {
+                    firstImplementation = Util
+                            .getLinkImplementationClass(document, endpointComponents.get(link.get(0)));
+                    secondImplementation = Util.getLinkImplementationClass(document, endpointComponents
+                            .get(link.get(1)));
 
-                if ((firstImplementation != null) && (secondImplementation != null)) {
-                    this.addTypesDependencies(validInteractions, firstImplementation, secondImplementation, true);
-                } else {
-                    // If two components are connected through a connector, and
-                    // the connector doesn't have an implementation class
-                    // associated, we'll try to connect the components directly
-                    // (provided they do have implementations associated)
-                    if ((this.isConnector(endpointComponents.get(link.get(0)))) && (secondImplementation != null)) {
-                        // Get the implementations of objects associated to
-                        // links that have this connector as their second
-                        // end-point
-                        for (List<String> connectorLink : linksList) {
-                            if (endpointComponents.get(connectorLink.get(1))
-                                    .equals(endpointComponents.get(link.get(0)))) {
-                                firstImplementation = Util.getLinkImplementationClass(document, endpointComponents
-                                        .get(connectorLink.get(0)));
-                                this.addTypesDependencies(validInteractions, firstImplementation, secondImplementation,
-                                        true);
+                    // Directly connected components (no connector)
+                    if ((firstImplementation != null) && (secondImplementation != null)) {
+                        this.addTypesDependencies(validInteractions, firstImplementation, secondImplementation,
+                                isReverse);
+                    } else {
+                        // If two components are connected through a connector,
+                        // and the connector doesn't have an implementation
+                        // class associated, we'll try to connect the components
+                        // directly (provided they do have implementations
+                        // associated)
+                        if ((this.isConnector(endpointComponents.get(link.get(0)))) && (secondImplementation != null)) {
+                            // Get the implementations of objects associated to
+                            // links that have this connector as their second
+                            // end-point
+                            for (List<String> connectorLink : linksList) {
+                                connectorLink = this.getOrderedEndpoints(endpointsDirections, connectorLink);
+                                if (endpointComponents.get(connectorLink.get(1)).equals(
+                                        endpointComponents.get(link.get(0)))) {
+                                    firstImplementation = Util.getLinkImplementationClass(document, endpointComponents
+                                            .get(connectorLink.get(0)));
+                                    this.addTypesDependencies(validInteractions, firstImplementation,
+                                            secondImplementation, isReverse);
+                                }
                             }
-                        }
-                    } else if ((this.isConnector(endpointComponents.get(link.get(1)))) && (firstImplementation != null)) {
-                        // Get the implementations of objects associated to
-                        // links that have this connector as their first
-                        // end-point
-                        for (List<String> connectorLink : linksList) {
-                            if (endpointComponents.get(connectorLink.get(0))
-                                    .equals(endpointComponents.get(link.get(1)))) {
-                                secondImplementation = Util.getLinkImplementationClass(document, endpointComponents
-                                        .get(connectorLink.get(1)));
-                                this.addTypesDependencies(validInteractions, firstImplementation, secondImplementation,
-                                        true);
+                        } else if ((this.isConnector(endpointComponents.get(link.get(1))))
+                                && (firstImplementation != null)) {
+                            // Get the implementations of objects associated to
+                            // links that have this connector as their first
+                            // end-point
+                            for (List<String> connectorLink : linksList) {
+                                connectorLink = this.getOrderedEndpoints(endpointsDirections, connectorLink);
+                                if (endpointComponents.get(connectorLink.get(0)).equals(
+                                        endpointComponents.get(link.get(1)))) {
+                                    secondImplementation = Util.getLinkImplementationClass(document, endpointComponents
+                                            .get(connectorLink.get(1)));
+                                    this.addTypesDependencies(validInteractions, firstImplementation,
+                                            secondImplementation, isReverse);
+                                }
                             }
                         }
                     }
@@ -199,24 +259,37 @@ public class InteractionProcessor implements MexAdlProcessor {
 
         // Only work with non-null dependencies
         if ((firstType != null) && (secondType != null)) {
+            this.initializeInteractions(firstType, dependencies);
+            this.initializeInteractions(secondType, dependencies);
 
-            currentInteractions = dependencies.get(firstType);
-            if (currentInteractions == null) {
-                currentInteractions = new HashSet<String>();
-                dependencies.put(firstType, currentInteractions);
-            }
-            currentInteractions.add(Util.getValidName(secondType));
+            // One way
+            currentInteractions = dependencies.get(secondType);
+            currentInteractions.add(Util.getValidName(firstType));
 
-            // If interfaces have no direction, add the dependencies to both
-            // of them
+            // Both ways
             if (reverse) {
-                currentInteractions = dependencies.get(secondType);
-                if (currentInteractions == null) {
-                    currentInteractions = new HashSet<String>();
-                    dependencies.put(secondType, currentInteractions);
-                }
-                currentInteractions.add(Util.getValidName(firstType));
+                currentInteractions = dependencies.get(firstType);
+                currentInteractions.add(Util.getValidName(secondType));
             }
+        }
+    }
+
+    /**
+     * Initialize the valid interactions that the specified Component may have,
+     * including self-interactions.
+     * 
+     * @param type
+     * @param dependencies
+     * @return
+     */
+    private void initializeInteractions(final String type, final Map<String, Set<String>> dependencies) {
+        Set<String> currentInteractions;
+
+        currentInteractions = dependencies.get(type);
+        if (currentInteractions == null) {
+            currentInteractions = new HashSet<String>();
+            currentInteractions.add(Util.getValidName(type));
+            dependencies.put(type, currentInteractions);
         }
     }
 
@@ -232,12 +305,63 @@ public class InteractionProcessor implements MexAdlProcessor {
     }
 
     /**
-     * Check if the object represented by the given Id is aan xADL connector.
+     * Check if the object represented by the given Id is an xADL connector.
      * 
      * @param id
      * @return
      */
     private boolean isConnector(final String id) {
         return ((id != null) && (id.contains("connector")));
+    }
+
+    /**
+     * Get the direction associated to an interface.
+     * 
+     * @param element
+     * @return
+     */
+    private EndpointDirection getEndpointDirection(final Element element) {
+        return EndpointDirection
+                .valueOf(element.getChildTextTrim("direction", Util.XADL_TYPES_NAMESPACE).toUpperCase());
+    }
+
+    /**
+     * Determine if a link can be traversed in both ways.
+     * 
+     * @param endpointsDirections
+     * @param first
+     * @param second
+     * @return
+     */
+    private boolean isReverseConnection(final Map<String, EndpointDirection> endpointsDirections, final String first,
+            final String second) {
+        return ((endpointsDirections.get(first) == EndpointDirection.INOUT) && (endpointsDirections.get(second) == EndpointDirection.INOUT));
+    }
+
+    /**
+     * Order the end-points that make up a link, according to the directions of
+     * their associated interfaces.
+     * 
+     * @param endpointsDirections
+     * @param link
+     * @return
+     */
+    private List<String> getOrderedEndpoints(final Map<String, EndpointDirection> endpointsDirections,
+            final List<String> link) {
+        List<String> returnValue;
+
+        if (endpointsDirections.get(link.get(0)).isValidInteraction(endpointsDirections.get(link.get(1)))) {
+            returnValue = new ArrayList<String>(2);
+            returnValue.add(link.get(0));
+            returnValue.add(link.get(1));
+        } else if (endpointsDirections.get(link.get(1)).isValidInteraction(endpointsDirections.get(link.get(0)))) {
+            returnValue = new ArrayList<String>(2);
+            returnValue.add(link.get(1));
+            returnValue.add(link.get(0));
+        } else {
+            returnValue = null;
+        }
+
+        return returnValue;
     }
 }
