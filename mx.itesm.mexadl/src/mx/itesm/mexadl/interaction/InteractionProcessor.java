@@ -211,6 +211,7 @@ public class InteractionProcessor implements MexAdlProcessor {
                 properties = new HashMap<String, Object>();
                 properties.put("typesList", validInteractions.keySet());
                 properties.put("warningsList", interactionsList);
+                properties.put("annotations", this.getAnnotations(document));
                 Util.createFile(document, xArchFilePath, InteractionProcessor.aspectTemplate, properties,
                         "InteractionsAspect", Util.getDocumentName(document), Util.JAVA_EXTENSION);
             }
@@ -360,6 +361,33 @@ public class InteractionProcessor implements MexAdlProcessor {
             returnValue.add(link.get(0));
         } else {
             returnValue = null;
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Verify if an implementing class represents a Java annotation.
+     * 
+     * @param implementationClass
+     * @return
+     * @throws JDOMException
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> getAnnotations(final Document document) throws JDOMException {
+        XPath typePath;
+        List<Element> elements;
+        List<String> returnValue;
+
+        typePath = XPath.newInstance("//javaimplementation:mainClass[mexadl:isAnnotation='true']");
+        elements = (List<Element>) typePath.selectNodes(document);
+
+        returnValue = null;
+        if (elements != null) {
+            returnValue = new ArrayList<String>(elements.size());
+            for (Element element : elements) {
+                returnValue.add(element.getChildTextTrim("javaClassName", Util.XADL_JAVAIMPLEMENTATION_NAMESPACE));
+            }
         }
 
         return returnValue;

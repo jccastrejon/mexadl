@@ -14,10 +14,10 @@ public class InteractionsAspect_$suffix {
         #foreach ($type in $types)
         
             // $type
-            @Pointcut("call (* $type.* (..))")
+            @Pointcut("call (* #if($annotations.contains($type)) (@$type *) #else $type #end .* (..))")
             public void call_$Util.getValidName($type) () {}
             
-            @Pointcut("within ($type)")
+            @Pointcut("within (#if($annotations.contains($type)) @$type * #else $type #end)")
             public void within_$Util.getValidName($type) () {}
         #end
     #end

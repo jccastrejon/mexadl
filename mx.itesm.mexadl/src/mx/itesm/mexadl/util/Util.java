@@ -97,36 +97,18 @@ public class Util {
      */
     public static final Namespace XLINK_NAMESPACE = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
 
+    /**
+     * xADL Java implementation namespace.
+     */
+    public static final Namespace XADL_JAVAIMPLEMENTATION_NAMESPACE = Namespace.getNamespace("javaimplementation",
+            "http://www.ics.uci.edu/pub/arch/xArch/javaimplementation.xsd");
+
     static {
         try {
             Util.xArchDescriptionPath = XPath.newInstance("/instance:xArch/types:archStructure/types:description");
         } catch (Exception e) {
             Util.logger.log(Level.WARNING, "Error while loading Util: ", e);
         }
-    }
-
-    /**
-     * Verify if an implementing class represents a Java annotation.
-     * 
-     * @param implementationClass
-     * @return
-     * @throws JDOMException
-     */
-    public static boolean isAnnotation(final Document document, final String implementationClass) throws JDOMException {
-        XPath typePath;
-        Element element;
-        boolean returnValue;
-
-        typePath = XPath.newInstance("//javaimplementation:mainClass[javaimplementation:javaClassName='"
-                + implementationClass + "' and mexadl:isAnnotation='true']");
-        element = (Element) typePath.selectSingleNode(document);
-
-        returnValue = false;
-        if (element != null) {
-            returnValue = true;
-        }
-
-        return returnValue;
     }
 
     /**
