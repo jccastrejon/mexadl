@@ -7,8 +7,8 @@ public aspect MetricsAspect_$suffix {
             
             // $definition.type
             declare @type :
-                $definition.type : @$definition.metricsClass (
-                type = "$definition.type", 
+                #if($annotations.contains($definition.type)) (@$definition.type *) #else $definition.type #end : 
+                 @$definition.metricsClass (
                  #foreach ($metricSet in $definition.metricSets)
                      $metricSet.name = @$definition.metricsClass.$metricSet.type (
                      #foreach ($metric in $metricSet.metrics)

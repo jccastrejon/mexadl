@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -437,5 +439,32 @@ public class Util {
      */
     public static String getConfigurationProperty(final Class<?> clazz, final String name) {
         return Util.properties.getString(clazz.getName() + "." + name);
+    }
+    
+    /**
+     * Verify if an implementing class represents a Java annotation.
+     * 
+     * @param implementationClass
+     * @return
+     * @throws JDOMException
+     */
+    @SuppressWarnings("unchecked")
+    public static List<String> getAnnotations(final Document document) throws JDOMException {
+        XPath typePath;
+        List<Element> elements;
+        List<String> returnValue;
+
+        typePath = XPath.newInstance("//javaimplementation:mainClass[mexadl:isAnnotation='true']");
+        elements = (List<Element>) typePath.selectNodes(document);
+
+        returnValue = null;
+        if (elements != null) {
+            returnValue = new ArrayList<String>(elements.size());
+            for (Element element : elements) {
+                returnValue.add(element.getChildTextTrim("javaClassName", Util.XADL_JAVAIMPLEMENTATION_NAMESPACE));
+            }
+        }
+
+        return returnValue;
     }
 }

@@ -130,6 +130,7 @@ public class MetricsProcessor implements MexAdlProcessor {
             if (!definitionsList.isEmpty()) {
                 properties = new HashMap<String, Object>();
                 properties.put("definitionsList", definitionsList);
+                properties.put("annotations", Util.getAnnotations(document));
                 Util.createFile(document, xArchFilePath, MetricsProcessor.aspectTemplate, properties, "MetricsAspect",
                         Util.getDocumentName(document), Util.ASPECTJ_EXTENSION);
             }
