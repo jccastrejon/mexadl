@@ -51,9 +51,11 @@ public class VerificationProcessor {
         MetricsVisitor metricsVisitor;
         MetricsChecker metricsChecker;
         Map<String, Map<String, Object>> expectedMetrics;
+        Map<String, Map<String, Map<String, Integer>>> realMetrics;
 
         classes = VerificationProcessor.getClassesInDirectory(classesDir);
         if (classes != null) {
+            realMetrics = VerificationProcessor.collectMetrics(reportsDir);
             metricsChecker = new MetricsChecker();
 
             for (String clazz : classes) {
@@ -68,8 +70,7 @@ public class VerificationProcessor {
                 if ((!expectedMetrics.isEmpty()) && (!currentType.startsWith("mx.itesm.mexadl"))) {
                     VerificationProcessor.logger.log(Level.INFO, "** Beginning analysis for: " + currentType + " **");
                     for (String metricsSet : VerificationProcessor.METRICS_SETS) {
-                        metricsChecker.check(currentType, metricsSet, expectedMetrics, VerificationProcessor
-                                .collectMetrics(reportsDir));
+                        metricsChecker.check(currentType, metricsSet, expectedMetrics, realMetrics);
                     }
                     VerificationProcessor.logger.log(Level.INFO, "** Ending analysis for: " + currentType + " *****");
                 }
