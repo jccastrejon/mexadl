@@ -28,7 +28,8 @@ public class MetricsChecker {
      * @param realMetrics
      * @throws Exception
      */
-    public void check(final String type, final String metricsSet, final Map<String, Map<String, Object>> expectedMetricsData,
+    public void check(final String type, final String metricsSet,
+            final Map<String, Map<String, Object>> expectedMetricsData,
             final Map<String, Map<String, Map<String, Integer>>> realMetrics) throws Exception {
         String tool;
         Integer realValue;
@@ -56,7 +57,7 @@ public class MetricsChecker {
                             realValue = resultsType.get(metricCode);
                             expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
 
-                            if (operator.isValid(expectedValue, realValue)) {
+                            if (operator.isValid(realValue, expectedValue)) {
                                 logger.log(Level.INFO, "Valid value for " + metric + ". (expected: " + expectedValue
                                         + ", real: " + realValue + ")");
                             } else {
