@@ -114,13 +114,6 @@ public @interface MaintainabilityMetrics {
          * @return
          */
         int weightedMethodComplexity() default -1;
-
-        /**
-         * Number of public methods contained in a type.
-         * 
-         * @return
-         */
-        int numberOfPublicMethods() default -1;
     }
 
     /**
@@ -132,6 +125,7 @@ public @interface MaintainabilityMetrics {
      * 
      */
     @interface ModifiabilityMetrics {
+        
         /**
          * The number of duplicated blocks found in source code.
          * 
@@ -156,7 +150,14 @@ public @interface MaintainabilityMetrics {
      * 
      */
     @interface TestabilityMetrics {
-
+        
+        /**
+         * Number of public methods contained in a type.
+         * 
+         * @return
+         */
+        int numberOfPublicMethods() default -1;
+        
         /**
          * Unit test coverage.
          * 
