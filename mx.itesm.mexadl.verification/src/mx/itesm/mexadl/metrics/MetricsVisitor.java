@@ -40,7 +40,7 @@ public class MetricsVisitor extends EmptyVisitor {
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        type = name.replace('/', '.');
+        this.type = name.replace('/', '.');
     }
 
     @Override

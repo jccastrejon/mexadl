@@ -28,9 +28,8 @@ public class MetricsChecker {
      * @param realMetrics
      * @throws Exception
      */
-    public void check(final String metricsSet, final Map<String, Map<String, Object>> expectedMetricsData,
+    public void check(final String type, final String metricsSet, final Map<String, Map<String, Object>> expectedMetricsData,
             final Map<String, Map<String, Map<String, Integer>>> realMetrics) throws Exception {
-        String type;
         String tool;
         Integer realValue;
         String metricCode;
@@ -42,7 +41,6 @@ public class MetricsChecker {
 
         currentMetrics = expectedMetricsData.get(metricsSet);
         if (currentMetrics != null) {
-            type = expectedMetricsData.get(MaintainabilityMetrics.class.getName()).get("type").toString();
             logger.log(Level.INFO, "---- Beginning " + metricsSet + " check ----");
             for (String metric : currentMetrics.keySet()) {
                 operator = ComparissonOperator.valueOf(Util.getConfigurationProperty(MaintainabilityMetrics.class,

@@ -14,13 +14,6 @@ import java.lang.annotation.ElementType;
 @Target(value = ElementType.TYPE)
 public @interface MaintainabilityMetrics {
 
-    /**
-     * Type to which the maintainability metrics are associated.
-     * 
-     * @return
-     */
-    String type();
-
     ModularityMetrics modularityMetrics() default @ModularityMetrics;
 
     ReusabilityMetrics reusabilityMetrics() default @ReusabilityMetrics;

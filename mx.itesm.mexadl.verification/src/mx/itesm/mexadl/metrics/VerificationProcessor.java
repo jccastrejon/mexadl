@@ -63,10 +63,12 @@ public class VerificationProcessor {
                 expectedMetrics = metricsVisitor.getMetrics();
                 currentType = metricsVisitor.getType();
 
-                if ((!expectedMetrics.isEmpty()) && (Util.getExpectedMetricsType(expectedMetrics).equals(currentType))) {
+                // Analyze only user classes associated to the
+                // MaintainabilityMetrics annotation
+                if ((!expectedMetrics.isEmpty()) && (!currentType.startsWith("mx.itesm.mexadl"))) {
                     VerificationProcessor.logger.log(Level.INFO, "** Beginning analysis for: " + currentType + " **");
                     for (String metricsSet : VerificationProcessor.METRICS_SETS) {
-                        metricsChecker.check(metricsSet, expectedMetrics, VerificationProcessor
+                        metricsChecker.check(currentType, metricsSet, expectedMetrics, VerificationProcessor
                                 .collectMetrics(reportsDir));
                     }
                     VerificationProcessor.logger.log(Level.INFO, "** Ending analysis for: " + currentType + " *****");
