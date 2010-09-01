@@ -53,10 +53,12 @@ public class JavaNcssMetrics extends XmlFileMetrics {
                 functionName = function.getChildText("name");
                 classMetrics = returnValue.get(functionName.substring(0, functionName.lastIndexOf('.')));
 
-                maxCyclomaticComplexity = classMetrics.get("ccn");
-                currentCyclomaticComplexity = Integer.parseInt(function.getChildText("ccn"));
-                if (currentCyclomaticComplexity > maxCyclomaticComplexity) {
-                    classMetrics.put("ccn", currentCyclomaticComplexity);
+                if (classMetrics != null) {
+                    maxCyclomaticComplexity = classMetrics.get("ccn");
+                    currentCyclomaticComplexity = Integer.parseInt(function.getChildText("ccn"));
+                    if (currentCyclomaticComplexity > maxCyclomaticComplexity) {
+                        classMetrics.put("ccn", currentCyclomaticComplexity);
+                    }
                 }
             }
         }
