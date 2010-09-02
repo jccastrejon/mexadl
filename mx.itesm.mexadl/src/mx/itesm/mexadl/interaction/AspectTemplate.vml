@@ -10,14 +10,26 @@ import org.aspectj.lang.annotation.DeclareWarning;
 @Aspect
 public class InteractionsAspect_$suffix {
 
+	#macro (callType $type) call (* #if($annotations.contains($type)) (@$type *) #else $type #end .* (..)) #end
+	
+	#macro (withinType $type) within (#if($annotations.contains($type)) @$type * #else $type #end) #end
+
     #macro (generatePointcuts $types)
         #foreach ($type in $types)
         
             // $type
-            @Pointcut("call (* #if($annotations.contains($type)) (@$type *) #else $type #end .* (..))")
+            @Pointcut(" #callType($type) "
+            	#foreach ($auxClass in $auxClasses.get($type))
+            		+ " || #callType($auxClass)"
+            	#end
+            )
             public void call_$Util.getValidName($type) () {}
             
-            @Pointcut("within (#if($annotations.contains($type)) @$type * #else $type #end)")
+            @Pointcut(" #withinType($type)"
+            	#foreach ($auxClass in $auxClasses.get($type))
+            		+ " || #withinType($auxClass)"
+            	#end
+            )
             public void within_$Util.getValidName($type) () {}
         #end
     #end

@@ -108,6 +108,7 @@ public class InteractionProcessor implements MexAdlProcessor {
         String secondImplementation;
         List<List<String>> linksList;
         Map<String, Object> properties;
+        Map<String, Set<String>> auxClasses;
         Map<String, String> endpointComponents;
         Map<String, Set<String>> validInteractions;
         List<Map<String, Object>> interactionsList;
@@ -141,6 +142,7 @@ public class InteractionProcessor implements MexAdlProcessor {
             }
 
             // Associate valid interactions to each Type
+            auxClasses = new HashMap<String, Set<String>>();
             validInteractions = new HashMap<String, Set<String>>();
             for (List<String> link : linksList) {
                 link = this.getOrderedEndpoints(endpointsDirections, link);
@@ -153,8 +155,8 @@ public class InteractionProcessor implements MexAdlProcessor {
 
                     // Directly connected components (no connector)
                     if ((firstImplementation != null) && (secondImplementation != null)) {
-                        this.addTypesDependencies(validInteractions, firstImplementation, secondImplementation,
-                                isReverse);
+                        this.addTypesDependencies(document, validInteractions, auxClasses, firstImplementation,
+                                secondImplementation, isReverse);
                     } else {
                         // If two components are connected through a connector,
                         // and the connector doesn't have an implementation
@@ -171,8 +173,8 @@ public class InteractionProcessor implements MexAdlProcessor {
                                         endpointComponents.get(link.get(0)))) {
                                     firstImplementation = Util.getLinkImplementationClass(document, endpointComponents
                                             .get(connectorLink.get(0)));
-                                    this.addTypesDependencies(validInteractions, firstImplementation,
-                                            secondImplementation, isReverse);
+                                    this.addTypesDependencies(document, validInteractions, auxClasses,
+                                            firstImplementation, secondImplementation, isReverse);
                                 }
                             }
                         } else if ((this.isConnector(endpointComponents.get(link.get(1))))
@@ -186,8 +188,8 @@ public class InteractionProcessor implements MexAdlProcessor {
                                         endpointComponents.get(link.get(1)))) {
                                     secondImplementation = Util.getLinkImplementationClass(document, endpointComponents
                                             .get(connectorLink.get(1)));
-                                    this.addTypesDependencies(validInteractions, firstImplementation,
-                                            secondImplementation, isReverse);
+                                    this.addTypesDependencies(document, validInteractions, auxClasses,
+                                            firstImplementation, secondImplementation, isReverse);
                                 }
                             }
                         }
@@ -212,6 +214,7 @@ public class InteractionProcessor implements MexAdlProcessor {
                 properties.put("typesList", validInteractions.keySet());
                 properties.put("warningsList", interactionsList);
                 properties.put("annotations", Util.getAnnotations(document));
+                properties.put("auxClasses", auxClasses);
                 Util.createFile(document, xArchFilePath, InteractionProcessor.aspectTemplate, properties,
                         "InteractionsAspect", Util.getDocumentName(document), Util.JAVA_EXTENSION);
             }
@@ -249,17 +252,24 @@ public class InteractionProcessor implements MexAdlProcessor {
      * Add the dependency between two types defined in an xADL architecture
      * definition.
      * 
+     * @param document
      * @param dependencies
+     * @param auxClasses
      * @param firstType
      * @param secondType
      * @param reverse
+     * @throws JDOMException
      */
-    private void addTypesDependencies(final Map<String, Set<String>> dependencies, final String firstType,
-            final String secondType, final boolean reverse) {
+    private void addTypesDependencies(final Document document, final Map<String, Set<String>> dependencies,
+            final Map<String, Set<String>> auxClasses, final String firstType, final String secondType,
+            final boolean reverse) throws JDOMException {
         Set<String> currentInteractions;
 
         // Only work with non-null dependencies
         if ((firstType != null) && (secondType != null)) {
+            auxClasses.put(firstType, this.getAuxImplementationClasses(document, firstType));
+            auxClasses.put(secondType, this.getAuxImplementationClasses(document, secondType));
+
             this.initializeInteractions(firstType, dependencies);
             this.initializeInteractions(secondType, dependencies);
 
@@ -361,6 +371,42 @@ public class InteractionProcessor implements MexAdlProcessor {
             returnValue.add(link.get(0));
         } else {
             returnValue = null;
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Get the auxiliary classes associated to a main implementing class.
+     * 
+     * @param document
+     * @param mainClass
+     * @return
+     * @throws JDOMException
+     */
+    @SuppressWarnings("unchecked")
+    private Set<String> getAuxImplementationClasses(final Document document, final String mainClass)
+            throws JDOMException {
+        XPath auxPath;
+        Element implementation;
+        List<Element> auxClasses;
+        Set<String> returnValue;
+
+        auxPath = XPath
+                .newInstance("//implementation:implementation/javaimplementation:mainClass[normalize-space(javaimplementation:javaClassName)='"
+                        + mainClass + "']");
+        implementation = (Element) auxPath.selectSingleNode(document);
+
+        returnValue = null;
+        if (auxPath != null) {
+            auxClasses = (List<Element>) implementation.getParentElement().getChildren("auxClass",
+                    Util.XADL_JAVAIMPLEMENTATION_NAMESPACE);
+            if (auxClasses != null) {
+                returnValue = new HashSet<String>(auxClasses.size());
+                for (Element auxClass : auxClasses) {
+                    returnValue.add(auxClass.getChildTextTrim("javaClassName", Util.XADL_JAVAIMPLEMENTATION_NAMESPACE));
+                }
+            }
         }
 
         return returnValue;
