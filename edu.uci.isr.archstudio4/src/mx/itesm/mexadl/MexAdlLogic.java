@@ -1,3 +1,21 @@
+/*
+ * Copyright 2010 jccastrejon
+ *  
+ * This file is part of MexADL.
+ *
+ * MexADL is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MexADL is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package mx.itesm.mexadl;
 
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -39,14 +57,14 @@ public class MexAdlLogic extends AbstractThingLogic implements IBNAMenuListener 
      * @param xArchRef
      *            xADL document reference.
      */
-    public MexAdlLogic(ArchipelagoServices archipelagoServices, ObjRef xArchRef) {
+    public MexAdlLogic(final ArchipelagoServices archipelagoServices, final ObjRef xArchRef) {
         this.archipelagoServices = archipelagoServices;
         this.xArchRef = xArchRef;
     }
 
     @Override
-    public void fillMenu(IBNAView view, IMenuManager menuManager, int localX, int localY, IThing thing, int worldX,
-            int worldY) {
+    public void fillMenu(final IBNAView view, final IMenuManager menuManager, final int localX, final int localY,
+            final IThing thing, final int worldX, final int worldY) {
 
         // This menu is only valid at a global level
         if (thing == null) {
