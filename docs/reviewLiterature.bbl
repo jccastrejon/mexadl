@@ -1,0 +1,299 @@
+\begin{thebibliography}{10}
+
+\bibitem{Randell70}
+Theory and practice.
+\newblock In Brian Randell and John Buxton, editors, {\em SOFTWARE ENGINEERING
+  TECHNIQUES Report on a conference sponsored by the NATO Science Committee},
+  pages 9--14, Brussels, Belgium, 1970. Scientific Affairs Division, NATO.
+
+\bibitem{Baheri07}
+H.~Bagheri, H.~C. Esfahani, and S.~H.~Mirian Hosseinabadi.
+\newblock An aspect enhanced method of nfr modeling in software architecture.
+\newblock In {\em 10th International Conference on Information Technology,
+  (ICIT 2007)}, pages 240--242, Orissa, 2007. IEEE.
+
+\bibitem{Barroca99}
+Leonor Barroca, Jon Hall, and Patrick Hall.
+\newblock An introduction and history of software architectures, components and
+  reuse.
+\newblock {\em Software Architectures: Advances and Applications}, pages 1--11,
+  1999.
+
+\bibitem{Boehm81}
+Barry~William Boehm.
+\newblock {\em Software Engineering Economics (Prentice-Hall Advances in
+  Computing Science & Technology Series)}, chapter Software Maintenance Cost
+  Estimation, pages 533--555.
+\newblock Prentice Hall, Upper Saddle River, New Jersey, 1981.
+
+\bibitem{Brooks75}
+Frederick Brooks.
+\newblock {\em The Mythical Man-Month: Essays on Software Engineering}.
+\newblock Addison-Wesley, 1975.
+
+\bibitem{Canning72}
+Richard Canning.
+\newblock The maintenance iceberg.
+\newblock {\em EDP Analyzer}, 10(10):1--14, 1972.
+
+\bibitem{Chen09}
+J.~Chen and S.~Huang.
+\newblock An empirical analysis of the impact of software development problem
+  factors on software maintainability.
+\newblock {\em Journal of Systems and Software}, 82(6):981--992, 2009.
+
+\bibitem{Chitchyan09}
+R.~Chitchyan, M.~Pinto, and S.~S. Khan.
+\newblock Report on early aspects at icse 2009: workshop on aspect-oriented
+  requirements engineering and architecture design.
+\newblock {\em ACM SIGSOFT Software Engineering Notes}, 34(5):30--35, 2009.
+
+\bibitem{Coleman94}
+D.~Coleman, D.~Ash, B.~Lowther, and P.~Oman.
+\newblock Using metrics to evaluate software system maintainability.
+\newblock {\em Computer}, 27(8):44--49, 1994.
+
+\bibitem{Dashofy07}
+E.~M. Dashofy.
+\newblock Supporting stakeholder-driven, multi-view software architecture
+  modeling, 2007.
+
+\bibitem{Dashofy02}
+E.~M. Dashofy, A.~V. der Hoek, and R.~N. Taylor.
+\newblock An infrastructure for the rapid development of xml-based architecture
+  description languages.
+\newblock In {\em Proceedings of the Working IEEE/IFIP Conference on Software
+  Architectures (WICSA 2001)}, pages 266--276, Amsterdam, Netherlands, 2002.
+  ACM Press.
+
+\bibitem{Dijkstra82}
+Edsger Dijkstra.
+\newblock {\em Selected Writings on Computing: A Personal Perspective (Texts
+  and Monographs in Computer Science)}, chapter On the role of scientific
+  thought, pages 60--66.
+\newblock Springer-Verlag, New York, 1982.
+
+\bibitem{Dorfmann94}
+M.~Dorfmann, E.~R. Byrne, S.~Garcia, R.~Harwell, L.~Miller, B.~Sabor, et~al.
+\newblock Requirements engineering standardization.
+\newblock In {\em Proceedings the First International Conference on
+  Requirements Engineering}, pages 57--63, Piscawtaway, NJ, 1994. IEEE.
+
+\bibitem{Edelstein93}
+D.~V. Edelstein.
+\newblock Report on the ieee std 1219–1993-standard for software maintenance.
+\newblock {\em ACM SIGSOFT Software Engineering Notes}, 18(4):94--95, 1993.
+
+\bibitem{Feiler05}
+P.~H. Feiler, B.~Lewis, S.~Vestal, and E.~Colbert.
+\newblock An overview of the sae architecture analysis & design language (aadl)
+  standard: A basis for model-based architecture-driven embedded systems
+  engineering.
+\newblock In {\em Architecture Description Languages: IFIP International
+  Federation for Information Processing}, pages 3--15, New York, 2005.
+  Springer.
+
+\bibitem{Franch98}
+X.~Franch and P.~Botella.
+\newblock Putting non-functional requirements into software architecture.
+\newblock In {\em Software Specification and Design (IWSSD9 '98), 9th
+  International Workshop}, pages 60--67, Piscawtaway, NJ, 1998. IEEE.
+
+\bibitem{Garlan00}
+David Garlan, Robert~T. Monroe, and David Wile.
+\newblock Acme: Architectural description of component-based systems.
+\newblock In {\em Foundations of Component-Based Systems}, pages 47--68.
+  Cambridge University Press, New York, 2000.
+
+\bibitem{Gruhn04}
+V.~Gruhn and C.~Schäfer.
+\newblock An architecture description language for mobile distributed systems.
+\newblock In Flavio Oquendo, Brian Warboys, and Ron Morrison, editors, {\em
+  Software Architecture}, volume 3047 of {\em Lecture Notes in Computer
+  Science}. Springer, 2004.
+
+\bibitem{Heitlager07}
+I.~Heitlager, T.~Kuipers, and J.~Visser.
+\newblock A practical model for measuring maintainability.
+\newblock In {\em Sixth International Conference on the Quality of Information
+  and Communications Technology (Quatic 2007)}, pages 30--39, Orlando, Florida,
+  2007. IEEE Computer Society Press.
+
+\bibitem{Honglei09}
+T.~Honglei, S.~Wei, and Z.~Yanan.
+\newblock The research on software metrics and software complexity metrics.
+\newblock In {\em International Forum on Computer Science-Technology and
+  Applications, 2009. IFCSTA '09. Volume 3}, pages 131--136, Los Alamitos, CA,
+  2009. IEEE Computer Society.
+
+\bibitem{ISO07}
+I.~J. ISO/IEC JTC 1/SC~7/WG, editor.
+\newblock {\em ISO/IEC 9126-1:2001, Software engineering -- Product quality --
+  Part 1: Quality model}.
+\newblock American National Standards Institute (ANSI), 2007.
+
+\bibitem{Jarvis95}
+A.~Jarvis and R.~Kehoe, editors.
+\newblock {\em ISO 9000-3: A Tool for Software Product and Process
+  Improvement}.
+\newblock Springer, New York, 1995.
+
+\bibitem{ISO09}
+ISO/IEC JTC1/SC7/WG6, editor.
+\newblock {\em ISO/IEC FCD 25010: Systems and software engineering – Software
+  product Quality Requirements and Evaluation (SQuaRE) – Quality models for
+  software product quality and system quality in use}.
+\newblock Department of Industrial and Management Systems Eng. Waseda
+  University, 2009.
+
+\bibitem{Jurgens02}
+J.~Jürjens.
+\newblock Umlsec: Extending uml for secure systems development.
+\newblock In Hussmann~H. Jézéquel, J.-M. and S.~Cook, editors, {\em «UML»
+  2002 — The Unified Modeling Language}, volume 2460 of {\em Lecture Notes in
+  Computer Science}, pages 1--9. Springer, 2002.
+
+\bibitem{Kickzales97}
+G.~Kiczales, J.~Lamping, A.~Mendhekar, C.~Maeda, C.~Lopes, J.~Loingtier, et~al.
+\newblock Aspect-oriented programming.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming (ECOOP)}, pages 220--242, Jyväskylä, Finland, 1997.
+  Springer-Verlag.
+
+\bibitem{Naik08}
+Priyadarshi~Tripathy Kshirasagar~Naik.
+\newblock {\em Software Testing and Quality Assurance: Theory and Practice},
+  chapter Software Quality, pages 519--545.
+\newblock Wiley, New York, 2008.
+
+\bibitem{Laddad09}
+R.~Laddad.
+\newblock {\em AspectJ in Action: Enterprise AOP with Spring}, chapter
+  Discovering AOP, pages 3--26.
+\newblock Manning Publications, Greenwich, 2 edition, 2009.
+
+\bibitem{Lehman80}
+M.~M. Lehman.
+\newblock Programs, life cycles, and laws of software evolution.
+\newblock {\em Proceedings of the IEEE}, 68(9):1060--1076, 1980.
+
+\bibitem{Lientz81}
+Bennet~P. Lientz and E.~Burton Swanson.
+\newblock Problems in application software maintenance.
+\newblock {\em Communications of the ACM}, 24(11):763--769, 1981.
+
+\bibitem{Lozano10}
+J.~A. Lozano and A.~F. Tornés.
+\newblock {\em Requirements Engineering with Aspects: Applying Aspect
+  Orientation to Requirements in Software Development}.
+\newblock Lambert Academic Publishing, Newark, 2010.
+
+\bibitem{Medvidovic07}
+N.~Medvidovic, E.~M. Dashofy, and R.~N. Taylor.
+\newblock Moving architectural description from under the technology lamppost.
+  information and software technology.
+\newblock {\em Information and Software Technology}, 49(1):12--31, 2007.
+
+\bibitem{Merson07}
+P.~Merson.
+\newblock Using aspect-oriented programming to enforce architecture.
+\newblock \url{http://www.sei.cmu.edu/library/ abstracts/reports/07tn019.cfm},
+  September 2007.
+
+\bibitem{Ruiz08}
+J.~J.~Ruiz Morilla.
+\newblock Iso 9126 vs. square. iso 9126 vs. square.
+\newblock
+  \url{http://alarcos.inf-cr.uclm.es/doc/cmsi/trabajos/Joaquin%20Ruiz.pdf},
+  January 2008.
+
+\bibitem{Parnas72}
+David Parnas.
+\newblock On the criteria to be used in decomposing systems into modules.
+\newblock {\em Communications of the ACM}, 15(12):1053--1058, 1972.
+
+\bibitem{Parnas76}
+David Parnas and H.~Würges.
+\newblock Response to undesired events in software systems.
+\newblock In {\em Proceedings of the 2nd international conference on Software
+  engineering}, pages 437--446, Los Alamitos, CA, USA, 1976. IEEE Computer
+  Society Press.
+
+\bibitem{Perry92}
+Dewayne~E. Perry and Alexander~L. Wolf.
+\newblock Foundations for the study of software architecture.
+\newblock {\em ACM SIGSOFT Software Engineering Notes}, 17(4):40--52, 1992.
+
+\bibitem{Pessemier04}
+N.~Pessemier, L.~Seinturier, and L.~Duchien.
+\newblock Components, adl & aop: Towards a common approach.
+\newblock In {\em RAM-SE}, pages 61--69, Magdeburg, Germany, 2004. Fakultät
+  für Informatik der Universität Magdeburg.
+
+\bibitem{Pinto03}
+M.~Pinto, L.~Fuentes, and J.~M. Troya.
+\newblock Daop-adl: An architecture description language for dynamic component
+  and aspect-based development.
+\newblock In {\em Generative Programming and Component Engineering: Second
+  International Conference, GPCE 2003}, pages 118--137, New York, 2003.
+  Springer.
+
+\bibitem{Randell79}
+Brian Randell.
+\newblock Software engineering in 1968.
+\newblock In {\em Proceedings of the 4th international conference on Software
+  engineering}, pages 1--10, Piscataway, NJ, USA, 1979. IEEE Computer Society.
+
+\bibitem{Shaw96}
+Mary Shaw and David Garlan.
+\newblock {\em Software Architecture: Perspectives on an Emerging Discipline},
+  chapter Introduction, pages 1--18.
+\newblock Prentice Hall, Alexandria, VA, 1996.
+
+\bibitem{Sousa03}
+G.~Sousa and I.~J. Castro.
+\newblock Adapting the nfr framework to aspect-oriented requirement
+  engineering.
+\newblock In {\em XVII Brazilian Symposium on Software Engineering}, 2003.
+
+\bibitem{Suleiman08}
+B.~Suleiman, V.~Tosic, and E.~Aliev.
+\newblock Non-functional property specifications for wright adl.
+\newblock In {\em 2008 IEEE 8th International Conference on Computer and
+  Information Technology}, pages 766--771, Sydney, 2008. IEEE.
+
+\bibitem{Suryn03}
+W.~Suryn, A.~Abran, and A.~April.
+\newblock Iso/iec square. the second generation of standards for software
+  product quality.
+\newblock In {\em Proceedings of the Software and Engineering Applications
+  Conference: Sea 2003}, Marina del Rey, USA, 2003.
+
+\bibitem{Swanson76}
+E.~Burton Swanson.
+\newblock The dimensions of maintenance.
+\newblock In {\em Proceedings of the 2nd international conference on Software
+  engineering}, pages 492--497, Los Alamitos, CA, USA, 1976. IEEE Computer
+  Society Press.
+
+\bibitem{Sperberg00}
+World Wide Web~Consortium (W3C).
+\newblock Xml schema.
+\newblock \url{http://www.w3.org/XML/Schema.html}, April 2000.
+
+\bibitem{Xu05}
+L.~Xu, H.~Ziv, D.~Richardson, and Z.~Liu.
+\newblock Towards modeling non-functional requirements in software
+  architecture.
+\newblock In {\em Proceedings of the Early Aspects: Aspect-Oriented Requirement
+  Engineering and Architecture Design}, Chicago, IL, 2005.
+
+\bibitem{Zhang07}
+J.~Zhang, F.~Li, Y.~Zhang, and L.~Wang.
+\newblock Non-functional attributes modeling in software architecture.
+\newblock In {\em Proceedings of the Eighth ACIS International Conference on
+  Software Engineering, Artificial Intelligence, Networking, and
+  Parallel/Distributed Computing - Volume 02}, pages 149--153, Washington, DC,
+  2007. IEEE Computer Society.
+
+\end{thebibliography}

@@ -1,0 +1,73 @@
+This is BibTeX, Version 0.99d (TeX Live 2010)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: reviewLiterature.aux
+The style file: plain.bst
+Database file #1: references.bib
+I was expecting a `,' or a `}'---line 37 of file references.bib
+ :  
+ :  address = "New York"
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Repeated entry---line 110 of file references.bib
+ : @inbook{Naik08
+ :               ,
+I'm skipping whatever remains of this entry
+Warning--entry type for "Dashofy07" isn't style-file defined
+--line 160 of file references.bib
+Repeated entry---line 198 of file references.bib
+ : @inbook{Laddad09
+ :                 ,
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 449 of file references.bib
+ :  
+ :  pages = "212--218"
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--to sort, need author or key in Randell70
+Warning--empty author in Randell70
+Name 1 in "Jézéquel, J.- M., Hussmann, H., and Cook, S." has a comma at the end for entry Jurgens02
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Jézéquel, J.- M., Hussmann, H., and Cook, S." for entry Jurgens02
+while executing---line 1090 of file plain.bst
+You've used 47 entries,
+            2118 wiz_defined-function locations,
+            839 strings with 12721 characters,
+and the built_in function-call counts, 17382 in all, are:
+= -- 1789
+> -- 671
+< -- 31
++ -- 273
+- -- 215
+* -- 1111
+:= -- 2698
+add.period$ -- 158
+call.type$ -- 47
+change.case$ -- 234
+chr.to.int$ -- 0
+cite$ -- 49
+duplicate$ -- 771
+empty$ -- 1461
+format.name$ -- 215
+if$ -- 3855
+int.to.chr$ -- 0
+int.to.str$ -- 47
+missing$ -- 50
+newline$ -- 236
+num.names$ -- 101
+pop$ -- 326
+preamble$ -- 1
+purify$ -- 196
+quote$ -- 0
+skip$ -- 537
+stack$ -- 0
+substring$ -- 1091
+swap$ -- 233
+text.length$ -- 31
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 168
+warning$ -- 2
+while$ -- 186
+width$ -- 49
+write$ -- 550
+(There were 6 error messages)
