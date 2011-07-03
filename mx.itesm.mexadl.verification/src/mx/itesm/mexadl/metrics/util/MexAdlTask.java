@@ -58,7 +58,7 @@ public class MexAdlTask extends Task {
             LogManager.getLogManager()
                     .readConfiguration(
                             MexAdlTask.class.getClassLoader().getResourceAsStream(
-                                    "mx/itesm/mexadl/metrics/logging.properties"));
+                                    "mx/itesm/mexadl/metrics/logging-metrics.properties"));
         } catch (Exception e) {
             System.out.println("Unable to register logging configuration: " + e);
         }

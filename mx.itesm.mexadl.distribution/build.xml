@@ -79,8 +79,8 @@
 				<taskdef classpathref="aspectj.lib" resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" />
 				
 				<!-- Execution of interaction warnings aspect -->
-				<echo>Usando classpath: ${toString:aspectj.lib}</echo>
-				<iajc classpathref="aspectj.lib" source="1.6" destdir="${mexadl.classes.dir}" >
+				<iajc classpathref="aspectj.lib" source="1.6" destdir="${mexadl.classes.dir}"
+					messageHolderClass="mx.itesm.mexadl.metrics.util.InvalidInteractionsHolder">
 					<sourceroots>
 						<pathelement path="${mexadl.src.dir}" />
 						<pathelement path="${src.mexadl.dir}" />
