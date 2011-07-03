@@ -15,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl.metrics;
 
 import java.util.Map;
@@ -62,35 +62,39 @@ public class MetricsChecker {
         if (currentMetrics != null) {
             logger.log(Level.INFO, "---- Beginning " + metricsSet + " check ----");
             for (String metric : currentMetrics.keySet()) {
-                operator = ComparissonOperator.valueOf(Util.getConfigurationProperty(MaintainabilityMetrics.class,
-                        metric + ".operator"));
-                tool = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".tool");
-                metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".code");
-                if (metricCode != null) {
-                    results = (Map<String, Map<String, Integer>>) realMetrics.get(tool);
+                try {
+                    operator = ComparissonOperator.valueOf(Util.getConfigurationProperty(MaintainabilityMetrics.class,
+                            metric + ".operator"));
+                    tool = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".tool");
+                    metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".code");
+                    if (metricCode != null) {
+                        results = (Map<String, Map<String, Integer>>) realMetrics.get(tool);
 
-                    if (results != null) {
-                        resultsType = results.get(type);
-                        if (resultsType != null) {
-                            realValue = resultsType.get(metricCode);
-                            expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
+                        if (results != null) {
+                            resultsType = results.get(type);
+                            if (resultsType != null) {
+                                realValue = resultsType.get(metricCode);
+                                expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
 
-                            if (operator.isValid(realValue, expectedValue)) {
-                                logger.log(Level.INFO, "Valid value for " + metric + ". (expected: " + expectedValue
-                                        + ", real: " + realValue + ")");
+                                if (operator.isValid(realValue, expectedValue)) {
+                                    logger.log(Level.INFO, "Valid value for " + metric + ". (expected: "
+                                            + expectedValue + ", real: " + realValue + ")");
+                                } else {
+                                    logger.log(Level.INFO, "Invalid value for " + metric + ". (expected: "
+                                            + expectedValue + ", real: " + realValue + ")");
+                                }
                             } else {
-                                logger.log(Level.INFO, "Invalid value for " + metric + ". (expected: " + expectedValue
-                                        + ", real: " + realValue + ")");
+                                logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: "
+                                        + tool + ", for type: " + type);
                             }
                         } else {
-                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool
-                                    + ", for type: " + type);
+                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool);
                         }
                     } else {
-                        logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool);
+                        logger.log(Level.WARNING, "No code found for metric: " + metric);
                     }
-                } else {
-                    logger.log(Level.WARNING, "No code found for metric: " + metric);
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "An error ocurred whilte trying to analyze metric: " + metric);
                 }
             }
             logger.log(Level.INFO, "---- Ending " + metricsSet + " check -------");

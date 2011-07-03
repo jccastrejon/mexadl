@@ -124,7 +124,9 @@ public class VerificationProcessor {
 
                 if (currentFile.isDirectory()) {
                     innerFiles = VerificationProcessor.getClassesInDirectory(currentFile);
-                    returnValue.addAll(innerFiles);
+                    if(innerFiles != null) {
+                        returnValue.addAll(innerFiles);
+                    }
                 } else {
                     returnValue.add(currentFile.getAbsolutePath());
                 }
