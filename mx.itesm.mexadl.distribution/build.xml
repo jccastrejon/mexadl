@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<project name="mexadl">
+	<property name="mexadl.verification.dir" value="${env.MEXADL_HOME}"/>
+	<property name="mexadl.lib.dir" value="${mexadl.verification.dir}/lib" />
+	<property name="mexadl.reports.dir" value="${basedir}/mexadl_reports" />
+
+	<!-- Beginning MexADL -->
+	<target name="mexadl.verify">
+		<antcall target="mexadl.init" />
+		<antcall target="mexadl.collectMetrics" />
+		<antcall target="mexadl.verifyAspects" />
+		<antcall target="mexadl.verifyMetrics" />
+
+	</target>
+
+	<target name="mexadl.init" depends="mexadl.clean">
+		<mkdir dir="${mexadl.reports.dir}" />
+	</target>
+
+	<target name="mexadl.clean">
+		<delete dir="${mexadl.reports.dir}" quiet="true" />
+	</target>
+
+	<target name="mexadl.collectMetrics">
+		<antcall target="mexadl.ckjm" />
+		<antcall target="mexadl.pmd" />
+		<antcall target="mexadl.javancss" />
+		<antcall target="mexadl.emma" />
+	</target>
+
+	<target name="mexadl.verifyMetrics">
+		<taskdef name="verifymetrics" classname="mx.itesm.mexadl.metrics.util.MexAdlTask">
+			<classpath>
+				<fileset dir="${mexadl.lib.dir}/mexadl" includes="**/*.jar" />
+				<pathelement path="${compile.path}" />
+			</classpath>
+		</taskdef>
+		<verifymetrics classes="${classes.dir}" reports="${mexadl.reports.dir}"/>
+	</target>
+
+	<target if="compile.path" name="mexadl.verifyAspects">
+		<property name="src.mexadl.dir" value="${basedir}/src_mexadl" />
+		<path id="aspectj.lib">
+			<fileset dir="${mexadl.lib.dir}/aspectj" includes="**/*.jar" />
+			<pathelement path="${compile.path}" />
+			<fileset dir="${mexadl.lib.dir}/mexadl" includes="**/*.jar" />
+		</path>
+		<taskdef classpathref="aspectj.lib" resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" />
+		<!-- Execution of interaction warnings aspect -->
+		<iajc classpathref="aspectj.lib" source="1.6" destdir="${classes.dir}">
+			<sourceroots>
+				<pathelement path="${src.dir}" />
+				<pathelement path="${src.mexadl.dir}" />
+			</sourceroots>
+		</iajc>
+	</target>
+	<!-- Ending MexADL -->
+
+
+	<!-- Beginning CKJM -->
+	<target if="classes.dir" name="mexadl.ckjm">
+		<taskdef classname="gr.spinellis.ckjm.ant.CkjmTask" name="ckjm">
+			<classpath>
+				<fileset dir="${mexadl.lib.dir}/ckjm" includes="**/*.jar" />
+			</classpath>
+		</taskdef>
+		<ckjm classdir="${classes.dir}" format="xml" outputfile="${mexadl.reports.dir}/ckjm.xml">
+			<include name="**/*.class" />
+			<exclude name="**/*Test.class" />
+		</ckjm>
+	</target>
+	<!-- Ending CKJM -->
+
+
+	<!-- Beginning EMMA -->
+	<target if="classes.dir" name="mexadl.emma">
+		<path id="emma.lib">
+			<fileset dir="${mexadl.lib.dir}/emma" includes="**/*.jar" />
+		</path>
+		<taskdef classpathref="emma.lib" resource="emma_ant.properties" />
+		<path id="build.classpath">
+			<pathelement path="${classes.dir}" />
+		</path>
+		<mkdir dir="${mexadl.reports.dir}/emma/junit" />
+		<mkdir dir="${mexadl.reports.dir}/emma/instr" />
+		<!-- Instrument compiled classes -->
+		<emma>
+			<instr destdir="${mexadl.reports.dir}/emma/instr" instrpathref="build.classpath" merge="true" metadatafile="${mexadl.reports.dir}/emma/metadata.emma" />
+		</emma>
+		<!-- Run tests -->
+		<junit fork="yes" haltonfailure="no" printsummary="yes">
+			<classpath>
+				<path refid="emma.lib" />
+				<pathelement path="test.path" />
+			</classpath>
+			<jvmarg value="-Demma.coverage.out.file=${mexadl.reports.dir}/emma/coverage.emma" />
+			<jvmarg value="-Demma.coverage.out.merge=true" />
+			<formatter type="xml" />
+			<batchtest todir="${mexadl.reports.dir}/emma/junit">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+				<formatter type="xml" />
+			</batchtest>
+		</junit>
+		<!-- Build report from instrumentation metadata -->
+		<emma>
+			<report>
+				<fileset dir="${mexadl.reports.dir}/emma/">
+					<include name="*.emma" />
+				</fileset>
+				<xml outfile="${mexadl.reports.dir}/emma.xml" />
+			</report>
+		</emma>
+	</target>
+	<!-- Ending EMMA -->
+
+
+	<!-- Beginning JavaNCSS -->
+	<target if="src.dir" name="mexadl.javancss">
+		<taskdef classname="javancss.JavancssAntTask" name="javancss">
+			<classpath>
+				<fileset dir="${mexadl.lib.dir}/javancss" includes="**/*.jar" />
+			</classpath>
+		</taskdef>
+		<javancss abortOnFail="false" format="xml" generateReport="true" includes="**/*.java" outputFile="${mexadl.reports.dir}/javancss.xml" srcdir="${src.dir}" />
+	</target>
+	<!-- Ending JavaNCSS -->
+
+
+	<!-- Beginning PMD -->
+	<target if="src.dir" name="mexadl.pmd">
+		<property name="minimumTokenCount" value="20" />
+		<path id="pmd.lib">
+			<fileset dir="${mexadl.lib.dir}/pmd" includes="**/*.jar" />
+		</path>
+		<taskdef classname="net.sourceforge.pmd.cpd.CPDTask" classpathref="pmd.lib" name="cpd" />
+		<cpd encoding="UTF-8" format="xml" minimumTokenCount="${minimumTokenCount}" outputFile="${mexadl.reports.dir}/cpd.xml">
+			<fileset dir="${src.dir}" includes="**/*.java" />
+		</cpd>
+	</target>
+	<!-- Ending PMD -->
+</project>

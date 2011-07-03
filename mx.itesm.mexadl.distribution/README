@@ -1,0 +1,40 @@
+  MexADL
+
+
+  What is it? 
+  -----------
+  
+  An Approach for the Maintainability Verification of Software Systems based on Aspect Oriented Programming and Architecture Description Languages
+  
+  
+  Why?
+  ----
+  
+  A recurring problem in software engineering is the lack of compliance between design documents and implementation artifacts. This situation can cause a detriment in the overall quality of software systems, defined in terms of non-functional requirements. The maintainability of software systems is particularly affected by this condition, specially during the system maintenance efforts.
+
+  This study proposes an approach based on architecture description languages (ADL) and aspect oriented programming (AOP) techniques, in order to verify if the maintainability intent for the system, as described in its architecture description, is really maintained in its associated source code. In order to do so, a set of extensions to ADL constructs is proposed to characterize the maintainability quality characteristic of software systems, and to describe the set of valid interactions between components of ADL descriptions. The use of AOP static-crosscutting techniques is also intended in order to help verify these quality intents in a non-intrusive manner. The ultimate goal of this study is to help maintain the overall quality of software systems through their life cycles. The quality model used in this study is based on the set of ISO/IEC SQuaRE software quality standards, specially on the ISO/IEC 25010. It should also be noted that in order to effectively define the maintainability quality sub-characteristics, the use of source code quality metrics is intended.
+
+  An implementation of the approach proposed by this study is presented for Java based systems. It relies on the xADL 2.0 and AspectJ languages as ADL and AOP implementations, respectively.
+  
+  
+  The Latest Version
+  ------------------
+  
+  Details of the latest version can be found on the MexADL
+  Project web site <http://code.google.com/p/mexadl/>.
+  
+  
+  Installation
+  -----------
+  
+  1. Set the MEXADL_HOME environment variable to the directory where you downloaded MexADL.
+  
+  2. Download the Eclipse IDE for Java Developers <http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/heliossr1>
+  
+  3. Copy the contents of the <MEXADL_HOME/plugins> directory to the <plugins> directory of the Eclipse IDE for Java Developers.
+  
+  
+  Licensing
+  ---------
+  
+  This software is licensed under GNU General Public Licence, version 3 (GPLv3)
