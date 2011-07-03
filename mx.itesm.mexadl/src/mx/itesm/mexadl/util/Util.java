@@ -472,8 +472,15 @@ public class Util {
         List<Element> elements;
         List<String> returnValue;
 
+        // Main and Aux classes defined as Annotations
         typePath = XPath.newInstance("//javaimplementation:mainClass[mexadl:isAnnotation='true']");
         elements = (List<Element>) typePath.selectNodes(document);
+        typePath = XPath.newInstance("//javaimplementation:auxClass[mexadl:isAnnotation='true']");
+        if(elements == null) {
+            elements = (List<Element>) typePath.selectNodes(document);    
+        } else {
+            elements.addAll((List<Element>) typePath.selectNodes(document));
+        }
 
         returnValue = null;
         if (elements != null) {
