@@ -59,7 +59,7 @@
 						<pathelement path="${compile.path}" />
 					</classpath>
 				</taskdef>
-				<verifymetrics classes="${mexadl.classes.dir}" reports="${mexadl.reports.dir}"/>
+				<verifymetrics classes="${mexadl.classes.dir}" reports="${mexadl.reports.dir}" basedir="${basedir}"/>
 			</try>
 			<catch>
 				<echo>An error ocurred while verifying metrics, message: ${exception.message}</echo>

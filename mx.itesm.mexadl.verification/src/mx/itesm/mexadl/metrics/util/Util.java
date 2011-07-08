@@ -15,10 +15,40 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl.metrics.util;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * The Util class provides helper methods for the MexADL verification process.
@@ -32,6 +62,21 @@ public class Util {
      * Verification properties.
      */
     private static ResourceBundle properties = ResourceBundle.getBundle("mx.itesm.mexadl.metrics.configuration");
+
+    /**
+     * JAXP transformer factory.
+     */
+    private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+    /**
+     * MEXADL_HOME environment variable.
+     */
+    private final static String MEXADL_HOME = System.getenv().get("MEXADL_HOME");
+
+    /**
+     * Date formatter.
+     */
+    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("dd-MM-yy");
 
     /**
      * Get the value associated to the specified property in the MexADL
@@ -48,6 +93,103 @@ public class Util {
             returnValue = Util.properties.getString(clazz.getName() + "." + name);
         } catch (Exception e) {
             returnValue = null;
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Generate an HTML report for the specified mexadl log.
+     * 
+     * @param logName
+     * @param basedir
+     * @throws Exception
+     */
+    public static void generateHtmlReport(final String logName, final String basedir) throws Exception {
+        String xsltContent;
+        File logFile;
+
+        if (Util.MEXADL_HOME != null) {
+            logFile = new File("mexadl-" + logName + ".log");
+            xsltContent = loadFileContent("mx/itesm/mexadl/metrics/" + logName + ".xslt");
+            xsltContent = xsltContent.replaceAll("MEXADL_HOME", Util.MEXADL_HOME);
+
+            Util.transformXMLReport2Html(logFile, new ByteArrayInputStream(xsltContent.getBytes("UTF-8")), new File(
+                    basedir, logName + Util.DATE_FORMATTER.format(new Date()) + "-" + System.currentTimeMillis()
+                            + ".html"));
+            logFile.delete();
+        }
+    }
+
+    /**
+     * Transform a logging report from XML to HTML format.
+     * 
+     * @param xmlFile
+     * @param xsltFile
+     * @param outputFile
+     * @throws TransformerException
+     * @throws SAXException
+     * @throws FileNotFoundException
+     */
+    public static void transformXMLReport2Html(final File xmlFile, final InputStream xsltFile, final File outputFile)
+            throws TransformerException, SAXException, FileNotFoundException {
+        Source xmlSource;
+        Source xsltSource;
+        Result outputTarget;
+        XMLReader xmlReader;
+        Transformer transformer;
+
+        // Blank reader
+        xmlReader = XMLReaderFactory.createXMLReader();
+        xmlReader.setEntityResolver(new EntityResolver() {
+
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+                if (systemId.endsWith(".dtd")) {
+                    StringReader stringInput = new StringReader(" ");
+                    return new InputSource(stringInput);
+                } else {
+                    return null; // use default behavior
+                }
+            }
+        });
+
+        xmlSource = new SAXSource(xmlReader, new InputSource(new FileInputStream(xmlFile)));
+        xsltSource = new StreamSource(xsltFile);
+        outputTarget = new StreamResult(outputFile);
+
+        transformer = transformerFactory.newTransformer(xsltSource);
+        transformer.transform(xmlSource, outputTarget);
+    }
+
+    /**
+     * Load the contents of a configuration file into a String.
+     * 
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static String loadFileContent(final String path) throws Exception {
+        String returnValue;
+        InputStream inputStream;
+
+        inputStream = Util.class.getClassLoader().getResourceAsStream(path);
+
+        returnValue = null;
+        if (inputStream != null) {
+            Writer writer = new StringWriter();
+
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+            } finally {
+                inputStream.close();
+            }
+            returnValue = writer.toString();
         }
 
         return returnValue;

@@ -15,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl.metrics.util;
 
 import java.io.File;
@@ -52,13 +52,17 @@ public class MexAdlTask extends Task {
      */
     private String reports;
 
+    /**
+     * Base directory
+     */
+    private String basedir;
+
     static {
         // Logging configuration
         try {
-            LogManager.getLogManager()
-                    .readConfiguration(
-                            MexAdlTask.class.getClassLoader().getResourceAsStream(
-                                    "mx/itesm/mexadl/metrics/logging-metrics.properties"));
+            LogManager.getLogManager().readConfiguration(
+                    MexAdlTask.class.getClassLoader().getResourceAsStream(
+                            "mx/itesm/mexadl/metrics/logging-metrics.properties"));
         } catch (Exception e) {
             System.out.println("Unable to register logging configuration: " + e);
         }
@@ -68,8 +72,12 @@ public class MexAdlTask extends Task {
      * Task execution.
      */
     public void execute() throws BuildException {
+
         try {
             VerificationProcessor.processMetrics(new File(this.classes), new File(this.reports));
+
+            // Generate HTML reports
+            Util.generateHtmlReport("interactions-verification", this.basedir);
         } catch (Exception e) {
             logger.log(Level.WARNING, "An error ocurred while executing verification process: ", e);
         }
@@ -83,5 +91,9 @@ public class MexAdlTask extends Task {
 
     public void setReports(final String reports) {
         this.reports = reports;
+    }
+
+    public void setBasedir(final String basedir) {
+        this.basedir = basedir;
     }
 }

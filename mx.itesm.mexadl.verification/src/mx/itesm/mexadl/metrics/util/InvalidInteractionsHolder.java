@@ -43,10 +43,9 @@ public class InvalidInteractionsHolder implements IMessageHolder {
         if ((message.isWarning()) && (message.getExtraSourceLocations() != null)) {
             for (ISourceLocation location : (List<ISourceLocation>) message.getExtraSourceLocations()) {
                 if (location.getSourceFile().getAbsolutePath().contains("mx/itesm/mexadl")) {
-                    InvalidInteractionsHolder.logger.log(
-                            Level.INFO,
-                            message.getMessage() + ", details: " + message.getDetails() + ", location: "
-                                    + message.getSourceLocation());
+                    InvalidInteractionsHolder.logger.log(Level.INFO,
+                            "[message]" + message.getMessage() + "[/message][details]" + message.getDetails()
+                                    + "[/details][location]" + message.getSourceLocation() + "[/location]");
                 }
             }
         }
