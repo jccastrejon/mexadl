@@ -52,11 +52,6 @@ public class MexAdlTask extends Task {
      */
     private String reports;
 
-    /**
-     * Base directory
-     */
-    private String basedir;
-
     static {
         // Logging configuration
         try {
@@ -75,9 +70,6 @@ public class MexAdlTask extends Task {
 
         try {
             VerificationProcessor.processMetrics(new File(this.classes), new File(this.reports));
-
-            // Generate HTML reports
-            Util.generateHtmlReport("interactions-verification", this.basedir);
         } catch (Exception e) {
             logger.log(Level.WARNING, "An error ocurred while executing verification process: ", e);
         }
@@ -91,9 +83,5 @@ public class MexAdlTask extends Task {
 
     public void setReports(final String reports) {
         this.reports = reports;
-    }
-
-    public void setBasedir(final String basedir) {
-        this.basedir = basedir;
     }
 }

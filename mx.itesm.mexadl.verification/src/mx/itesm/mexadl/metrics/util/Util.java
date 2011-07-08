@@ -76,7 +76,7 @@ public class Util {
     /**
      * Date formatter.
      */
-    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("dd-MM-yy");
+    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy:MM:dd 'at' HH.mm.ss");
 
     /**
      * Get the value associated to the specified property in the MexADL
@@ -106,17 +106,23 @@ public class Util {
      * @throws Exception
      */
     public static void generateHtmlReport(final String logName, final String basedir) throws Exception {
-        String xsltContent;
         File logFile;
+        File reportDir;
+        String xsltContent;
 
         if (Util.MEXADL_HOME != null) {
+
+            reportDir = new File(basedir, logName);
+            if (!reportDir.exists()) {
+                reportDir.mkdir();
+            }
+
             logFile = new File("mexadl-" + logName + ".log");
             xsltContent = loadFileContent("mx/itesm/mexadl/metrics/" + logName + ".xslt");
             xsltContent = xsltContent.replaceAll("MEXADL_HOME", Util.MEXADL_HOME);
 
             Util.transformXMLReport2Html(logFile, new ByteArrayInputStream(xsltContent.getBytes("UTF-8")), new File(
-                    basedir, logName + Util.DATE_FORMATTER.format(new Date()) + "-" + System.currentTimeMillis()
-                            + ".html"));
+                    reportDir, Util.DATE_FORMATTER.format(new Date()) + ".html"));
             logFile.delete();
         }
     }

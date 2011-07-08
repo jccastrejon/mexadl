@@ -1,98 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
-<xsl:template match="/">
+<xsl:output method="text"/>
+   <xsl:template match="/">
 <html>                                                                  
-<head>   
-<link rel="stylesheet" type="text/css" media="screen" href="MEXADL_HOME/reports/jquery-ui-1.8.14.custom/css/redmond/jquery-ui-1.8.14.custom.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="MEXADL_HOME/reports/jquery.jqGrid-4.1.1/css/ui.jqgrid.css" />
-<script type="text/javascript" src="MEXADL_HOME/reports/jquery-1.6.2.min.js"></script>          
-<script src="MEXADL_HOME/reports/jquery.jqGrid-4.1.1/js/i18n/grid.locale-en.js" type="text/javascript"></script>
-<script src="MEXADL_HOME/reports/jquery.jqGrid-4.1.1/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+<head>  
 
-<style>
-.ui-jqgrid tr.jqgrow td  {
- white-space: normal !important;
- height:auto;
- vertical-align:text-top;
- padding-top:2px;
-}
-* {
-	font-size:12px
-}
-</style>
+&lt;script&gt;
+	var invalidValues = new Array();
+	var notFoundValues = new Array();
 
-<script type="text/javascript">
-jQuery.extend(jQuery.jgrid.defaults, { autowidth:true, shrinkToFit:true });
-</script>
+	function showContent(id) {
+		if(id.children.length > 0) {
+			if(id.children[0].style.display == 'none') {
+				id.children[0].style.display = 'block';
+			} else {
+				id.children[0].style.display = 'none';
+			}
+		}
+	}
+&lt;/script&gt;
 
-<script type="text/javascript"> 
- 
-  var outputData = [
+
+</head>
+<body>
+
+&lt;div id="summary"&gt;
+&lt;/div&gt;
+
+&lt;h4&gt;Details:&lt;/h4&gt;
+
 <xsl:for-each select="log/record">
- {
-className:"<xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/>", 
-lineNumber:"<xsl:value-of select="substring-before(substring-after(message, '.java:'), ':')"/>", 
-message:<xsl:value-of select="substring-before(substring-after(message, '[message]'), '[/message]')"/>, 
-detail:"<xsl:value-of select="substring-before(substring-after(message, '[details]'), '[/details]')"/>", 
-line:"<xsl:value-of select="translate(substring-before(substring-after(message, '[location]'), ';'), '&#x22;', '*')"/>"
-},
+<xsl:choose>
+    <!-- Class level -->
+    <xsl:when test="contains(message, '** Beginning')">
+    &lt;div id="${substring-before(substring-after(message, 'for:'), '**')}" onclick="showContent(this)" style="display:block; margin-top:5px; margin-bottom:5px;"&gt;
+<xsl:value-of select="substring-before(substring-after(message, 'for:'), '**')"/>
+&lt;div style="display:none"&gt;
+    </xsl:when>
+    
+    <!-- Group level -->
+    <xsl:when test="contains(message, '---- Beginning')">
+    &lt;div style="margin-top:10px; margin-bottom:10px;"&gt;
+<xsl:value-of select="substring-before(substring-after(message, 'Beginning '), 'check')"/>
+    </xsl:when>
+    
+    <xsl:when test="contains(message, '** Ending')">
+&lt;/div&gt;
+&lt;/div&gt;
+    </xsl:when>
+    
+    <xsl:when test="contains(message, '---- Ending')">
+&lt;/div&gt;
+    </xsl:when>
+
+    <!-- Metric -->
+    <xsl:otherwise>
+    &lt;div id="<xsl:value-of select="sequence"/>"&gt;
+<xsl:value-of select="message"/>
+    <xsl:if test="contains(message, 'Invalid')">
+    	&lt;script&gt;
+    		invalidValues.push('<xsl:value-of select="sequence"/>');
+    	&lt;/script&gt;
+    </xsl:if>
+
+    <xsl:if test="contains(message, 'No real value found')">
+    	&lt;script&gt;
+    		notFoundValues.push('<xsl:value-of select="sequence"/>');
+    	&lt;/script&gt;
+    </xsl:if>
+
+&lt;/div&gt;
+    </xsl:otherwise>
+</xsl:choose>
 </xsl:for-each>
 
-	];
-	
-    $(document).ready(function() {
-    
-        // Load table data    
-        jQuery("#output").jqGrid({
-        data: outputData,
-        datatype: "local",
-        height: 'auto',
-        rowNum: 100,
-        colNames:['Class','Line #','Message', 'Detail', 'Line'],
-        colModel:[
-            {name:'className',index:'className'},   	
-            {name:'lineNumber',index:'lineNumber', width:20},
-            {name:'message',index:'message'},
-            {name:'detail',index:'detail'},
-            {name:'line',index:'line'}
-        ],
-        pager: "#pager",
-        viewrecords: true,
-        sortname: 'className',
-        grouping:true,
-        groupingView : {
-            groupField : ['className'],
-            groupColumnShow : [true],
-            groupText : ['<b>{0} - {1} Item(s)</b>'],
-            groupCollapse : true
-        },
-        caption: "<xsl:value-of select="count(log/record)"/> Invalid Interactions"
-    });
-    
-        //Change table grouping
-        jQuery("#changeGroups").change(function(){
-            var group = $(this).val();
-            if(group) {
-                jQuery("#output").jqGrid('groupingGroupBy', group);
-            }
-        });
-   });
-   
- </script>                                                               
- </head>                                                                 
- <body>          
- 
-Group By: <select id="changeGroups">
-	<option value="className">Class name</option>
-	<option value="message">Message</option>	
-</select>
-<br />
-<br />
-<table id="output"></table>
-<div id="pager"></div>
+		&lt;script&gt;
+		    document.getElementById("summary").innerHTML = invalidValues.length + " invalid values found &lt;br/&gt;" + notFoundValues.length + " values not found";
+		
+			for(var i=0; i &lt; invalidValues.length; i++) {
+				document.getElementById(invalidValues[i]).style.background = "#FF9999";
+				document.getElementById(invalidValues[i]).parentElement.parentElement.parentElement.style.background = "#FFFF99";
+			}
+			
+			for(var i=0; i &lt; notFoundValues.length; i++) {
+				document.getElementById(notFoundValues[i]).style.background = "#00FFFF";
+				document.getElementById(notFoundValues[i]).parentElement.parentElement.parentElement.style.background = "#FFFF99";
+			}
+    	&lt;/script&gt;
 
- </body>                                                                 
+    </body>                                                                 
  </html>
 </xsl:template>
 </xsl:stylesheet>

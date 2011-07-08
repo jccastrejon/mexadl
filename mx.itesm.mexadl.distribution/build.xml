@@ -59,7 +59,14 @@
 						<pathelement path="${compile.path}" />
 					</classpath>
 				</taskdef>
-				<verifymetrics classes="${mexadl.classes.dir}" reports="${mexadl.reports.dir}" basedir="${basedir}"/>
+				<taskdef name="generateReports" classname="mx.itesm.mexadl.metrics.util.MexADLReportsTask">
+					<classpath>
+						<fileset dir="${mexadl.lib.dir}/mexadl" includes="**/*.jar" />
+						<pathelement path="${compile.path}" />
+					</classpath>
+				</taskdef>
+				<verifymetrics classes="${mexadl.classes.dir}" reports="${mexadl.reports.dir}"/>
+				<generateReports basedir="${basedir}"/>
 			</try>
 			<catch>
 				<echo>An error ocurred while verifying metrics, message: ${exception.message}</echo>
