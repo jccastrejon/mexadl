@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="lib/mexadl/asm-3.3.jar"/>
 	<classpathentry kind="lib" path="lib/mexadl/ant.jar"/>
 	<classpathentry kind="lib" path="lib/mexadl/asm-commons-3.3.jar"/>
+	<classpathentry kind="lib" path="lib/aspectj/aspectjweaver.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
