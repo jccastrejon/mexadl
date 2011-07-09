@@ -94,8 +94,9 @@ public class MexAdlAnalyzer {
      *            xADL architecture definition.
      * @param xArchFilePath
      *            Path to the file containing the xADL architecture definition.
+     * @throws Exception 
      */
-    public static void analyzeXArch(final String xArch, final String xArchFilePath) {
+    public static void analyzeXArch(final String xArch, final String xArchFilePath) throws Exception {
         Document document;
 
         try {
@@ -115,6 +116,7 @@ public class MexAdlAnalyzer {
             }
         } catch (Exception e) {
             MexAdlAnalyzer.logger.log(Level.WARNING, "Error analyzing xArch: ", e);
+            throw e;
         }
     }
 }
