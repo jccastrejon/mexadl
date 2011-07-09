@@ -71,7 +71,7 @@ public class MetricsProcessor implements MexAdlProcessor {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void processDocument(final Document document, final String xArchFilePath) throws Exception {
         String referenceId;
         XPath metricsRefPath;
