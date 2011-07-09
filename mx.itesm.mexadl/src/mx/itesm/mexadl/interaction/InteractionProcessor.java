@@ -15,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl.interaction;
 
 import java.util.ArrayList;
@@ -126,6 +126,7 @@ public class InteractionProcessor implements MexAdlProcessor {
         String secondImplementation;
         List<List<String>> linksList;
         Map<String, Object> properties;
+        Map<String, String> descriptions;
         Map<String, Set<String>> auxClasses;
         Map<String, String> endpointComponents;
         Map<String, Set<String>> validInteractions;
@@ -160,19 +161,27 @@ public class InteractionProcessor implements MexAdlProcessor {
             }
 
             // Associate valid interactions to each Type
+            descriptions = new HashMap<String, String>();
             auxClasses = new HashMap<String, Set<String>>();
             validInteractions = new HashMap<String, Set<String>>();
             for (List<String> link : linksList) {
                 link = this.getOrderedEndpoints(endpointsDirections, link);
                 isReverse = this.isReverseConnection(endpointsDirections, link.get(0), link.get(1));
                 if (link != null) {
+                    // Elements implementations
                     firstImplementation = Util
                             .getLinkImplementationClass(document, endpointComponents.get(link.get(0)));
-                    secondImplementation = Util.getLinkImplementationClass(document, endpointComponents
-                            .get(link.get(1)));
+                    secondImplementation = Util.getLinkImplementationClass(document,
+                            endpointComponents.get(link.get(1)));
 
                     // Directly connected components (no connector)
                     if ((firstImplementation != null) && (secondImplementation != null)) {
+                        // Elements descriptions
+                        descriptions.put(firstImplementation,
+                                Util.getLinkDescription(document, endpointComponents.get(link.get(0))));
+                        descriptions.put(secondImplementation,
+                                Util.getLinkDescription(document, endpointComponents.get(link.get(1))));
+
                         this.addTypesDependencies(document, validInteractions, auxClasses, firstImplementation,
                                 secondImplementation, isReverse);
                     } else {
@@ -189,8 +198,16 @@ public class InteractionProcessor implements MexAdlProcessor {
                                 connectorLink = this.getOrderedEndpoints(endpointsDirections, connectorLink);
                                 if (endpointComponents.get(connectorLink.get(1)).equals(
                                         endpointComponents.get(link.get(0)))) {
-                                    firstImplementation = Util.getLinkImplementationClass(document, endpointComponents
-                                            .get(connectorLink.get(0)));
+                                    firstImplementation = Util.getLinkImplementationClass(document,
+                                            endpointComponents.get(connectorLink.get(0)));
+                                    // Elements descriptions
+                                    descriptions.put(
+                                            firstImplementation,
+                                            Util.getLinkDescription(document,
+                                                    endpointComponents.get(connectorLink.get(0))));
+                                    descriptions.put(secondImplementation,
+                                            Util.getLinkDescription(document, endpointComponents.get(link.get(1))));
+
                                     this.addTypesDependencies(document, validInteractions, auxClasses,
                                             firstImplementation, secondImplementation, isReverse);
                                 }
@@ -204,8 +221,16 @@ public class InteractionProcessor implements MexAdlProcessor {
                                 connectorLink = this.getOrderedEndpoints(endpointsDirections, connectorLink);
                                 if (endpointComponents.get(connectorLink.get(0)).equals(
                                         endpointComponents.get(link.get(1)))) {
-                                    secondImplementation = Util.getLinkImplementationClass(document, endpointComponents
-                                            .get(connectorLink.get(1)));
+                                    secondImplementation = Util.getLinkImplementationClass(document,
+                                            endpointComponents.get(connectorLink.get(1)));
+
+                                    // Elements descriptions
+                                    descriptions.put(firstImplementation,
+                                            Util.getLinkDescription(document, endpointComponents.get(link.get(0))));
+                                    descriptions.put(
+                                            secondImplementation,
+                                            Util.getLinkDescription(document,
+                                                    endpointComponents.get(connectorLink.get(1))));
                                     this.addTypesDependencies(document, validInteractions, auxClasses,
                                             firstImplementation, secondImplementation, isReverse);
                                 }
@@ -218,9 +243,9 @@ public class InteractionProcessor implements MexAdlProcessor {
             interactionsList = new ArrayList<Map<String, Object>>();
             for (String key : validInteractions.keySet()) {
                 properties = new HashMap<String, Object>();
-
                 properties.put("type", key);
                 properties.put("typeName", Util.getValidName(key));
+                properties.put("typeDescription", descriptions.get(key));
                 properties.put("interactions", validInteractions.get(key));
                 interactionsList.add(properties);
             }
@@ -229,7 +254,7 @@ public class InteractionProcessor implements MexAdlProcessor {
             // found
             if (!validInteractions.isEmpty()) {
                 properties = new HashMap<String, Object>();
-                properties.put("typesList", validInteractions.keySet());
+                properties.put("typesList", interactionsList);
                 properties.put("warningsList", interactionsList);
                 properties.put("annotations", Util.getAnnotations(document));
                 properties.put("auxClasses", auxClasses);
@@ -248,8 +273,8 @@ public class InteractionProcessor implements MexAdlProcessor {
      * @throws JDOMException
      */
     private Element getPointEndpoint(final Document document, final Element point) throws JDOMException {
-        return this.getInterfaceEndpoint(document, Util.getHrefValue(point.getChild("anchorOnInterface",
-                Util.XADL_INSTANCE_NAMESPACE)));
+        return this.getInterfaceEndpoint(document,
+                Util.getHrefValue(point.getChild("anchorOnInterface", Util.XADL_INSTANCE_NAMESPACE)));
     }
 
     /**

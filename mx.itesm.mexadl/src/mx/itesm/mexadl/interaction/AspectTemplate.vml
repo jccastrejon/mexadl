@@ -35,33 +35,33 @@ public class InteractionsAspect_$suffix {
     #macro (generatePointcuts $types)
         #foreach ($type in $types)
         
-            // $type
-            @Pointcut(" #callType($type) "
-            	#foreach ($auxClass in $auxClasses.get($type))
+            // $type.typeDescription
+            @Pointcut(" #callType($type.type) "
+            	#foreach ($auxClass in $auxClasses.get($type.type))
             		+ " || #callType($auxClass)"
             	#end
             )
-            public void call_$Util.getValidName($type) () {}
+            public void call_$Util.getValidName($type.type) () {}
             
-            @Pointcut(" #withinType($type)"
-            	#foreach ($auxClass in $auxClasses.get($type))
+            @Pointcut(" #withinType($type.type)"
+            	#foreach ($auxClass in $auxClasses.get($type.type))
             		+ " || #withinType($auxClass)"
             	#end
             )
-            public void within_$Util.getValidName($type) () {}
+            public void within_$Util.getValidName($type.type) () {}
         #end
     #end
 
     #macro (generateWarnings $warnings)
         #foreach ($warning in $warnings)
         
-            // $warning.type
+            // $warning.typeDescription
             @DeclareWarning(" call_$warning.typeName () "
                 #foreach ($interaction in $warning.interactions) 
                     + "&& !within_$interaction ()" 
                 #end
             )
-            static final String warning_$warning.typeName = "An invalid interaction was detected for type $warning.type"; 
+            static final String warning_$warning.typeName = "An invalid interaction was detected for type $warning.typeDescription"; 
         #end
     #end
     

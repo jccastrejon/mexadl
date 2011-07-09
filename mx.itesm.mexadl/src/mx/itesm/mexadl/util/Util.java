@@ -15,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl.util;
 
 import java.io.BufferedInputStream;
@@ -129,6 +129,41 @@ public class Util {
         } catch (Exception e) {
             Util.logger.log(Level.WARNING, "Error while loading Util: ", e);
         }
+    }
+
+    /**
+     * Get the name of the Element associated to the specified link.
+     * @param document
+     * @param linkId
+     * @return
+     * @throws JDOMException
+     */
+    public static String getLinkDescription(final Document document, final String linkId) throws JDOMException {
+        String typeId;
+        XPath typePath;
+        Element element;
+        String returnValue;
+
+        returnValue = null;
+        element = Util.getLinkEndpoint(document, linkId);
+        if (element != null) {
+
+            // Check if the component/connector has any implementation
+            // associated
+            typeId = Util.getTypeId(element);
+
+            if (typeId != null) {
+                typePath = XPath.newInstance("/instance:xArch/types:archTypes/types:componentType[@types:id=\""
+                        + typeId + "\"]/types:description");
+
+                element = ((Element) typePath.selectSingleNode(document));
+                if (element != null) {
+                    returnValue = element.getTextTrim();
+                }
+            }
+        }
+
+        return returnValue;
     }
 
     /**
@@ -268,7 +303,7 @@ public class Util {
      * @throws MalformedTreeException
      * @throws BadLocationException
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void formatFileContent(final File outputFile, final File contentFile) throws IOException,
             MalformedTreeException, BadLocationException {
         Map options;
@@ -458,7 +493,7 @@ public class Util {
     public static String getConfigurationProperty(final Class<?> clazz, final String name) {
         return Util.properties.getString(clazz.getName() + "." + name);
     }
-    
+
     /**
      * Verify if an implementing class represents a Java annotation.
      * 
@@ -476,8 +511,8 @@ public class Util {
         typePath = XPath.newInstance("//javaimplementation:mainClass[mexadl:isAnnotation='true']");
         elements = (List<Element>) typePath.selectNodes(document);
         typePath = XPath.newInstance("//javaimplementation:auxClass[mexadl:isAnnotation='true']");
-        if(elements == null) {
-            elements = (List<Element>) typePath.selectNodes(document);    
+        if (elements == null) {
+            elements = (List<Element>) typePath.selectNodes(document);
         } else {
             elements.addAll((List<Element>) typePath.selectNodes(document));
         }
