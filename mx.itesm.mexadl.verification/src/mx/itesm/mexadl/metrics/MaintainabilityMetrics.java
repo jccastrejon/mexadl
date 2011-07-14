@@ -18,8 +18,8 @@
 */
 package mx.itesm.mexadl.metrics;
 
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * The MaintainabilityMetrics annotation groups quality metrics that will be
@@ -29,7 +29,7 @@ import java.lang.annotation.ElementType;
  * @author jccastrejon
  * 
  */
-@Target(value = ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface MaintainabilityMetrics {
 
     ModularityMetrics modularityMetrics() default @ModularityMetrics;

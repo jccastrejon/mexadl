@@ -25,7 +25,7 @@ public aspect MetricsAspect_$suffix {
             
             // $definition.type
             declare @type :
-                #if($annotations.contains($definition.type)) (@$definition.type *) #else $definition.type #end : 
+                 (@mx.itesm.mexadl.components.Component_$definition.type *) : 
                  @$definition.metricsClass (
                  #foreach ($metricSet in $definition.metricSets)
                      $metricSet.name = @$definition.metricsClass.$metricSet.type (

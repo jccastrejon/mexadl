@@ -15,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl.metrics;
 
 import java.util.ArrayList;
@@ -131,8 +131,8 @@ public class MetricsProcessor implements MexAdlProcessor {
                     if ((metricRefDefinitions != null) && (!metricRefDefinitions.isEmpty())) {
                         for (Element metricRefDefinition : metricRefDefinitions) {
                             definition = (HashMap) ((HashMap) definition).clone();
-                            referenceId = Util.getLinkImplementationClass(document, Util.getIdValue(metricRefDefinition
-                                    .getParentElement()));
+                            referenceId = Util.getLinkDescription(document,
+                                    Util.getIdValue(metricRefDefinition.getParentElement()));
 
                             if (referenceId != null) {
                                 definition.put("type", referenceId);
@@ -171,7 +171,7 @@ public class MetricsProcessor implements MexAdlProcessor {
         if (element != null) {
             returnValue = new MetricsData();
             metricSets = new ArrayList<MetricsData>();
-            returnValue.setType(Util.getLinkImplementationClass(document, Util.getIdValue(element.getParentElement())));
+            returnValue.setType(Util.getLinkDescription(document, Util.getIdValue(element.getParentElement())));
             returnValue.setMetrics(metricSets);
 
             for (Element child : (List<Element>) element.getChildren()) {

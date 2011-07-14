@@ -61,9 +61,25 @@ public class InteractionProcessor implements MexAdlProcessor {
      */
     private static Template aspectTemplate;
 
+    /**
+     * Annotation template that is used to identify Component types.
+     */
+    private static Template componentAnnotationTemplate;
+
+    /**
+     * AspectJ template that associates the annotations created with the
+     * <em>InteractionProcessor.componentAnnotationTemplate</em> to code
+     * artifacts.
+     */
+    private static Template annotationsAspectTemplate;
+
     static {
         try {
             InteractionProcessor.aspectTemplate = Util.getVelocityTemplate(InteractionProcessor.class, "aspect");
+            InteractionProcessor.annotationsAspectTemplate = Util.getVelocityTemplate(InteractionProcessor.class,
+                    "annotationsAspect");
+            InteractionProcessor.componentAnnotationTemplate = Util.getVelocityTemplate(InteractionProcessor.class,
+                    "componentAnnotation");
             InteractionProcessor.linkPath = XPath.newInstance("//types:link");
         } catch (Exception e) {
             InteractionProcessor.logger.log(Level.WARNING, "Error loading InteractionProcessor: ", e);
@@ -248,18 +264,27 @@ public class InteractionProcessor implements MexAdlProcessor {
                 properties.put("typeDescription", descriptions.get(key));
                 properties.put("interactions", validInteractions.get(key));
                 interactionsList.add(properties);
+
+                // Create component type annotation
+                Util.createFile(document, xArchFilePath, InteractionProcessor.componentAnnotationTemplate, properties,
+                        "Component", descriptions.get(key), Util.JAVA_EXTENSION);
             }
 
-            // Create the interactions aspect only if valid associations were
-            // found
+            // Create the aspects only if valid associations were found
             if (!validInteractions.isEmpty()) {
                 properties = new HashMap<String, Object>();
                 properties.put("typesList", interactionsList);
                 properties.put("warningsList", interactionsList);
                 properties.put("annotations", Util.getAnnotations(document));
                 properties.put("auxClasses", auxClasses);
+
+                // Interactions
                 Util.createFile(document, xArchFilePath, InteractionProcessor.aspectTemplate, properties,
                         "InteractionsAspect", Util.getDocumentName(document), Util.JAVA_EXTENSION);
+
+                // Components Annotations
+                Util.createFile(document, xArchFilePath, InteractionProcessor.annotationsAspectTemplate, properties,
+                        "AnnotationsAspect", Util.getDocumentName(document), Util.ASPECTJ_EXTENSION);
             }
         }
     }

@@ -16,6 +16,7 @@
 		&lt;script&gt;
 			var invalidValues = new Array();
 			var notFoundValues = new Array();
+			var classValues = new Array();
 		
 			$(function() {
 				$( "#details" ).accordion({
@@ -38,9 +39,8 @@
 			&lt;tbody&gt;
 				&lt;tr&gt;
 					&lt;td style="height:20px"&gt;Color notation:&lt;/td&gt;
-					&lt;td style="background: #FFFF99; height:20px"&gt;Warning&lt;/td&gt;
 					&lt;td style="background: #FF9999; height:20px"&gt;Invalid value&lt;/td&gt;
-					&lt;td style="background: #00FFFF; height:20px"&gt;Value not found&lt;/td&gt;
+					&lt;td style="background: #FFFF99; height:20px"&gt;Value not found&lt;/td&gt;
 				&lt;/tr&gt;
 			&lt;/tbody&gt;
 		&lt;/table&gt;
@@ -51,10 +51,13 @@
 				<xsl:choose>
 				    <!-- Beginning class level -->
 				    <xsl:when test="contains(message, '** Beginning')">
-					    &lt;h3&gt; &lt;a href="#section<xsl:value-of select='sequence'/>"&gt;
+					    &lt;h3 id="<xsl:value-of select='sequence'/>"&gt; &lt;a href="#section<xsl:value-of select='sequence'/>"&gt;
 							<xsl:value-of select="substring-before(substring-after(message, 'for:'), '**')"/>
 						&lt;/a&gt;&lt;/h3&gt;
 						&lt;div&gt;
+				    		&lt;script&gt;
+				    			classValues.push('<xsl:value-of select="sequence"/>');
+				    		&lt;/script&gt;
 				    </xsl:when>
 				    
 				    <!-- Beggining group level -->
@@ -75,24 +78,26 @@
 				
 				    <!-- Metric level -->
 				    <xsl:otherwise>
-				   		&lt;div id="<xsl:value-of select="sequence"/>"&gt;
-							<xsl:value-of select="message"/>
-				    	
-				    	<!-- Mark this metric as invalid -->
-				    	<xsl:if test="contains(message, 'Invalid')">
-				    		&lt;script&gt;
-				    			invalidValues.push('<xsl:value-of select="sequence"/>');
-				    		&lt;/script&gt;
-				    	</xsl:if>
-				
-						<!-- Mark this metric as unknown -->
-				    	<xsl:if test="contains(message, 'No real value found')">
-				    		&lt;script&gt;
-					    		notFoundValues.push('<xsl:value-of select="sequence"/>');
-				    		&lt;/script&gt;
-				    	</xsl:if>
-						
-						&lt;/div&gt;
+				    	<xsl:if test="not(contains(message, 'null'))">
+					   		&lt;div id="<xsl:value-of select="sequence"/>"&gt;
+								<xsl:value-of select="message"/>
+					    	
+					    	<!-- Mark this metric as invalid -->
+					    	<xsl:if test="contains(message, 'Invalid')">
+					    		&lt;script&gt;
+					    			invalidValues.push('<xsl:value-of select="sequence"/>');
+					    		&lt;/script&gt;
+					    	</xsl:if>
+					
+							<!-- Mark this metric as unknown -->
+					    	<xsl:if test="contains(message, 'No real value found')">
+					    		&lt;script&gt;
+						    		notFoundValues.push('<xsl:value-of select="sequence"/>');
+					    		&lt;/script&gt;
+					    	</xsl:if>
+							
+							&lt;/div&gt;
+						</xsl:if>
 				    </xsl:otherwise>
 				</xsl:choose>
 			</xsl:for-each>
@@ -101,15 +106,23 @@
 		&lt;script&gt;
 		    document.getElementById("summary").innerHTML = invalidValues.length + " invalid values found &lt;br/&gt;" + notFoundValues.length + " values not found";
 		
+			// Mark invalid values
 			for(var i=0; i &lt; invalidValues.length; i++) {
 				document.getElementById(invalidValues[i]).style.background = "#FF9999";
-				document.getElementById(invalidValues[i]).parentElement.parentElement.previousSibling.previousSibling.style.background = "#FFFF99";
 			}
 			
+			// Mark unknown values
 			for(var i=0; i &lt; notFoundValues.length; i++) {
-				document.getElementById(notFoundValues[i]).style.background = "#00FFFF";
-				document.getElementById(notFoundValues[i]).parentElement.parentElement.previousSibling.previousSibling.style.background = "#FFFF99";
+				document.getElementById(notFoundValues[i]).style.background = "#FFFF99";
 			}
+			
+			// Remove classes without data
+			for(var i=0; i &lt; classValues.length; i++) {
+				if(document.getElementById(classValues[i]).nextSibling.nextSibling.children.length == 0) {
+					document.getElementById(classValues[i]).style.display = "none";
+				}
+			}
+			
 		&lt;/script&gt;
 
     </body>                                                                 
