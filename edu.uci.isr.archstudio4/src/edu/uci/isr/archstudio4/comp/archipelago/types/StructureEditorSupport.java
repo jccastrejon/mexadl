@@ -290,7 +290,7 @@ public class StructureEditorSupport{
 		logicManager.addThingLogic(new StructureTypeDropLogic(AS, xArchRef));
 		
 		//MexADL
-	    logicManager.addThingLogic(new MexAdlLogic(AS, xArchRef));
+	    logicManager.addThingLogic(new MexAdlLogic(AS, xArchRef, mbtl));
 	}
 	
 	public static void readHints(ArchipelagoServices AS, ObjRef xArchRef,  IBNAModel modelToPopulate, ObjRef archStructureRef){
