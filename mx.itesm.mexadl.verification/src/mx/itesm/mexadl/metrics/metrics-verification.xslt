@@ -117,9 +117,11 @@
 			}
 			
 			// Remove classes without data
+			var removedElements = new Array();
 			for(var i=0; i &lt; classValues.length; i++) {
 				if(document.getElementById(classValues[i]).nextSibling.nextSibling.children.length &lt;= 1) {
 					document.getElementById(classValues[i]).style.display = "none";
+					removedElements.push(classValues[i]);
 				}
 			}
 			
@@ -139,13 +141,20 @@
 					var newHeader = document.createElement('h4'); 
 					var contentDiv = document.createElement('div'); 
 		
-					newLi.innerHTML = "&lt;a href='#" + property + "'&gt;" + property + "&lt;/a&gt;";
+					var count = $('div[title|=' + property + ']').size();
+					$('div[title|=' + property + ']').each(function(index, Element) {
+						if(jQuery.inArray(Element.parentNode.previousSibling.previousSibling.id, removedElements) != -1) {
+							count = count-1;
+						}
+					});
+		
+					newLi.innerHTML = "&lt;a href='#" + property + "'&gt;" + property + " (" + count  + " classes)&lt;/a&gt;";
 					tabsList.appendChild(newLi);
 		
 					contentDiv.setAttribute('id', property + "_content");
 					newDiv.setAttribute('id', property);
 					newDiv.setAttribute('style', 'margin-top: 50px; margin-bottom: 50px;');
-					newHeader.innerHTML = "&lt;a href='#' onclick='showDiv(\"" + property + "_content\")'&gt;" + property + "&lt;/a&gt;";
+					newHeader.innerHTML = "&lt;a href='#' onclick='showDiv(\"" + property + "_content\")'&gt;" + property + " (" + count  + " classes)&lt;/a&gt;";
 					
 					newDiv.appendChild(document.createElement('hr'));
 					newDiv.appendChild(newHeader);
