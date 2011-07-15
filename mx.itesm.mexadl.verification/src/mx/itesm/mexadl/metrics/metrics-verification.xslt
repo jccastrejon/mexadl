@@ -17,23 +17,17 @@
 			var invalidValues = new Array();
 			var notFoundValues = new Array();
 			var classValues = new Array();
-		
-			$(function() {
-				$( "#details" ).accordion({
-					autoHeight: false,
-					collapsible: true,
-					animated:false
-				});
-			});
+			var componentTypes = new Object();
 		&lt;/script&gt;
 	</head>
 	<body>
 
+		&lt;h4&gt;Summary:&lt;/h4&gt;
 		&lt;div id="summary"&gt;
 		&lt;/div&gt;
 		
-		&lt;h4&gt;Details:&lt;/h4&gt;
 		&lt;hr/&gt;
+		&lt;h4&gt;Details:&lt;/h4&gt;
 		&lt;div style="margin-top:10px; margin-bottom:20px;"&gt;
 		&lt;table&gt;
 			&lt;tbody&gt;
@@ -51,14 +45,18 @@
 				<xsl:choose>
 				    <!-- Beginning class level -->
 				    <xsl:when test="contains(message, '** Beginning')">
+				    	&lt;div&gt;
 					    &lt;h3 id="<xsl:value-of select='sequence'/>"&gt; &lt;a href="#section<xsl:value-of select='sequence'/>"&gt;
 							<xsl:value-of select="substring-before(substring-after(message, 'for:'), '**')"/>
 						&lt;/a&gt;&lt;/h3&gt;
 						&lt;div&gt;
-							&lt;h4&gt;Type: [<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]&lt;/h4&gt;
-				    		&lt;script&gt;
-				    			classValues.push('<xsl:value-of select="sequence"/>');
-				    		&lt;/script&gt;
+							&lt;div title='[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'&gt;
+								&lt;h4&gt;Type: [<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]&lt;/h4&gt;
+				    			&lt;script&gt;
+				    				componentTypes['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] = '1';
+				    				classValues.push('<xsl:value-of select="sequence"/>');
+				    			&lt;/script&gt;
+							&lt;/div&gt;
 				    </xsl:when>
 				    
 				    <!-- Beggining group level -->
@@ -69,6 +67,7 @@
 				    
 				    <!-- Ending class level -->
 				    <xsl:when test="contains(message, '** Ending')">
+						&lt;/div&gt;
 						&lt;/div&gt;
 				    </xsl:when>
 				    
@@ -105,7 +104,7 @@
 		&lt;/div&gt;
 	
 		&lt;script&gt;
-		    document.getElementById("summary").innerHTML = invalidValues.length + " invalid values found &lt;br/&gt;" + notFoundValues.length + " values not found";
+		    document.getElementById("summary").innerHTML = invalidValues.length + " invalid values &lt;br/&gt;" + notFoundValues.length + " values not found";
 		
 			// Mark invalid values
 			for(var i=0; i &lt; invalidValues.length; i++) {
@@ -121,6 +120,48 @@
 			for(var i=0; i &lt; classValues.length; i++) {
 				if(document.getElementById(classValues[i]).nextSibling.nextSibling.children.length == 0) {
 					document.getElementById(classValues[i]).style.display = "none";
+				}
+			}
+			
+			
+			// Group classes according to their component type 
+			var tabsDiv = document.createElement("div");
+			var tabsList = document.createElement('ul');
+
+			tabsDiv.setAttribute('id', 'tabsDiv');
+			document.body.appendChild(tabsDiv);
+			tabsDiv.appendChild(tabsList);
+			
+			for(var property in componentTypes) {
+				if(componentTypes.hasOwnProperty(property)) {
+					var newLi = document.createElement('li'); 
+					var newDiv = document.createElement('div'); 
+					var newHeader = document.createElement('h4'); 
+					var contentDiv = document.createElement('div'); 
+		
+					newLi.innerHTML = "&lt;a href='#" + property + "'&gt;" + property + "&lt;/a&gt;";
+					tabsList.appendChild(newLi);
+		
+					contentDiv.setAttribute('id', property + "_content");
+					newDiv.setAttribute('id', property);
+					newDiv.setAttribute('style', 'margin-top:50px; margin-bottom:50px;');
+					newHeader.innerHTML = property + " (" + $('div[title|=' + property + ']').length + " classes)";
+					newDiv.appendChild(newHeader);
+					newDiv.appendChild(contentDiv);
+					tabsDiv.appendChild(newDiv);
+					
+					$('div[title|=' + property + ']').each(function(index, Element) {
+						var parent = Element.parentElement.parentElement;
+						while(parent.firstChild != null) {
+							contentDiv.appendChild(parent.firstChild);
+						}
+					});
+						
+					$( "#" + property + "_content").accordion({
+						autoHeight: false,
+						collapsible: true,
+						animated:false
+					});
 				}
 			}
 			
