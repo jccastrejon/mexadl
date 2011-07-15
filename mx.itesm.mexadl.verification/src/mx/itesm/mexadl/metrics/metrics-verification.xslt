@@ -153,7 +153,7 @@
 					tabsDiv.appendChild(newDiv);
 					
 					$('div[title|=' + property + ']').each(function(index, Element) {
-						var parent = Element.parentElement.parentElement;
+						var parent = Element.parentNode.parentNode;
 						while(parent.firstChild != null) {
 							contentDiv.appendChild(parent.firstChild);
 						}
