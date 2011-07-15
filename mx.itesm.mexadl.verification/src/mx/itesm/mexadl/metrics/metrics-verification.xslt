@@ -55,6 +55,7 @@
 							<xsl:value-of select="substring-before(substring-after(message, 'for:'), '**')"/>
 						&lt;/a&gt;&lt;/h3&gt;
 						&lt;div&gt;
+							&lt;h4&gt;Type: [<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]&lt;/h4&gt;
 				    		&lt;script&gt;
 				    			classValues.push('<xsl:value-of select="sequence"/>');
 				    		&lt;/script&gt;

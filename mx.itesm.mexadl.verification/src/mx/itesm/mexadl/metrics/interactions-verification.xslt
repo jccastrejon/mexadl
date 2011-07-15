@@ -33,7 +33,8 @@
   			var outputData = [
 				<xsl:for-each select="log/record">
  					{
-						className:"<xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/>", 
+						className:"<xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/>",
+						type:"[ <xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/> ]", 
 						lineNumber:"<xsl:value-of select="substring-before(substring-after(message, '.java:'), ':')"/>", 
 						message:<xsl:value-of select="substring-before(substring-after(message, '[message]'), '[/message]')"/>, 
 						detail:"<xsl:value-of select="substring-before(substring-after(message, '[details]'), '[/details]')"/>", 
@@ -51,9 +52,10 @@
 		        datatype: "local",
 		        height: 'auto',
 		        rowNum: 100,
-		        colNames:['Class','Line #','Message', 'Detail', 'Line'],
+		        colNames:['Class', 'Type', 'Line #','Message', 'Detail', 'Line'],
 		        colModel:[
-        	    	{name:'className',index:'className'},   	
+        	    	{name:'className',index:'className'},
+        	    	{name:'type',index:'type'},   	
             		{name:'lineNumber',index:'lineNumber', width:20},
             		{name:'message',index:'message'},
             		{name:'detail',index:'detail'},

@@ -21,8 +21,8 @@ package mx.itesm.mexadl.metrics.util;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +32,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.xml.transform.Result;
@@ -44,6 +47,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.FileUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -103,9 +107,11 @@ public class Util {
      * 
      * @param logName
      * @param basedir
+     * @param componentTypes
      * @throws Exception
      */
-    public static void generateHtmlReport(final String logName, final String basedir) throws Exception {
+    public static void generateHtmlReport(final String logName, final String basedir,
+            final Map<String, String> componentTypes) throws Exception {
         File logFile;
         File reportDir;
         String xsltContent;
@@ -122,7 +128,7 @@ public class Util {
             xsltContent = xsltContent.replaceAll("MEXADL_HOME", Util.MEXADL_HOME);
 
             Util.transformXMLReport2Html(logFile, new ByteArrayInputStream(xsltContent.getBytes("UTF-8")), new File(
-                    reportDir, Util.DATE_FORMATTER.format(new Date()) + ".html"));
+                    reportDir, Util.DATE_FORMATTER.format(new Date()) + ".html"), componentTypes);
             logFile.delete();
         }
     }
@@ -133,16 +139,18 @@ public class Util {
      * @param xmlFile
      * @param xsltFile
      * @param outputFile
+     * @param componentTypes
      * @throws TransformerException
      * @throws SAXException
-     * @throws FileNotFoundException
+     * @throws IOException
      */
-    public static void transformXMLReport2Html(final File xmlFile, final InputStream xsltFile, final File outputFile)
-            throws TransformerException, SAXException, FileNotFoundException {
+    public static void transformXMLReport2Html(final File xmlFile, final InputStream xsltFile, final File outputFile,
+            final Map<String, String> componentTypes) throws TransformerException, SAXException, IOException {
         Source xmlSource;
         Source xsltSource;
         Result outputTarget;
         XMLReader xmlReader;
+        String reportContents;
         Transformer transformer;
 
         // Blank reader
@@ -164,8 +172,16 @@ public class Util {
         xsltSource = new StreamSource(xsltFile);
         outputTarget = new StreamResult(outputFile);
 
+        // Generate output file
         transformer = transformerFactory.newTransformer(xsltSource);
         transformer.transform(xmlSource, outputTarget);
+
+        // Add components type information
+        reportContents = FileUtils.readFileToString(outputFile, "UTF-8");
+        for (String componentType : componentTypes.keySet()) {
+            reportContents = reportContents.replace("[ " + componentType + " ]", componentTypes.get(componentType));
+        }
+        FileUtils.writeStringToFile(outputFile, reportContents);
     }
 
     /**
@@ -196,6 +212,46 @@ public class Util {
                 inputStream.close();
             }
             returnValue = writer.toString();
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Get the Java classes in the given directory, including those in
+     * sub-directories.
+     * 
+     * @param directory
+     * @return
+     */
+    public static List<String> getClassesInDirectory(final File directory) {
+        File currentFile;
+        File[] directoryFiles;
+        List<String> innerFiles;
+        List<String> returnValue;
+
+        returnValue = null;
+        directoryFiles = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
+                return (pathname.isDirectory() || pathname.toString().endsWith(".class"));
+            }
+        });
+
+        if ((directoryFiles != null) && (directoryFiles.length > 0)) {
+            returnValue = new ArrayList<String>();
+            for (int i = 0; i < directoryFiles.length; i++) {
+                currentFile = directoryFiles[i];
+
+                if (currentFile.isDirectory()) {
+                    innerFiles = Util.getClassesInDirectory(currentFile);
+                    if (innerFiles != null) {
+                        returnValue.addAll(innerFiles);
+                    }
+                } else {
+                    returnValue.add(currentFile.getAbsolutePath());
+                }
+            }
         }
 
         return returnValue;

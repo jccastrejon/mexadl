@@ -66,7 +66,7 @@
 					</classpath>
 				</taskdef>
 				<verifymetrics classes="${mexadl.classes.dir}" reports="${mexadl.reports.dir}"/>
-				<generateReports basedir="${basedir}"/>
+				<generateReports classes="${mexadl.classes.dir}" basedir="${basedir}"/>
 			</try>
 			<catch>
 				<echo>An error ocurred while verifying metrics, message: ${exception.message}</echo>

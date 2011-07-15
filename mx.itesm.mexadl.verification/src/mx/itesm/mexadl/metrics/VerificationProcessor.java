@@ -19,10 +19,8 @@
 package mx.itesm.mexadl.metrics;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +69,7 @@ public class VerificationProcessor {
         Map<String, Map<String, Object>> expectedMetrics;
         Map<String, Map<String, Map<String, Integer>>> realMetrics;
 
-        classes = VerificationProcessor.getClassesInDirectory(classesDir);
+        classes = Util.getClassesInDirectory(classesDir);
         if (classes != null) {
             realMetrics = VerificationProcessor.collectMetrics(reportsDir);
             metricsChecker = new MetricsChecker();
@@ -94,46 +92,6 @@ public class VerificationProcessor {
                 }
             }
         }
-    }
-
-    /**
-     * Get the Java classes in the given directory, including those in
-     * sub-directories.
-     * 
-     * @param directory
-     * @return
-     */
-    private static List<String> getClassesInDirectory(final File directory) {
-        File currentFile;
-        File[] directoryFiles;
-        List<String> innerFiles;
-        List<String> returnValue;
-
-        returnValue = null;
-        directoryFiles = directory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(final File pathname) {
-                return (pathname.isDirectory() || pathname.toString().endsWith(".class"));
-            }
-        });
-
-        if ((directoryFiles != null) && (directoryFiles.length > 0)) {
-            returnValue = new ArrayList<String>();
-            for (int i = 0; i < directoryFiles.length; i++) {
-                currentFile = directoryFiles[i];
-
-                if (currentFile.isDirectory()) {
-                    innerFiles = VerificationProcessor.getClassesInDirectory(currentFile);
-                    if(innerFiles != null) {
-                        returnValue.addAll(innerFiles);
-                    }
-                } else {
-                    returnValue.add(currentFile.getAbsolutePath());
-                }
-            }
-        }
-
-        return returnValue;
     }
 
     /**
