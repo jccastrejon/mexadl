@@ -55,7 +55,7 @@
 		        colNames:['Class', 'Type', 'Line #','Message', 'Detail', 'Line'],
 		        colModel:[
         	    	{name:'className',index:'className'},
-        	    	{name:'type',index:'type'},   	
+        	    	{name:'type',index:'type', width:50},   	
             		{name:'lineNumber',index:'lineNumber', width:20},
             		{name:'message',index:'message'},
             		{name:'detail',index:'detail'},

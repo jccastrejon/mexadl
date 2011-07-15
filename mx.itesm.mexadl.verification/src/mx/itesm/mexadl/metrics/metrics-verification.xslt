@@ -118,7 +118,7 @@
 			
 			// Remove classes without data
 			for(var i=0; i &lt; classValues.length; i++) {
-				if(document.getElementById(classValues[i]).nextSibling.nextSibling.children.length == 0) {
+				if(document.getElementById(classValues[i]).nextSibling.nextSibling.children.length &lt;= 1) {
 					document.getElementById(classValues[i]).style.display = "none";
 				}
 			}
@@ -144,8 +144,10 @@
 		
 					contentDiv.setAttribute('id', property + "_content");
 					newDiv.setAttribute('id', property);
-					newDiv.setAttribute('style', 'margin-top:50px; margin-bottom:50px;');
-					newHeader.innerHTML = property + " (" + $('div[title|=' + property + ']').length + " classes)";
+					newDiv.setAttribute('style', 'margin-top: 50px; margin-bottom: 50px;');
+					newHeader.innerHTML = "&lt;a href='#' onclick='showDiv(\"" + property + "_content\")'&gt;" + property + "&lt;/a&gt;";
+					
+					newDiv.appendChild(document.createElement('hr'));
 					newDiv.appendChild(newHeader);
 					newDiv.appendChild(contentDiv);
 					tabsDiv.appendChild(newDiv);
@@ -162,6 +164,14 @@
 						collapsible: true,
 						animated:false
 					});
+				}
+			}
+			
+			function showDiv(id) {
+				if(document.getElementById(id).style.display != 'none') {
+					document.getElementById(id).style.display = 'none';
+				} else {
+					document.getElementById(id).style.display = 'block';
 				}
 			}
 			
