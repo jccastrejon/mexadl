@@ -102,6 +102,8 @@ public class MetricsProcessor implements MexAdlProcessor {
                     definitionsList.add(definition);
                     definition.put("metricSets", metricSets);
                     definition.put("type", metricsData.getType());
+                    definition.put("implementationClasses", Util.getAllImplementationClasses(document, metricDefinition
+                            .getParentElement().getAttributeValue("id", Util.XADL_TYPES_NAMESPACE)));
                     definition.put("typeName", Util.getValidName(metricsData.getType()));
                     definition.put("metricsClass", MaintainabilityMetrics.class.getName());
 
@@ -136,6 +138,10 @@ public class MetricsProcessor implements MexAdlProcessor {
 
                             if (referenceId != null) {
                                 definition.put("type", referenceId);
+                                definition.put(
+                                        "implementationClasses",
+                                        Util.getAllImplementationClasses(document,
+                                                Util.getIdValue(metricRefDefinition.getParentElement())));
                                 definition.put("typeName", Util.getValidName(referenceId));
                                 definitionsList.add(definition);
                             }

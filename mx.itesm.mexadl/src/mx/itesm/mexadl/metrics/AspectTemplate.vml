@@ -20,21 +20,27 @@ package mx.itesm.mexadl.metrics;
 
 public aspect MetricsAspect_$suffix {
 
+	#macro (declareType $type) #if($annotations.contains($type)) @$type * #else $type #end #end
+
     #macro (generateTypeMetrics $definitions)
         #foreach ($definition in $definitions)
             
             // $definition.type
-            declare @type :
-                 (@mx.itesm.mexadl.components.Component_$definition.type *) : 
-                 @$definition.metricsClass (
-                 #foreach ($metricSet in $definition.metricSets)
-                     $metricSet.name = @$definition.metricsClass.$metricSet.type (
-                     #foreach ($metric in $metricSet.metrics)
-                         $metric.name = $metric.value #if ($velocityHasNext) , #end
-                     #end 
-                     ) #if ($velocityHasNext) , #end
-                 #end 
-                 );
+            #foreach ($implementationClass in $definition.implementationClasses)
+            
+	            declare @type :
+	                 #declareType($implementationClass) : 
+	                 @$definition.metricsClass (
+	                 #foreach ($metricSet in $definition.metricSets)
+	                     $metricSet.name = @$definition.metricsClass.$metricSet.type (
+	                     #foreach ($metric in $metricSet.metrics)
+	                         $metric.name = $metric.value #if ($velocityHasNext) , #end
+	                     #end 
+	                     ) #if ($velocityHasNext) , #end
+	                 #end 
+	                 );
+            
+            #end
         #end
     #end
     

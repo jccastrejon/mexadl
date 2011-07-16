@@ -335,8 +335,8 @@ public class InteractionProcessor implements MexAdlProcessor {
 
         // Only work with non-null dependencies
         if ((firstType != null) && (secondType != null)) {
-            auxClasses.put(firstType, this.getAuxImplementationClasses(document, firstType));
-            auxClasses.put(secondType, this.getAuxImplementationClasses(document, secondType));
+            auxClasses.put(firstType, Util.getAuxImplementationClasses(document, firstType));
+            auxClasses.put(secondType, Util.getAuxImplementationClasses(document, secondType));
 
             this.initializeInteractions(firstType, dependencies);
             this.initializeInteractions(secondType, dependencies);
@@ -439,42 +439,6 @@ public class InteractionProcessor implements MexAdlProcessor {
             returnValue.add(link.get(0));
         } else {
             returnValue = null;
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Get the auxiliary classes associated to a main implementing class.
-     * 
-     * @param document
-     * @param mainClass
-     * @return
-     * @throws JDOMException
-     */
-    @SuppressWarnings("unchecked")
-    private Set<String> getAuxImplementationClasses(final Document document, final String mainClass)
-            throws JDOMException {
-        XPath auxPath;
-        Element implementation;
-        List<Element> auxClasses;
-        Set<String> returnValue;
-
-        auxPath = XPath
-                .newInstance("//implementation:implementation/javaimplementation:mainClass[normalize-space(javaimplementation:javaClassName)='"
-                        + mainClass + "']");
-        implementation = (Element) auxPath.selectSingleNode(document);
-
-        returnValue = null;
-        if (auxPath != null) {
-            auxClasses = (List<Element>) implementation.getParentElement().getChildren("auxClass",
-                    Util.XADL_JAVAIMPLEMENTATION_NAMESPACE);
-            if (auxClasses != null) {
-                returnValue = new HashSet<String>(auxClasses.size());
-                for (Element auxClass : auxClasses) {
-                    returnValue.add(auxClass.getChildTextTrim("javaClassName", Util.XADL_JAVAIMPLEMENTATION_NAMESPACE));
-                }
-            }
         }
 
         return returnValue;

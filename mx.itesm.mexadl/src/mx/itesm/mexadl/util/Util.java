@@ -26,10 +26,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -133,6 +135,7 @@ public class Util {
 
     /**
      * Get the name of the Element associated to the specified link.
+     * 
      * @param document
      * @param linkId
      * @return
@@ -167,7 +170,29 @@ public class Util {
     }
 
     /**
-     * Get the Java implementation class associated to the specified link.
+     * Get all the Java implementation classes (main and auxiliary) associated
+     * to the specified link.
+     * 
+     * @param document
+     * @param linkId
+     * @return
+     * @throws JDOMException
+     */
+    public static List<String> getAllImplementationClasses(final Document document, final String linkId)
+            throws JDOMException {
+        String mainClass;
+        List<String> returnValue;
+
+        returnValue = new ArrayList<String>();
+        mainClass = Util.getLinkImplementationClass(document, linkId);
+        returnValue.add(mainClass);
+        returnValue.addAll(Util.getAuxImplementationClasses(document, mainClass));
+
+        return returnValue;
+    }
+
+    /**
+     * Get the main Java implementation class associated to the specified link.
      * 
      * @param document
      * @param linkId
@@ -522,6 +547,42 @@ public class Util {
             returnValue = new ArrayList<String>(elements.size());
             for (Element element : elements) {
                 returnValue.add(element.getChildTextTrim("javaClassName", Util.XADL_JAVAIMPLEMENTATION_NAMESPACE));
+            }
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Get the auxiliary classes associated to a main implementing class.
+     * 
+     * @param document
+     * @param mainClass
+     * @return
+     * @throws JDOMException
+     */
+    @SuppressWarnings("unchecked")
+    public static Set<String> getAuxImplementationClasses(final Document document, final String mainClass)
+            throws JDOMException {
+        XPath auxPath;
+        Element implementation;
+        List<Element> auxClasses;
+        Set<String> returnValue;
+
+        auxPath = XPath
+                .newInstance("//implementation:implementation/javaimplementation:mainClass[normalize-space(javaimplementation:javaClassName)='"
+                        + mainClass + "']");
+        implementation = (Element) auxPath.selectSingleNode(document);
+
+        returnValue = null;
+        if (auxPath != null) {
+            auxClasses = (List<Element>) implementation.getParentElement().getChildren("auxClass",
+                    Util.XADL_JAVAIMPLEMENTATION_NAMESPACE);
+            if (auxClasses != null) {
+                returnValue = new HashSet<String>(auxClasses.size());
+                for (Element auxClass : auxClasses) {
+                    returnValue.add(auxClass.getChildTextTrim("javaClassName", Util.XADL_JAVAIMPLEMENTATION_NAMESPACE));
+                }
             }
         }
 
