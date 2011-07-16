@@ -171,7 +171,7 @@
 				    <xsl:otherwise>
 				    	<xsl:if test="not(contains(message, 'null'))">
 					   		&lt;div id="<xsl:value-of select="sequence"/>"&gt;
-							<xsl:value-of select="message"/> &lt;a href="#" onclick='showDescription("<xsl:value-of select='message'/>")'&gt;&lt;em style="font-size:10px"&gt;(Description)&lt;/em&gt;&lt;/a&gt;
+							<xsl:value-of select="message"/> &lt;a style="cursor: help" onclick='showDescription("<xsl:value-of select='message'/>")'&gt;&lt;em style="font-size:10px"&gt;(Description)&lt;/em&gt;&lt;/a&gt;
 					    	
 					    	<!-- Mark this metric as invalid -->
 					    	<xsl:if test="contains(message, 'Invalid')">
@@ -245,7 +245,7 @@
 					contentDiv.setAttribute('id', property + "_content");
 					newDiv.setAttribute('id', property);
 					newDiv.setAttribute('style', 'margin-top: 50px; margin-bottom: 50px;');
-					newHeader.innerHTML = "&lt;a href='#' onclick='showDiv(\"" + property + "_content\")'&gt;" + property + " (" + count  + " classes)&lt;/a&gt;";
+					newHeader.innerHTML = "&lt;a onclick='showDiv(\"" + property + "_content\")' style='cursor: pointer'&gt;" + property + " (" + count  + " classes)&lt;/a&gt;";
 					
 					newDiv.appendChild(document.createElement('hr'));
 					newDiv.appendChild(newHeader);
