@@ -37,8 +37,7 @@
 						type:"[ <xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/> ]", 
 						lineNumber:"<xsl:value-of select="substring-before(substring-after(message, '.java:'), ':')"/>", 
 						message:<xsl:value-of select="substring-before(substring-after(message, '[message]'), '[/message]')"/>, 
-						detail:"<xsl:value-of select="substring-before(substring-after(message, '[details]'), '[/details]')"/>", 
-						line:"<xsl:value-of select="translate(substring-before(substring-after(message, '[location]'), ';'), '&#x22;', '*')"/>"
+						detail:"<xsl:value-of select="substring-before(substring-after(message, '[details]'), '[/details]')"/>"
 					},
 				</xsl:for-each>
 
@@ -51,15 +50,14 @@
 		        data: outputData,
 		        datatype: "local",
 		        height: 'auto',
-		        rowNum: 100,
-		        colNames:['Class', 'Type', 'Line #','Message', 'Detail', 'Line'],
+		        rowNum: 400,
+		        colNames:['Class', 'Type', 'Line #','Message', 'Detail'],
 		        colModel:[
         	    	{name:'className',index:'className'},
-        	    	{name:'type',index:'type', width:50},   	
+        	    	{name:'type',index:'type', width:40},   	
             		{name:'lineNumber',index:'lineNumber', width:20},
             		{name:'message',index:'message'},
-            		{name:'detail',index:'detail'},
-            		{name:'line',index:'line'}
+            		{name:'detail',index:'detail'}
         		],
         		pager: "#pager",
         		viewrecords: true,
@@ -94,7 +92,8 @@
  
 		Group By: <select id="changeGroups">
 			<option value="className">Class name</option>
-			<option value="message">Message</option>	
+			<option value="type">Component type</option>
+			<option value="message">Warning message</option>	
 		</select>
 		<br />
 		<br />
