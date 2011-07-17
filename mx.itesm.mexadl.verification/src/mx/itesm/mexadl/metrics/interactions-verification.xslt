@@ -64,7 +64,7 @@
         		sortname: 'className',
         		grouping:true,
         		groupingView : {
-            		groupField : ['className'],
+            		groupField : ['message'],
             		groupColumnShow : [true],
             		groupText : ['<b>{0} - {1} Item(s)</b>'],
             		groupCollapse : true
