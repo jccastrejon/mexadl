@@ -198,13 +198,17 @@
 		    document.getElementById("summary").innerHTML = invalidValues.length + " invalid values &lt;br/&gt;" + notFoundValues.length + " values not found";
 		
 			// Mark invalid values
+			var componentTypesInvalidCount = new Object();
 			for(var i=0; i &lt; invalidValues.length; i++) {
 				document.getElementById(invalidValues[i]).style.background = "#FF9999";
+				groupMessages(document.getElementById(invalidValues[i]), componentTypesInvalidCount);
 			}
 			
 			// Mark unknown values
+			var componentTypesNotFoundCount = new Object();
 			for(var i=0; i &lt; notFoundValues.length; i++) {
 				document.getElementById(notFoundValues[i]).style.background = "#FFFF99";
+				groupMessages(document.getElementById(notFoundValues[i]), componentTypesNotFoundCount);
 			}
 			
 			// Remove classes without data
@@ -239,13 +243,13 @@
 						}
 					});
 		
-					newLi.innerHTML = "&lt;a href='#" + property + "'&gt;" + property + " (" + count  + " classes)&lt;/a&gt;";
+					newLi.innerHTML = "&lt;a href='#" + property + "'&gt;&lt;b&gt;" + property + "&lt;/b&gt; (" + count  + " classes, " + componentTypesInvalidCount["'" + property + "'"] + " invalid values, " + componentTypesNotFoundCount["'" + property + "'"] + " values not found)&lt;/a&gt;";
 					tabsList.appendChild(newLi);
 		
 					contentDiv.setAttribute('id', property + "_content");
 					newDiv.setAttribute('id', property);
 					newDiv.setAttribute('style', 'margin-top: 50px; margin-bottom: 50px;');
-					newHeader.innerHTML = "&lt;a onclick='showDiv(\"" + property + "_content\")' style='cursor: pointer'&gt;" + property + " (" + count  + " classes)&lt;/a&gt;";
+					newHeader.innerHTML = "&lt;a onclick='showDiv(\"" + property + "_content\")' style='cursor: pointer'&gt;" + property + " (" + count  + " classes, " + componentTypesInvalidCount["'" + property + "'"] + " invalid values, " + componentTypesNotFoundCount["'" + property + "'"] + " values not found)&lt;/a&gt;";
 					
 					newDiv.appendChild(document.createElement('hr'));
 					newDiv.appendChild(newHeader);
@@ -264,6 +268,22 @@
 						collapsible: true,
 						animated:false
 					});
+				}
+			}
+			
+			// helper functions
+			function groupMessages(element, storeObject) {
+				var firstElement = element.parentNode;
+				while(firstElement.previousSibling != null) {
+					firstElement = firstElement.previousSibling;
+				}
+				
+				if(firstElement.nextSibling.title.length &gt; 0) {
+					if(storeObject["'" + firstElement.nextSibling.title + "'"]  == null) {
+						storeObject["'" + firstElement.nextSibling.title + "'"] = 1;
+					} else {
+						storeObject["'" + firstElement.nextSibling.title + "'"] = storeObject["'" + firstElement.nextSibling.title + "'"]  + 1;
+					}
 				}
 			}
 			
