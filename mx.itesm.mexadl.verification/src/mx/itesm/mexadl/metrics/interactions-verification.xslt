@@ -91,9 +91,9 @@
 		<hr/>
  
 		Group By: <select id="changeGroups">
-			<option value="className">Class name</option>
+			<option value="message">Warning message</option>
 			<option value="type">Component type</option>
-			<option value="message">Warning message</option>	
+			<option value="className">Class name</option>
 		</select>
 		<br />
 		<br />
