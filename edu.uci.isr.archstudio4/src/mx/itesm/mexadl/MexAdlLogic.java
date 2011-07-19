@@ -77,8 +77,7 @@ public class MexAdlLogic extends AbstractThingLogic implements IBNAMenuListener 
 
         /**
          * Export the given view as a PNG file inside the
-         * <em>(Parent of xArchFilePath)/src_mexadl/mx/itesm/mexadl/Architecture.png</em>
-         * path.
+         * <em>MexADL_outputDir/Architecture.png</em> path.
          * 
          * @param view
          *            View to export.
@@ -94,8 +93,8 @@ public class MexAdlLogic extends AbstractThingLogic implements IBNAMenuListener 
             try {
                 imageLoader = new ImageLoader();
                 imageLoader.data = new ImageData[] { image.getImageData() };
-                imageLoader.save(new File(new File(xArchFilePath).getParent()
-                        + "/src_mexadl/mx/itesm/mexadl/Architecture.png").getAbsolutePath(), SWT.IMAGE_PNG);
+                imageLoader.save(new File(mx.itesm.mexadl.util.Util.getOutputDir(xArchFilePath), "Architecture.png")
+                        .getAbsolutePath(), SWT.IMAGE_PNG);
             } finally {
                 if (image != null) {
                     image.dispose();

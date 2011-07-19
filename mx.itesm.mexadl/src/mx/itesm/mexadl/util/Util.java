@@ -298,7 +298,7 @@ public class Util {
 
         // Create a temporary file to hold the java content and then save the
         // formatted content in a file next to the xArchFilePath
-        outputDir = new File(new File(xArchFilePath).getParent() + "/src_mexadl/mx/itesm/mexadl/");
+        outputDir = Util.getOutputDir(xArchFilePath);
         outputDir.mkdirs();
         outputFile = new File(outputDir, prefix + "_" + suffix + extension);
         contentFile = File.createTempFile(prefix, suffix + System.currentTimeMillis());
@@ -316,6 +316,16 @@ public class Util {
         aspectTemplate.merge(context, writer);
         writer.close();
         Util.formatFileContent(outputFile, contentFile);
+    }
+
+    /**
+     * Get the output directory for the MexADL artifacts
+     * 
+     * @param xArchFilePath
+     * @return
+     */
+    public static File getOutputDir(final String xArchFilePath) {
+        return new File(new File(xArchFilePath).getParent() + "/src_mexadl/mx/itesm/mexadl/");
     }
 
     /**

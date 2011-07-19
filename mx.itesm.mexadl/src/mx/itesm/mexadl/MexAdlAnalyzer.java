@@ -15,7 +15,7 @@
 
  * You should have received a copy of the GNU General Public License
  * along with MexADL.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package mx.itesm.mexadl;
 
 import java.io.ByteArrayInputStream;
@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import mx.itesm.mexadl.util.Util;
 
+import org.apache.commons.io.FileUtils;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 
@@ -94,12 +95,15 @@ public class MexAdlAnalyzer {
      *            xADL architecture definition.
      * @param xArchFilePath
      *            Path to the file containing the xADL architecture definition.
-     * @throws Exception 
+     * @throws Exception
      */
     public static void analyzeXArch(final String xArch, final String xArchFilePath) throws Exception {
         Document document;
 
         try {
+            // Clean output
+            FileUtils.deleteQuietly(Util.getOutputDir(xArchFilePath));
+
             // If there are any processors configured, execute them with the
             // current xADL architecture
             if ((MexAdlAnalyzer.processors != null) && (!MexAdlAnalyzer.processors.isEmpty())) {
