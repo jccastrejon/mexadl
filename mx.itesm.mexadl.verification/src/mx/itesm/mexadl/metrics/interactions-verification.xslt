@@ -32,45 +32,55 @@
  
   			var outputData = [
 				<xsl:for-each select="log/record">
- 					{
-						className:"<xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/>",
-						type:"[ <xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/> ]", 
-						lineNumber:"<xsl:value-of select="substring-before(substring-after(message, '.java:'), ':')"/>", 
-						message:<xsl:value-of select="substring-before(substring-after(message, '[message]'), '[/message]')"/>, 
-						detail:"<xsl:value-of select="substring-before(substring-after(message, '[details]'), '[/details]')"/>"
-					},
+					<xsl:if test="string-length(className) > 0">
+	 					{
+							className:"<xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/>",
+							type:"[ <xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/> ]", 
+							lineNumber:"<xsl:value-of select="substring-before(substring-after(message, '.java:'), ':')"/>", 
+							message:<xsl:value-of select="substring-before(substring-after(message, '[message]'), '[/message]')"/>, 
+							detail:"<xsl:value-of select="substring-before(substring-after(message, '[details]'), '[/details]')"/>"
+						},
+					</xsl:if>
 				</xsl:for-each>
 
 			];
 	
     		$(document).ready(function() {
-    
-		        // Load table data    
-        		jQuery("#output").jqGrid({
-		        data: outputData,
-		        datatype: "local",
-		        height: 'auto',
-		        rowNum: 400,
-		        colNames:['Class', 'Type', 'Line #','Message', 'Detail'],
-		        colModel:[
-        	    	{name:'className',index:'className'},
-        	    	{name:'type',index:'type', width:40},   	
-            		{name:'lineNumber',index:'lineNumber', width:20},
-            		{name:'message',index:'message'},
-            		{name:'detail',index:'detail'}
-        		],
-        		pager: "#pager",
-        		viewrecords: true,
-        		sortname: 'className',
-        		grouping:true,
-        		groupingView : {
-            		groupField : ['message'],
-            		groupColumnShow : [true],
-            		groupText : ['<b>{0} - {1} Item(s)</b>'],
-            		groupCollapse : true
-        		},
-        		caption: "<xsl:value-of select="count(log/record)"/> Invalid Interactions"
-    		});
+    			// Invalid interactions data
+    			if(outputData.length > 0) {
+    				document.getElementById("invalidInteractions").style.display = "block";
+    				document.getElementById("emptyInteractions").style.display = "none";
+    			
+			        // Load table data    
+	        		jQuery("#output").jqGrid({
+			        data: outputData,
+			        datatype: "local",
+			        height: 'auto',
+			        rowNum: 400,
+			        colNames:['Class', 'Type', 'Line #','Message', 'Detail'],
+			        colModel:[
+	        	    	{name:'className',index:'className'},
+	        	    	{name:'type',index:'type', width:40},   	
+	            		{name:'lineNumber',index:'lineNumber', width:20},
+	            		{name:'message',index:'message'},
+	            		{name:'detail',index:'detail'}
+	        		],
+	        		pager: "#pager",
+	        		viewrecords: true,
+	        		sortname: 'className',
+	        		grouping:true,
+	        		groupingView : {
+	            		groupField : ['message'],
+	            		groupColumnShow : [true],
+	            		groupText : ['<b>{0} - {1} Item(s)</b>'],
+	            		groupCollapse : true
+	        		},
+	        		caption: "<xsl:value-of select="count(log/record)"/> Invalid Interactions"
+	    			});
+    			} else {
+    				document.getElementById("invalidInteractions").style.display = "none";
+    				document.getElementById("emptyInteractions").style.display = "block";
+    			}
     
         	//Change table grouping
         	jQuery("#changeGroups").change(function(){
@@ -89,16 +99,21 @@
  			<img src="../src_mexadl/mx/itesm/mexadl/Architecture.png" width="60px" height="60px"/>
  		</a><em>(Click to enlarge)</em>
 		<hr/>
- 
-		Group By: <select id="changeGroups">
-			<option value="message" selected="selected">Warning message</option>
-			<option value="type">Component type</option>
-			<option value="className">Class name</option>
-		</select>
-		<br />
-		<br />
-		<table id="output"></table>
-		<div id="pager"></div>
+		<div id="invalidInteractions" style="display:none">
+	 		<b>Invalid Interactions:</b><br/>
+			Group By: <select id="changeGroups">
+				<option value="message" selected="selected">Warning message</option>
+				<option value="type">Component type</option>
+				<option value="className">Class name</option>
+			</select>
+			<br />
+			<br />
+			<table id="output"></table>
+			<div id="pager"></div>
+		</div>
+		<div id="emptyInteractions" style="display:none">
+			<h3>Congratulations, no invalid interactions found!</h3>
+		</div>
 
 		<div id="dialog" title="Software Architecture" style="display:none">
 			<img src="../src_mexadl/mx/itesm/mexadl/Architecture.png"/>

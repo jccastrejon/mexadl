@@ -39,6 +39,7 @@ public class InvalidInteractionsHolder implements IMessageHolder {
     @Override
     @SuppressWarnings("unchecked")
     public boolean handleMessage(final IMessage message) throws AbortException {
+        InvalidInteractionsHolder.logger.log(Level.INFO, "Starting interactions log...");
         // Log only warnings of invalid interactions
         if ((message.isWarning()) && (message.getExtraSourceLocations() != null)) {
             for (ISourceLocation location : (List<ISourceLocation>) message.getExtraSourceLocations()) {

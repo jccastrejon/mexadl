@@ -47,10 +47,16 @@ public class MexADLReportsTask extends Task {
             componentTypes = this.getComponentsTypes(new File(this.classes));
 
             // Generate HTML reports
-            Util.generateHtmlReport("interactions-verification", this.basedir, componentTypes);
-            Util.generateHtmlReport("metrics-verification", this.basedir, componentTypes);
-
-            // this.updateComponentsTypes(new File(this.classes));
+            try {
+                Util.generateHtmlReport("interactions-verification", this.basedir, componentTypes);
+            } catch (Exception e) {
+                // no-op
+            }
+            try {
+                Util.generateHtmlReport("metrics-verification", this.basedir, componentTypes);
+            } catch (Exception e) {
+                // no-op
+            }
         } catch (Exception e) {
             // no-op
         }
