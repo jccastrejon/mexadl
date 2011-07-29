@@ -32,7 +32,7 @@
  
   			var outputData = [
 				<xsl:for-each select="log/record">
-					<xsl:if test="string-length(className) > 0">
+					<xsl:if test="string-length(substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')) > 0">
 	 					{
 							className:"<xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/>",
 							type:"[ <xsl:value-of select="substring-before(substring-after(message, 'mexadl_tmp_src/'), '.java')"/> ]", 
@@ -75,7 +75,7 @@
 	            		groupText : ['<b>{0} - {1} Item(s)</b>'],
 	            		groupCollapse : true
 	        		},
-	        		caption: "<xsl:value-of select="count(log/record)"/> Invalid Interactions"
+	        		caption: outputData.length + " Invalid Interactions"
 	    			});
     			} else {
     				document.getElementById("invalidInteractions").style.display = "none";
