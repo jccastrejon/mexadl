@@ -28,6 +28,7 @@ public aspect MetricsAspect_$suffix {
             // $definition.type
             #foreach ($implementationClass in $definition.implementationClasses)
             
+            	#if($implementationClass)
 	            declare @type :
 	                 #declareType($implementationClass) : 
 	                 @$definition.metricsClass (
@@ -39,7 +40,7 @@ public aspect MetricsAspect_$suffix {
 	                     ) #if ($velocityHasNext) , #end
 	                 #end 
 	                 );
-            
+            	#end
             #end
         #end
     #end

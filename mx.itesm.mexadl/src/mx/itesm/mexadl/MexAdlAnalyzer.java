@@ -113,6 +113,7 @@ public class MexAdlAnalyzer {
                         processor.processDocument(document, xArchFilePath);
                     } catch (Exception e) {
                         MexAdlAnalyzer.logger.log(Level.WARNING, "An error ocurred while executing " + processor, e);
+                        throw e;
                     }
                 }
             } else {

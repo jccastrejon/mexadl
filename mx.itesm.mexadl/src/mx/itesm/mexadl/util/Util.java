@@ -181,12 +181,19 @@ public class Util {
     public static List<String> getAllImplementationClasses(final Document document, final String linkId)
             throws JDOMException {
         String mainClass;
+        Set<String> auxClasses;
         List<String> returnValue;
-
+        
+        // Main class
         returnValue = new ArrayList<String>();
         mainClass = Util.getLinkImplementationClass(document, linkId);
         returnValue.add(mainClass);
-        returnValue.addAll(Util.getAuxImplementationClasses(document, mainClass));
+        
+        // Auxiliary classes
+        auxClasses = Util.getAuxImplementationClasses(document, mainClass);
+        if(auxClasses != null) {
+            returnValue.addAll(auxClasses);
+        }
 
         return returnValue;
     }
@@ -585,7 +592,7 @@ public class Util {
         implementation = (Element) auxPath.selectSingleNode(document);
 
         returnValue = null;
-        if (auxPath != null) {
+        if ((auxPath != null) && (implementation != null)) {
             auxClasses = (List<Element>) implementation.getParentElement().getChildren("auxClass",
                     Util.XADL_JAVAIMPLEMENTATION_NAMESPACE);
             if (auxClasses != null) {
