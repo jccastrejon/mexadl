@@ -50,15 +50,15 @@ public class MexADLReportsTask extends Task {
             try {
                 Util.generateHtmlReport("interactions-verification", this.basedir, componentTypes);
             } catch (Exception e) {
-                // no-op
+                e.printStackTrace();
             }
             try {
                 Util.generateHtmlReport("metrics-verification", this.basedir, componentTypes);
             } catch (Exception e) {
-                // no-op
+                e.printStackTrace();
             }
         } catch (Exception e) {
-            // no-op
+            e.printStackTrace();
         }
     }
 
@@ -83,6 +83,7 @@ public class MexADLReportsTask extends Task {
                 componentsVisitor = new ComponentsAnnotationsVisitor();
                 inputStream = new FileInputStream(clazz);
                 new ClassReader(inputStream).accept(componentsVisitor, ClassReader.SKIP_DEBUG);
+                inputStream.close();
 
                 // Store only if the class has both name and type
                 if ((componentsVisitor.getComponentName() != null) && (componentsVisitor.getComponentType() != null)) {
