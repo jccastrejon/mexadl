@@ -18,6 +18,7 @@
 			var notFoundValues = new Array();
 			var classValues = new Array();
 			var componentTypes = new Object();
+			var aggregatedMetrics = new Object();
 		&lt;/script&gt;
 	</head>
 	<body>
@@ -39,6 +40,10 @@
 			This quality metric is intended to measure the volume of a software system, considering that it provides a good comparison base for systems developed using the same programming language. &lt;/br&gt;&lt;/br&gt; 
 			It was one of the first metrics to be used in software engineering, and despite its simplicity it is still widely used nowadays, mainly because in can serve as an indication of the complexity that someone in charge of maintaining the code base will face.&lt;/br&gt;&lt;/br&gt; 
 			For the purpose of the study, we will consider this metric in regard to non-commenting source statements.
+			
+			&lt;script&gt;
+				aggregatedMetrics['linesOfCode'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Cyclomatic complexity per unit" id="cyclomaticComplexityPerUnit" style="display:none; text-align: justify; text-justify: newspaper"&gt;
@@ -47,18 +52,30 @@
 			It calculates the independent paths of execution within the control flow graph of a program, in order to measure its associated structural complexity.&lt;/br&gt;&lt;/br&gt; 
 			A program with a high complexity tends to be error prone, and requires a great deal of effort to properly define test cases for each of the possible program execution paths.&lt;/br&gt;&lt;/br&gt; 
 			In regard to analyzability, a program with a high cyclomatic complexity will be harder to analyze as part of maintenance processes.
+			
+			&lt;script&gt;
+				aggregatedMetrics['cyclomaticComplexityPerUnit'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 
 		&lt;div title="Duplicated blocks" id="duplicatedBlocks" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This metric is defined as the number of code blocks that occur more than once in the source code for the system.&lt;/br&gt;&lt;/br&gt; 
 			The rationale behind this metric is to help identify architectural or design problems, avoiding cut and paste techniques.&lt;/br&gt;&lt;/br&gt;
 			Duplicated blocks lead to maintenance problems because during the system evolution they are usually not updated to reflect the same set of changes, which may cause unexpected side effects in the system execution.
+			
+			&lt;script&gt;
+				aggregatedMetrics['duplicatedBlocks'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Unit test coverage" id="unitTestCoverage" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This metric reflects the percentage of the source code effectively executed during the execution of the test cases defined for the system.&lt;/br&gt;&lt;/br&gt; 
 			While it does not provide information on the validity or accuracy of the executed test cases, it can be used to identify components, or regions of components, that are not being considered as part of the unit test procedures.&lt;/br&gt;&lt;/br&gt; 
 			This is the only metric defined for the study that requires the execution of the system components, that is, it performs a dynamic analysis instead of a static one.
+			
+			&lt;script&gt;
+				aggregatedMetrics['unitTestCoverage'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Depth in the inheritance tree" id="depthInInheritanceTree" style="display:none; text-align: justify; text-justify: newspaper"&gt;
@@ -66,6 +83,10 @@
 			The rationale behind its use is to help identify the set of classes that would be affected if a particular base class were to suffer a change.&lt;/br&gt;&lt;/br&gt; 
 			A high depth value usually leads to complex classes because at each step in the inheritance tree, there is a chance to inherit methods and properties. &lt;/br&gt;&lt;/br&gt;
 			Still, when used properly, inheritance is a powerful object oriented technique that promotes reuse.
+			
+			&lt;script&gt;
+				aggregatedMetrics['depthInInheritanceTree'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Number of children" id="numberOfChildren" style="display:none; text-align: justify; text-justify: newspaper"&gt;
@@ -73,18 +94,30 @@
 			 It serves to indicate the impact that a base class would have on other ones if it were to suffer a change.&lt;/br&gt;&lt;/br&gt; 
 			 We can appreciate that this metric is closely related to the &lt;em&gt;Depth in the inheritance tree&lt;/em&gt; metric, but instead of measuring depth it concerns with the breadth of a class hierarchy.&lt;/br&gt;&lt;/br&gt; 
 			 A class with a high number of children indicates a high reuse by means of inheritance, and it may lead to an improper use of the base class if it does not contain the appropriate level of abstraction. In such cases, additional inheritance levels can be considered to reduce the breadth of the class hierarchy.
+			 
+			&lt;script&gt;
+				aggregatedMetrics['numberOfChildren'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Response for class" id="responseForClass" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This quality metric identifies the number of methods of a class that are available for invocation.&lt;/br&gt;&lt;/br&gt; 
 			The intent of this metric is to indicate the level of communication associated to a particular class. &lt;/br&gt;&lt;/br&gt;
 			It can serve to estimate the effort and time that will be required to diagnose failures or to identify components that require modification.
+			
+			&lt;script&gt;
+				aggregatedMetrics['responseForClass'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Lack of cohesion of methods" id="lackOfCohesionOfMethods" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This metric identifies the number of unrelated regions inside a class. &lt;/br&gt;&lt;/br&gt;
 			It is defined as the number of pairs of methods that do not share a common class field, minus the number of pairs of methods that do share common fields.&lt;/br&gt;&lt;/br&gt; 
 			A high number of unrelated regions inside a class may indicate a violation to the single responsibility principle, if these regions are mapped to functionalities offered by that particular class. In this case, a redesign should be considered to group related regions into one or more classes, and to promote the reuse of common behaviors among them.
+			
+			&lt;script&gt;
+				aggregatedMetrics['lackOfCohesionOfMethods'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Weighted method per class" id="weightedMethodComplexity" style="display:none; text-align: justify; text-justify: newspaper"&gt;
@@ -92,24 +125,40 @@
 			This metric can serve to estimate how much time and effort will be required to maintain a set of classes. This is because the more methods a class has, the greater added complexity it will acquire. &lt;/br&gt;&lt;/br&gt;
 			This complexity will directly affect the efforts required for the maintenance of that particular class.&lt;/br&gt;&lt;/br&gt; 
 			It should also be noted that if a base class has a high weighted method per class value, this is likely to affect its descendants, since they will also inherit the complexity associate to the base class methods.
+			
+			&lt;script&gt;
+				aggregatedMetrics['weightedMethodComplexity'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Coupling between objects" id="couplingBetweenObjects" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This metric identifies the number of classes to which a specific class is coupled, that is, the degree to which methods declared in a class use methods or instances of another one.&lt;/br&gt;&lt;/br&gt; 
 			This metric favors encapsulation within the system components. &lt;/br&gt;&lt;/br&gt;
 			A high coupling between system components prevents reuse and may indicate a defective modular design. This is because components with fewer dependencies have more chances to be reused as part other systems, and also because a component with a high number of dependencies is more sensitive to changes made during maintenance efforts.
+			
+			&lt;script&gt;
+				aggregatedMetrics['couplingBetweenObjects'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Number of public methods" id="numberOfPublicMethods" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This metric measures the size of the public interface provided by a specific class.&lt;/br&gt;&lt;/br&gt; 
 			It can help identify classes that need to be broken up to favor testing procedures, considering that for each public method associated to a class there should be at least one test case that ensures that the expected functionality is really provided.&lt;/br&gt;&lt;/br&gt; 
 			It should be noted that a proper definition of test cases is not trivial, and that their update process adds complexity to the overall maintenance process of the system components.
+			
+			&lt;script&gt;
+				aggregatedMetrics['numberOfPublicMethods'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		
 		&lt;div title="Afferent coupling" id="afferentCoupling" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			At the class level, this quality metric refers to the number of classes that directly depend on another class.&lt;/br&gt;&lt;/br&gt; 
 			By taking this metric into account we can help identify the effects that a change in a particular class can have over other classes that belong to the same system.&lt;/br&gt;&lt;/br&gt; 
 			A high afferent coupling value can be a sign of a violation to the single responsibility principle. In this case, a class with many associated responsibilities can cause unexpected effects over a set of dependent classes.
+			
+			&lt;script&gt;
+				aggregatedMetrics['afferentCoupling'] = new Array();
+			&lt;/script&gt;	
 		&lt;/div&gt;
 		<!-- End metrics definitions -->
 
@@ -170,24 +219,33 @@
 				    <!-- Metric level -->
 				    <xsl:otherwise>
 				    	<xsl:if test="not(contains(message, 'null'))">
-					   		&lt;div id="<xsl:value-of select="sequence"/>"&gt;
-							<xsl:value-of select="message"/> &lt;a style="cursor: help" onclick='showDescription("<xsl:value-of select='message'/>")'&gt;&lt;em style="font-size:10px"&gt;(Description)&lt;/em&gt;&lt;/a&gt;
+				    		<xsl:if test="not(contains(message, 'An error ocurred'))">
+						   		&lt;div id="<xsl:value-of select="sequence"/>"&gt;
+								<xsl:value-of select="message"/> &lt;a style="cursor: help" onclick='showDescription("<xsl:value-of select='message'/>")'&gt;&lt;em style="font-size:10px"&gt;(Description)&lt;/em&gt;&lt;/a&gt;
 					    	
-					    	<!-- Mark this metric as invalid -->
-					    	<xsl:if test="contains(message, 'Invalid')">
-					    		&lt;script&gt;
-					    			invalidValues.push('<xsl:value-of select="sequence"/>');
-					    		&lt;/script&gt;
-					    	</xsl:if>
+						    	<!-- Aggregate metrics -->
+						    	<xsl:if test="not(contains(message, 'No real value found'))">
+						    		&lt;script&gt;
+										aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'for '), '.')"/>'].push(<xsl:value-of select="substring-before(substring-after(message, 'real: '), ')')"/>);
+									&lt;/script&gt;
+								</xsl:if>
+					    	
+						    	<!-- Mark this metric as invalid -->
+						    	<xsl:if test="contains(message, 'Invalid')">
+						    		&lt;script&gt;
+						    			invalidValues.push('<xsl:value-of select="sequence"/>');
+						    		&lt;/script&gt;
+						    	</xsl:if>
 					
-							<!-- Mark this metric as unknown -->
-					    	<xsl:if test="contains(message, 'No real value found')">
-					    		&lt;script&gt;
-						    		notFoundValues.push('<xsl:value-of select="sequence"/>');
-					    		&lt;/script&gt;
-					    	</xsl:if>
+								<!-- Mark this metric as unknown -->
+					    		<xsl:if test="contains(message, 'No real value found')">
+					    			&lt;script&gt;
+							    		notFoundValues.push('<xsl:value-of select="sequence"/>');
+						    		&lt;/script&gt;
+						    	</xsl:if>
 							
-							&lt;/div&gt;
+								&lt;/div&gt;
+							</xsl:if>
 						</xsl:if>
 				    </xsl:otherwise>
 				</xsl:choose>
