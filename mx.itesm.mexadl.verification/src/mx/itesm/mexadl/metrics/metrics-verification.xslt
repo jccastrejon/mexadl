@@ -36,13 +36,21 @@
 			}
 		&lt;/script&gt;
 		
+		&lt;script&gt;
+			aggregatedMetrics['modularityMetrics'] = new Object();
+			aggregatedMetrics['reusabilityMetrics'] = new Object();
+			aggregatedMetrics['analyzabilityMetrics'] = new Object();
+			aggregatedMetrics['modifiabilityMetrics'] = new Object();
+			aggregatedMetrics['testabilityMetrics'] = new Object();
+		&lt;/script&gt;
+		
 		&lt;div id="linesOfCode" title="Lines of code" style="display:none; text-align: justify; text-justify: newspaper"&gt;
 			This quality metric is intended to measure the volume of a software system, considering that it provides a good comparison base for systems developed using the same programming language. &lt;/br&gt;&lt;/br&gt; 
 			It was one of the first metrics to be used in software engineering, and despite its simplicity it is still widely used nowadays, mainly because in can serve as an indication of the complexity that someone in charge of maintaining the code base will face.&lt;/br&gt;&lt;/br&gt; 
 			For the purpose of the study, we will consider this metric in regard to non-commenting source statements.
 			
 			&lt;script&gt;
-				aggregatedMetrics['linesOfCode'] = new Array();
+				aggregatedMetrics['analyzabilityMetrics']['linesOfCode'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -54,7 +62,7 @@
 			In regard to analyzability, a program with a high cyclomatic complexity will be harder to analyze as part of maintenance processes.
 			
 			&lt;script&gt;
-				aggregatedMetrics['cyclomaticComplexityPerUnit'] = new Array();
+				aggregatedMetrics['analyzabilityMetrics']['cyclomaticComplexityPerUnit'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 
@@ -64,7 +72,7 @@
 			Duplicated blocks lead to maintenance problems because during the system evolution they are usually not updated to reflect the same set of changes, which may cause unexpected side effects in the system execution.
 			
 			&lt;script&gt;
-				aggregatedMetrics['duplicatedBlocks'] = new Array();
+				aggregatedMetrics['modifiabilityMetrics']['duplicatedBlocks'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -74,7 +82,7 @@
 			This is the only metric defined for the study that requires the execution of the system components, that is, it performs a dynamic analysis instead of a static one.
 			
 			&lt;script&gt;
-				aggregatedMetrics['unitTestCoverage'] = new Array();
+				aggregatedMetrics['testabilityMetrics']['unitTestCoverage'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -85,7 +93,7 @@
 			Still, when used properly, inheritance is a powerful object oriented technique that promotes reuse.
 			
 			&lt;script&gt;
-				aggregatedMetrics['depthInInheritanceTree'] = new Array();
+				aggregatedMetrics['modularityMetrics']['depthInInheritanceTree'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -96,7 +104,7 @@
 			 A class with a high number of children indicates a high reuse by means of inheritance, and it may lead to an improper use of the base class if it does not contain the appropriate level of abstraction. In such cases, additional inheritance levels can be considered to reduce the breadth of the class hierarchy.
 			 
 			&lt;script&gt;
-				aggregatedMetrics['numberOfChildren'] = new Array();
+				aggregatedMetrics['modularityMetrics']['numberOfChildren'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -106,7 +114,7 @@
 			It can serve to estimate the effort and time that will be required to diagnose failures or to identify components that require modification.
 			
 			&lt;script&gt;
-				aggregatedMetrics['responseForClass'] = new Array();
+				aggregatedMetrics['analyzabilityMetrics']['responseForClass'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -116,7 +124,7 @@
 			A high number of unrelated regions inside a class may indicate a violation to the single responsibility principle, if these regions are mapped to functionalities offered by that particular class. In this case, a redesign should be considered to group related regions into one or more classes, and to promote the reuse of common behaviors among them.
 			
 			&lt;script&gt;
-				aggregatedMetrics['lackOfCohesionOfMethods'] = new Array();
+				aggregatedMetrics['reusabilityMetrics']['lackOfCohesionOfMethods'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -127,7 +135,7 @@
 			It should also be noted that if a base class has a high weighted method per class value, this is likely to affect its descendants, since they will also inherit the complexity associate to the base class methods.
 			
 			&lt;script&gt;
-				aggregatedMetrics['weightedMethodComplexity'] = new Array();
+				aggregatedMetrics['analyzabilityMetrics']['weightedMethodComplexity'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -137,7 +145,7 @@
 			A high coupling between system components prevents reuse and may indicate a defective modular design. This is because components with fewer dependencies have more chances to be reused as part other systems, and also because a component with a high number of dependencies is more sensitive to changes made during maintenance efforts.
 			
 			&lt;script&gt;
-				aggregatedMetrics['couplingBetweenObjects'] = new Array();
+				aggregatedMetrics['modifiabilityMetrics']['couplingBetweenObjects'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -147,7 +155,7 @@
 			It should be noted that a proper definition of test cases is not trivial, and that their update process adds complexity to the overall maintenance process of the system components.
 			
 			&lt;script&gt;
-				aggregatedMetrics['numberOfPublicMethods'] = new Array();
+				aggregatedMetrics['testabilityMetrics']['numberOfPublicMethods'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		
@@ -157,7 +165,7 @@
 			A high afferent coupling value can be a sign of a violation to the single responsibility principle. In this case, a class with many associated responsibilities can cause unexpected effects over a set of dependent classes.
 			
 			&lt;script&gt;
-				aggregatedMetrics['afferentCoupling'] = new Array();
+				aggregatedMetrics['reusabilityMetrics']['afferentCoupling'] = new Object();
 			&lt;/script&gt;	
 		&lt;/div&gt;
 		<!-- End metrics definitions -->
@@ -195,6 +203,15 @@
 				    			&lt;script&gt;
 				    				componentTypes['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] = '1';
 				    				classValues.push('<xsl:value-of select="sequence"/>');
+				    				
+				    				<!-- Aggregated metrics -->
+				    				for(var aggregatedMetricSet in aggregatedMetrics) {
+				    					for(var aggregatedMetric in aggregatedMetrics[aggregatedMetricSet]) {
+				    						if(aggregatedMetrics[aggregatedMetricSet][aggregatedMetric]['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] == null) {
+				    							aggregatedMetrics[aggregatedMetricSet][aggregatedMetric]['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] = new Array();
+				    						}
+				    					}
+				    				}
 				    			&lt;/script&gt;
 							&lt;/div&gt;
 				    </xsl:when>
@@ -226,7 +243,8 @@
 						    	<!-- Aggregate metrics -->
 						    	<xsl:if test="not(contains(message, 'No real value found'))">
 						    		&lt;script&gt;
-										aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'for '), '.')"/>'].push(<xsl:value-of select="substring-before(substring-after(message, 'real: '), ')')"/>);
+						    			//aggregatedMetrics[metricSet][metric][componentType]
+										aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'MetricsSet: '), ', Type')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'for '), '.')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'Type: '), '}')"/>'].push(<xsl:value-of select="substring-before(substring-after(message, 'real: '), ')')"/>);
 									&lt;/script&gt;
 								</xsl:if>
 					    	

@@ -78,17 +78,21 @@ public class MetricsChecker {
 
                                 if (operator.isValid(realValue, expectedValue)) {
                                     logger.log(Level.INFO, "Valid value for " + metric + ". (expected: "
-                                            + expectedValue + ", real: " + realValue + ")");
+                                            + expectedValue + ", real: " + realValue + "). {MetricsSet: " + metricsSet
+                                            + ", Type: [ " + type.replace('.', '/') + " ]}");
                                 } else {
                                     logger.log(Level.INFO, "Invalid value for " + metric + ". (expected: "
-                                            + expectedValue + ", real: " + realValue + ")");
+                                            + expectedValue + ", real: " + realValue + "). {MetricsSet: " + metricsSet
+                                            + ", Type: [ " + type.replace('.', '/') + " ]}");
                                 }
                             } else {
                                 logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: "
-                                        + tool + ", for type: " + type);
+                                        + tool + ". {MetricsSet: " + metricsSet + ", Type: [ " + type.replace('.', '/')
+                                        + " ]}");
                             }
                         } else {
-                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool);
+                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool
+                                    + ". {[MetricsSet: " + metricsSet + ", Type: [ " + type.replace('.', '/') + " ]}");
                         }
                     } else {
                         logger.log(Level.WARNING, "No code found for metric: " + metric);
