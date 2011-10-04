@@ -13,6 +13,7 @@
 		
 		&lt;script type="text/javascript" src="MEXADL_HOME/reports/jquery-1.6.2.min.js"&gt;&lt;/script&gt;
 		&lt;script type="text/javascript" src="MEXADL_HOME/reports/jquery-ui-1.8.14.custom/js/jquery-ui-1.8.14.custom.min.js"&gt;&lt;/script&gt;
+		&lt;script type="text/javascript" src="MEXADL_HOME/reports/Highcharts-2.1.6/highcharts.js"&gt;&lt;/script&gt;
 		&lt;script&gt;
 			var invalidValues = new Array();
 			var notFoundValues = new Array();
@@ -208,7 +209,10 @@
 				    				for(var aggregatedMetricSet in aggregatedMetrics) {
 				    					for(var aggregatedMetric in aggregatedMetrics[aggregatedMetricSet]) {
 				    						if(aggregatedMetrics[aggregatedMetricSet][aggregatedMetric]['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] == null) {
-				    							aggregatedMetrics[aggregatedMetricSet][aggregatedMetric]['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] = new Array();
+				    							var aggregatedMetricsValues = new Object();
+				    							aggregatedMetricsValues['series'] = new Array();
+				    							aggregatedMetricsValues['expected'] = 0;
+				    							aggregatedMetrics[aggregatedMetricSet][aggregatedMetric]['[<xsl:value-of select="translate(substring-before(substring-after(message, 'for:'), '**'), '\.', '\/')"/>]'] = aggregatedMetricsValues;
 				    						}
 				    					}
 				    				}
@@ -238,15 +242,32 @@
 				    	<xsl:if test="not(contains(message, 'null'))">
 				    		<xsl:if test="not(contains(message, 'An error ocurred'))">
 						   		&lt;div id="<xsl:value-of select="sequence"/>"&gt;
-								<xsl:value-of select="message"/> &lt;a style="cursor: help" onclick='showDescription("<xsl:value-of select='message'/>")'&gt;&lt;em style="font-size:10px"&gt;(Description)&lt;/em&gt;&lt;/a&gt;
+								<xsl:value-of select="substring-before(message, '{')"/> &lt;a style="cursor: help" onclick='showDescription("<xsl:value-of select='message'/>")'&gt;&lt;em style="font-size:10px"&gt;(Description)&lt;/em&gt;&lt;/a&gt;
 					    	
-						    	<!-- Aggregate metrics -->
-						    	<xsl:if test="not(contains(message, 'No real value found'))">
-						    		&lt;script&gt;
-						    			//aggregatedMetrics[metricSet][metric][componentType]
-										aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'MetricsSet: '), ', Type')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'for '), '.')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'Type: '), '}')"/>'].push(<xsl:value-of select="substring-before(substring-after(message, 'real: '), ')')"/>);
-									&lt;/script&gt;
-								</xsl:if>
+					    		<!-- Aggregate metrics -->
+					    		<xsl:choose>
+							    	<!-- Aggregate valid and indvalid metrics -->
+							    	<xsl:when test="not(contains(message, 'No real value found'))">
+							    		&lt;script&gt;
+							    			//aggregatedMetrics[metricSet][metric][componentType] = {componentName, metricValue}
+							    			var tmpMetricObject = new Object();
+							    			tmpMetricObject['name'] = '<xsl:value-of select="substring-before(substring-after(message, 'Name: '), '}')"/>';
+							    			tmpMetricObject['data'] = <xsl:value-of select="substring-before(substring-after(message, 'real: '), ')')"/>;  
+											aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'MetricsSet: '), ', Type')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'for '), '.')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'Type: '), ', Name')"/>']['series'].push(tmpMetricObject);
+											aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'MetricsSet: '), ', Type')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'for '), '.')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'Type: '), ', Name')"/>']['expected'] = <xsl:value-of select="substring-before(substring-after(message, 'expected: '), ',')"/>;
+										&lt;/script&gt;
+									</xsl:when>
+									<xsl:otherwise>
+							    		&lt;script&gt;
+							    			//aggregatedMetrics[metricSet][metric][componentType] = {componentName, metricValue}
+							    			var tmpMetricObject = new Object();
+							    			tmpMetricObject['name'] = '<xsl:value-of select="substring-before(substring-after(message, 'Name: '), '}')"/>';
+							    			tmpMetricObject['data'] = -1;  
+											aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'MetricsSet: '), ', Type')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'for metric '), ',')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'Type: '), ', Name')"/>']['series'].push(tmpMetricObject);
+											aggregatedMetrics['<xsl:value-of select="substring-before(substring-after(message, 'MetricsSet: '), ', Type')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'for metric '), ',')"/>']['<xsl:value-of select="substring-before(substring-after(message, 'Type: '), ', Name')"/>']['expected'] = <xsl:value-of select="substring-before(substring-after(message, 'expected: '), ',')"/>; 
+										&lt;/script&gt;
+									</xsl:otherwise>
+					    		</xsl:choose>
 					    	
 						    	<!-- Mark this metric as invalid -->
 						    	<xsl:if test="contains(message, 'Invalid')">
@@ -309,7 +330,11 @@
 				if(componentTypes.hasOwnProperty(property)) {
 					var newLi = document.createElement('li'); 
 					var newDiv = document.createElement('div'); 
-					var newHeader = document.createElement('h4'); 
+					var newHeader = document.createElement('h4');
+					var imageHeader = document.createElement('h5');
+					var contentHeader = document.createElement('h5');
+					var imageAndContentDiv = document.createElement('div');
+					var imageDiv = document.createElement('div'); 
 					var contentDiv = document.createElement('div'); 
 		
 					var count = $('div[title|=' + property + ']').size();
@@ -322,15 +347,115 @@
 					newLi.innerHTML = "&lt;a href='#" + property + "'&gt;&lt;b&gt;" + property + "&lt;/b&gt; (" + count  + " classes, " + componentTypesInvalidCount["'" + property + "'"] + " invalid values, " + componentTypesNotFoundCount["'" + property + "'"] + " values not found)&lt;/a&gt;";
 					tabsList.appendChild(newLi);
 		
+					imageAndContentDiv.setAttribute('id', property + "_imageAndContent");
+					imageDiv.setAttribute('id', property + "_image");
 					contentDiv.setAttribute('id', property + "_content");
+					
 					newDiv.setAttribute('id', property);
 					newDiv.setAttribute('style', 'margin-top: 50px; margin-bottom: 50px;');
-					newHeader.innerHTML = "&lt;a onclick='showDiv(\"" + property + "_content\")' style='cursor: pointer'&gt;" + property + " (" + count  + " classes, " + componentTypesInvalidCount["'" + property + "'"] + " invalid values, " + componentTypesNotFoundCount["'" + property + "'"] + " values not found)&lt;/a&gt;";
+					newHeader.innerHTML = "&lt;a onclick='showDiv(\"" + property + "_imageAndContent\")' style='cursor: pointer'&gt;" + property + " (" + count  + " classes, " + componentTypesInvalidCount["'" + property + "'"] + " invalid values, " + componentTypesNotFoundCount["'" + property + "'"] + " values not found)&lt;/a&gt;";
+					
+					imageHeader.innerHTML = "&lt;ul&gt;&lt;li&gt;&lt;a onclick='showDiv(\"" + property + "_image\")' style='cursor: pointer'&gt; Graphic summary &lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;";
+					contentHeader.innerHTML = "&lt;ul&gt;&lt;li&gt;&lt;a onclick='showDiv(\"" + property + "_content\")' style='cursor: pointer'&gt; Detailed content &lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;";
+					
+					imageAndContentDiv.appendChild(imageHeader);
+					imageAndContentDiv.appendChild(imageDiv);
+					imageAndContentDiv.appendChild(contentHeader);
+					imageAndContentDiv.appendChild(contentDiv);
 					
 					newDiv.appendChild(document.createElement('hr'));
 					newDiv.appendChild(newHeader);
-					newDiv.appendChild(contentDiv);
+					newDiv.appendChild(imageAndContentDiv);
 					tabsDiv.appendChild(newDiv);
+					
+					// Image data for the metrics associated to the component type
+					var imageSeries = new Array();
+					for(var metricSet in aggregatedMetrics) {
+					
+						// Create div for metricSet
+						var metricSetDiv = document.createElement('div');
+						var metricSetHeader = document.createElement('h6');
+						
+						metricSetDiv.setAttribute('id', property + "_" + metricSet + "_image");
+						metricSetHeader.innerHTML = "&lt;ul&gt;&lt;ul&gt;&lt;li&gt;&lt;a onclick='showDiv(\"" + property + "_" + metricSet + "_image\")' style='cursor: pointer'&gt; " + metricSet + " &lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;";
+						
+						imageDiv.appendChild(metricSetHeader);
+						imageDiv.appendChild(metricSetDiv);
+						
+						for(metric in aggregatedMetrics[metricSet]) {
+							for(componentType in aggregatedMetrics[metricSet][metric]) {
+								if(componentType == property) {
+								
+									// Create image div
+									var metricImageDiv = document.createElement('div');
+									metricImageDiv.setAttribute('id', property + "_" + metric + "_image");
+									metricSetDiv.appendChild(metricImageDiv);
+									
+									// Determine image height
+									var maxValue = aggregatedMetrics[metricSet][metric][componentType]['expected'];
+									for(var currentSerie in aggregatedMetrics[metricSet][metric][componentType]['series']) {
+										if(aggregatedMetrics[metricSet][metric][componentType]['series'][currentSerie]['data'] > maxValue) {
+											maxValue = aggregatedMetrics[metricSet][metric][componentType]['series'][currentSerie]['data'];
+										}
+									}
+									
+									// Determine average
+									var average = 0;
+									var validCount = 0;
+									for(var currentSerie in aggregatedMetrics[metricSet][metric][componentType]['series']) {
+										if(aggregatedMetrics[metricSet][metric][componentType]['series'][currentSerie]['data'] > 0) {
+											average += aggregatedMetrics[metricSet][metric][componentType]['series'][currentSerie]['data'];
+											validCount += 1;
+										}
+									}
+									
+									if(average > 0) {
+										average = average / validCount;
+									}
+									
+									// Load imaga data
+									var chart = new Highcharts.Chart({
+										chart: {
+											renderTo: property + "_" + metric + "_image",
+											defaultSeriesType: 'column' },
+										title: {
+											text: property + " - " + metricSet},
+										subtitle: {
+											text: "Analysis for: " + metric },
+										xAxis: {
+											categories: ['' + metric] },
+										yAxis: {
+											title: {
+												text: 'Value' },
+											max: maxValue,
+											plotBands: [
+												{from: aggregatedMetrics[metricSet][metric][componentType]['expected'] - 0.2,
+												to: aggregatedMetrics[metricSet][metric][componentType]['expected'] + 0.2,
+												color: 'rgba(68, 170, 213, 0.1)',
+												label: {
+													text: 'Expected value: ' + aggregatedMetrics[metricSet][metric][componentType]['expected'],
+													style: {
+														color: '#606060' }}},
+												{from: average - 0.2,
+												to: average + 0.2,
+												color: 'rgba(68, 170, 213, 0.1)',
+												label: {
+													text: 'Average value: ' + average,
+													style: {
+														color: '#606060' }}}]},
+										tooltip: {
+											formatter: function() {
+												return ''+ this.series.name +': '+ this.y +''; }},
+										credits: {
+											enabled: false },
+										legend: {
+											enabled: false },
+										series: aggregatedMetrics[metricSet][metric][componentType]['series']
+									});				
+								}
+							}
+						}
+					}
 					
 					$('div[title|=' + property + ']').each(function(index, Element) {
 						var parent = Element.parentNode.parentNode;

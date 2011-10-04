@@ -1,0 +1,2 @@
+Export project as Jar file, without the dist and lib folders
+Replace /mx.itesm.mexadl.distribution/lib/mexadl/mx.itesm.mexadl.verification.jar  

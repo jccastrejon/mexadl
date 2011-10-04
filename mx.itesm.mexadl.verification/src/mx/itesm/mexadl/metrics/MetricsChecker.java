@@ -69,30 +69,31 @@ public class MetricsChecker {
                     metricCode = Util.getConfigurationProperty(MaintainabilityMetrics.class, metric + ".code");
                     if (metricCode != null) {
                         results = (Map<String, Map<String, Integer>>) realMetrics.get(tool);
+                        expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
 
                         if (results != null) {
                             resultsType = results.get(type);
                             if (resultsType != null) {
                                 realValue = resultsType.get(metricCode);
-                                expectedValue = Integer.parseInt(currentMetrics.get(metric).toString());
 
                                 if (operator.isValid(realValue, expectedValue)) {
                                     logger.log(Level.INFO, "Valid value for " + metric + ". (expected: "
                                             + expectedValue + ", real: " + realValue + "). {MetricsSet: " + metricsSet
-                                            + ", Type: [ " + type.replace('.', '/') + " ]}");
+                                            + ", Type: [ " + type.replace('.', '/') + " ], Name: " + type + "}");
                                 } else {
                                     logger.log(Level.INFO, "Invalid value for " + metric + ". (expected: "
                                             + expectedValue + ", real: " + realValue + "). {MetricsSet: " + metricsSet
-                                            + ", Type: [ " + type.replace('.', '/') + " ]}");
+                                            + ", Type: [ " + type.replace('.', '/') + " ], Name: " + type + "}");
                                 }
                             } else {
-                                logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: "
-                                        + tool + ". {MetricsSet: " + metricsSet + ", Type: [ " + type.replace('.', '/')
-                                        + " ]}");
+                                logger.log(Level.WARNING, "No real value found for metric " + metric + ", expected: "
+                                        + expectedValue + ", by tool: " + tool + ". {MetricsSet: " + metricsSet
+                                        + ", Type: [ " + type.replace('.', '/') + " ], Name: " + type + "}");
                             }
                         } else {
-                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", by tool: " + tool
-                                    + ". {[MetricsSet: " + metricsSet + ", Type: [ " + type.replace('.', '/') + " ]}");
+                            logger.log(Level.WARNING, "No real value found for metric " + metric + ", expected: "
+                                    + expectedValue + ", by tool: " + tool + ". {[MetricsSet: " + metricsSet
+                                    + ", Type: [ " + type.replace('.', '/') + " ], Name: " + type + "}");
                         }
                     } else {
                         logger.log(Level.WARNING, "No code found for metric: " + metric);
