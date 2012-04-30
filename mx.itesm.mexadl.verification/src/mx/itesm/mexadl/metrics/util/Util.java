@@ -80,7 +80,7 @@ public class Util {
     /**
      * Date formatter.
      */
-    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy:MM:dd 'at' HH.mm.ss");
+    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy_MM_dd 'at' HH_mm_ss");
 
     /**
      * Get the value associated to the specified property in the MexADL
