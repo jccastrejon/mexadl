@@ -28,7 +28,7 @@
 		<!-- Use our own src and target directories to allow multiproject support -->
 		<mkdir dir="${mexadl.src.dir}"/>
 		<mkdir dir="${mexadl.classes.dir}"/>
-		<for param="directory" list="${src.dirs}" delimiter=":">
+		<for param="directory" list="${src.dirs}" delimiter="${path.separator}}">
 			<sequential>
 				<copy todir="${mexadl.src.dir}">
 					<fileset dir="@{directory}"/>

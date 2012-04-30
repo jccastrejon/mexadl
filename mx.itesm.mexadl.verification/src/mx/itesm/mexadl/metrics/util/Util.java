@@ -128,7 +128,7 @@ public class Util {
             xsltContent = xsltContent.replaceAll("MEXADL_HOME", Util.MEXADL_HOME);
 
             Util.transformXMLReport2Html(logFile, new ByteArrayInputStream(xsltContent.getBytes("UTF-8")), new File(
-                    reportDir, Util.DATE_FORMATTER.format(new Date()) + ".html"), componentTypes);
+                    reportDir, Util.DATE_FORMATTER.format(new Date()).replace(' ', '_') + ".html"), componentTypes);
             logFile.delete();
         }
     }
